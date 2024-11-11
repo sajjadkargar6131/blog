@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+{% block content %}
+{%load crispy_forms_tags %}
+  <form class="form form-control" accept="" method="post">
+    {% csrf_token %}
+    {% comment %} <table>{{ form.as_table }}</table> {% endcomment %}
+    {{form|crispy}}
+    <input type="submit" class="btn btn-dark mt-2" value="ذخیره" />
+    <input class="btn btn-warning mt-2" type="reset" value="ریست" />
+  </form>
+{% endblock %}
