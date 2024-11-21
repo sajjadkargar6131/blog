@@ -144,3 +144,9 @@ LOGOUT_REDIRECT_URL = 'index'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Static 
+
+STATIC_URL = '/static/'
+
+STATIC_DIR = [str(BASE_DIR.joinpath('static'))]
