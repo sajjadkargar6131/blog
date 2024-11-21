@@ -1,7 +1,7 @@
 {% extends '_base.html' %}
 {% block content %}
 {%load crispy_forms_tags %}
-  <form class="form form-control" accept="" method="post">
+  <form class="form form-control"  method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% comment %} <table>{{ form.as_table }}</table> {% endcomment %}
     {{form|crispy}}

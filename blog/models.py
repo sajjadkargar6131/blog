@@ -11,6 +11,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     text = models.TextField()
     status = models.CharField(choices=CHOICES, max_length=3)
+    cover = models.ImageField(upload_to='covers/', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
