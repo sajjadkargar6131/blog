@@ -1,74 +1,63 @@
-{% extends "_base.html" %}
-{% block content %} 
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card mb-4 shadow-sm">
-            <img src="{{detail.cover.url}}" class="card-img-top post-image" alt="...">
-            <div class="card-body">
-                <h1 class="card-title">{{detail.title}}</h1>
-                <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
-                <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|date:'D- d M -Y' }} </span></p>
-                <hr>
-                <p class="card-text"> {{detail.text|linebreaks}} </p>
-                <div class="d-flex justify-content-between"> <span class="text-muted">تعداد لایک‌ها: <span>123</span></span> <span class="text-muted">تعداد کامنت‌ها: <span>45</span></span> </div> 
-            </div>
-        </div>
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h2 class="card-title">نظرات</h2>
-                <!-- نظر اول -->
-                <div class="border-bottom mb-2">
-                    <h5 class="mb-3 text-secondary">نام کاربر</h5>
-                    <p>متن نظر کاربر در اینجا قرار می‌گیرد.</p>
-                    <span class="badge bg-success mb-2">توصیه می‌شود</span>
-                </div>
-                <!-- نظر دوم -->
-                <div class="border-bottom mb-2">
-                    <h5 class="mb-3 text-secondary">نام کاربر</h5>
-                    <p>متن نظر کاربر در اینجا قرار می‌گیرد.</p>
-                    <span class="badge bg-secondary mb-2">توصیه نمی‌شود</span>
-                </div>
-                <!-- فرم ارسال نظر -->
-                <div class="mt-4">
-                    <h3>نظر خود را وارد کنید:</h3>
-                    <form>
-                        <div class="mb-3">
-                            <label for="username" class="form-label">نام کاربری</label>
-                            <input type="text" class="form-control" id="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="comment" class="form-label">نظر شما</label>
-                            <textarea class="form-control" id="comment" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">ارسال</button>
-                    </form>
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card mb-4 shadow-sm">
+                <img src="{{ detail.cover.url }}" class="card-img-top post-image" alt="..." />
+                <div class="card-body">
+                    <h1 class="card-title">{{ detail.title }}</h1>
+                    <p class="card-text text-muted">
+                        نویسنده: <span>{{ detail.author }}</span>
+                    </p>
+                    <p class="card-text text-muted">
+                        تاریخ: <span>{{ detail.created_at|date:'D- d M -Y' }}</span>
+                    </p>
+                    <hr />
+                    <div style="text-align: justify;">
+                        <p class="card-text">{{ detail.text|linebreaks }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">
+                            تعداد لایک‌ها:
+                            <span>123</span>
+                        </span>
+                        <span class="text-muted">تعداد کامنت‌ها: <span>45</span></span>
+                    </div>
                 </div>
             </div>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    {% if comments %}
+                        <h2 class="card-title">نظرات</h2>
+                        <!-- نظرات -->
+                        {% for comment in comments %}
+                            <div class="border-bottom mb-2">
+                                <h5 class="mb-3 text-secondary">{{ comment.user.username }}</h5>
+                                <p>{{ comment.text }}</p>
+                                {% comment %} <span class="badge bg-success mb-2">توصیه می‌شود</span> {% endcomment %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <!-- فرم ارسال نظر -->
+                    {% if user.is_authenticated %}
+                        <div class="mt-4">
+                            <h3>نظر خود را وارد کنید:</h3>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">{{ form|crispy }}</div>
+                                <button type="submit" class="btn btn-primary">ارسال</button>
+                            </form>
+                        </div>
+                    {% else %}
+            </div>
+            </div>
+            <div class="alert alert-primary" role="alert">
+                لطفا جهت ثبت نظر خود ابتدا وارد شوید
+                <span>|</span>
+                <a class="text-decoration-none" href="{% url 'login' %}">ورود</a>
+            </div>
+            {% endif %}
         </div>
     </div>
-</div>
-{% endblock content%}
-
-    {% comment %} <h3>{{detail.title}}</h3>
-    <img class="img-fluid img-thumbnail" src="{{detail.cover.url}}" alt="">
-    <div style="text-align:justify ;">
-        <p class="text-center">{{detail.text|linebreaks}}</p>
-    </div>
-    <div class="d-flex gap-2 mb-3">
-        <a href="{% url "post_update" detail.pk %}" type="button" class="btn btn-warning">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"></path>
-              </svg>
-        </a>
-        <a href="{% url "post_delete" detail.pk %}" type="button" class="btn btn-danger">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
-            </svg>
-        </a>
-        <a href="{% url "blog_index"  %}" type="button" class="btn btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-right" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5"></path>
-            </svg>
-        </a>
-    </div> {% endcomment %}
-    
+{% endblock %}

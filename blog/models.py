@@ -1,6 +1,6 @@
 from django.db import models
 from django.shortcuts import reverse
-
+from django.contrib.auth import get_user_model
 
 class Post(models.Model):
     CHOICES = [
@@ -20,3 +20,9 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"pk": self.pk})
+    
+class Comment(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE)
+    text = models.TextField()
+    post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name='comments')
+    datetime_created = models.DateTimeField(auto_now_add=True)
