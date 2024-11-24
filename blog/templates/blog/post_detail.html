@@ -23,7 +23,17 @@
                     {% endif %}
                     <hr>
                     <p class="card-text text-justify" style="text-align: justify;"> {{detail.text|linebreaksbr}} </p>  
-                    <div class="d-flex justify-content-between"> <span class="text-muted">تعداد لایک‌ها: <span>123</span></span> <span class="text-muted">تعداد کامنت‌ها: <span>45</span></span> </div> 
+                    <div class="d-flex justify-content-between">
+                        {% comment %} <span class="text-danger">
+                            <i class="fa fa-heart" aria-hidden="true"></i>
+                            <span class="text-primary"> {{likes_count}}</span>
+                        </span>  {% endcomment %}
+                        <i class="fa fa-heart" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                        <span class="text-muted">
+                            <i class="fa fa-comment" aria-hidden="true"></i>
+                            <span class="text-primary"> {{comments_count}} </span>
+                        </span> 
+                    </div> 
                 </div>
             </div>
             <div class="card shadow-sm mb-3">
@@ -59,4 +69,5 @@
             </div>
         </div>
     </div>
+  
 {% endblock content%}

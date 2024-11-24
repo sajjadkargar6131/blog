@@ -4,13 +4,21 @@
     {% for item in list %}
       <div class="col-md-6">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col p-4 d-flex flex-column position-static">
+          <div class="col p-3 d-flex flex-column position-static">
             <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>
-            <a href="{% url 'post_detail' item.pk %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title }}</h3></a>
+            <a href="{% url 'post_detail' item.pk %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>
             <div class="mb-1 text-body-secondary">{{ item.created_at|date:'D- d M -Y' }}</div>
             <div style="text-align: justify;">
               <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
             </div>
+            {% comment %} <div class="d-flex justify-content-between mt-3">
+              <span class="text-muted">
+                <i class="fas fa-thumbs-up"></i> {{comments_count}}
+              </span>
+              <span class="text-muted">
+                <i class="fas fa-comments"></i> 45
+              </span>
+            </div> {% endcomment %}
           </div>
           <div class="col-auto d-none d-lg-block">
             {% if item.cover %}
@@ -20,5 +28,5 @@
         </div>
       </div>
     {% endfor %}
-  </div>
-{% endblock %}
+  </div> 
+  {% endblock %}

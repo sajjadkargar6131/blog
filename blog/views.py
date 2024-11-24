@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormMixin
 from django.views import generic
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
-from .models import Post
+from .models import Post, Like
 from .forms import PostCreateForm, CommentForm
 
 
@@ -37,6 +39,8 @@ class PostDetailView(generic.DetailView, FormMixin):
     def get_context_data(self, **kwargs) :
         context = super().get_context_data(**kwargs)
         context['comments'] = self.object.comments.all()
+        context['comments_count'] = self.object.comments.count()
+        context['likes_count'] = self.object.likes.count()
         context['form'] = self.get_form()
         return context
     
@@ -103,3 +107,16 @@ class PostDeleteView(generic.DeleteView):
         return reverse('blog_index')
 
     # success_url = reverse_lazy('blog_index')
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+    if request.method == "POST":
+        if Like.objects.filter(post=post, user=user).exists():
+            Like.objects.filter(post=post, user=user).delete()
+            liked = False
+        else:
+            Like.objects.create(post=post, user=user)
+            liked = True
+        like_count = post.likes.count()
+        return JsonResponse({"liked": liked, "likes_count": like_count})
