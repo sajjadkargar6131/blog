@@ -3,6 +3,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormMixin
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import JsonResponse
 
 from .models import Post, Like
@@ -60,6 +61,7 @@ class PostDetailView(generic.DetailView, FormMixin):
             comment.post = self.object
             comment.user = request.user
             comment.save()
+            messages.success(request, 'نظر شما با موفقیت ثبت شد.')
             return self.form_valid(form)
         else :
             return self.form_invalid(form)
@@ -79,6 +81,10 @@ class PostDetailView(generic.DetailView, FormMixin):
 class PostCreateView(generic.CreateView):
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
+    
+    def form_valid(self, form: form_class) :
+        messages.success(self.request, 'پست با موفقیت ثبت شد.')
+        return super().form_valid(form)
 
 
 # def post_update(request, pk):
@@ -93,6 +99,10 @@ class PostUpdateview(generic.UpdateView):
     model = Post
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
+    
+    def form_valid(self, form: form_class) :
+        messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
+        return super().form_valid(form)
 
 
 # def post_delete(request, pk):
@@ -112,6 +122,11 @@ class PostDeleteView(generic.DeleteView):
         return reverse('blog_index')
 
     # success_url = reverse_lazy('blog_index')
+    
+    def delete(self, request, *args, **kwargs): 
+        response = super().delete(request, *args, **kwargs) 
+        messages.success(self.request, 'پست با موفقیت حذف شد.') 
+        return response
     
     
 @login_required
