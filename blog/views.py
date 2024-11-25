@@ -37,11 +37,16 @@ class PostDetailView(generic.DetailView, FormMixin):
         return Post.objects.filter(status='pub').order_by('-created_at')
     
     def get_context_data(self, **kwargs) :
+        user = self.request.user
         context = super().get_context_data(**kwargs)
         context['comments'] = self.object.comments.all()
         context['comments_count'] = self.object.comments.count()
         context['likes_count'] = self.object.likes.count()
         context['form'] = self.get_form()
+        if user.is_authenticated:
+            context['liked'] = Like.objects.filter(post=self.object, user=user).exists()
+        else :
+            context['liked'] = False
         return context
     
     def get_success_url(self):
@@ -107,6 +112,8 @@ class PostDeleteView(generic.DeleteView):
         return reverse('blog_index')
 
     # success_url = reverse_lazy('blog_index')
+    
+    
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)

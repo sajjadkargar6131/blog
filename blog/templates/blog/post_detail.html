@@ -24,11 +24,17 @@
                     <hr>
                     <p class="card-text text-justify" style="text-align: justify;"> {{detail.text|linebreaksbr}} </p>  
                     <div class="d-flex justify-content-between">
-                        {% comment %} <span class="text-danger">
-                            <i class="fa fa-heart" aria-hidden="true"></i>
-                            <span class="text-primary"> {{likes_count}}</span>
-                        </span>  {% endcomment %}
-                        <i class="fa fa-heart" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                        {% if not liked %}
+                        <span>
+                            <i class="fa fa-heart-o" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                            <span class="text-primary" id="likes-count"> {{likes_count}}</span>
+                        </span>
+                        {% else %}
+                        <span>
+                            <i class="fa fa-heart text-danger" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                        <span class="text-primary"  id="likes-count"> {{likes_count}}</span>
+                        </span>
+                        {% endif %}
                         <span class="text-muted">
                             <i class="fa fa-comment" aria-hidden="true"></i>
                             <span class="text-primary"> {{comments_count}} </span>
@@ -63,7 +69,7 @@
                         </form>
                     </div>
                     {% else %}
-                    <div class="alert alert-primary">لطفا برای ارسال نظر ابتدا وارد شوید <span>|</span> <a class="text-decoration-none" href="{% url 'login' %}?next={% url 'post_detail' detail.pk %}">ورود</a></div>
+                    <div class="alert alert-primary">لطفا برای پسندیدن و افزودن نظر ابتدا وارد شوید <span>|</span> <a class="text-decoration-none" href="{% url 'login' %}?next={% url 'post_detail' detail.pk %}">ورود</a></div>
                     {% endif %}
                 </div>
             </div>
@@ -71,3 +77,33 @@
     </div>
   
 {% endblock content%}
+{% block scripts %}
+<script>
+    $(document).ready(function(){
+      $("#like-icon").click(function(){
+        var postId = $(this).data("post-id");
+        const url = window.location.href;
+        text = url.split('/')
+        new_url = text[0] + '//' + text[2] + '/' + text[3] + '/like/'
+        $.ajax({
+          url: new_url + postId + '/',
+          type: 'POST',
+          data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          success: function(response) {
+            if (response.liked) {
+                $("#like-icon").removeClass("fa fa-heart-o");
+                $("#like-icon").addClass("fa fa-heart text-danger");   
+            } else {
+                $("#like-icon").removeClass("fa fa-heart text-danger");
+                $("#like-icon").addClass("fa fa-heart-o");  
+            }
+            $("#likes-count").text(response.likes_count);
+          }
+        });
+      });
+    });
+  </script>
+{% endblock scripts %}
+
