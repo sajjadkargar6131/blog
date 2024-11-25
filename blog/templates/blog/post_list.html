@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load humanize %}
 {% block content %}
 {% if messages %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -15,7 +16,7 @@
           <div class="col p-3 d-flex flex-column position-static">
             <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>
             <a href="{% url 'post_detail' item.pk %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>
-            <div class="mb-1 text-body-secondary">{{ item.created_at|date:'D- d M -Y' }}</div>
+            <div class="mb-1 text-body-secondary">{{ item.created_at|naturaltime }}</div>
             <div style="text-align: justify;">
               <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
             </div>
