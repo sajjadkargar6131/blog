@@ -123,10 +123,7 @@ class PostDeleteView(generic.DeleteView):
 
     # success_url = reverse_lazy('blog_index')
     
-    def delete(self, request, *args, **kwargs): 
-        response = super().delete(request, *args, **kwargs) 
-        messages.success(self.request, 'پست با موفقیت حذف شد.') 
-        return response
+
     
     
 @login_required
