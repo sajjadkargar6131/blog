@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
+{% load humanize %}
 {% block content %} 
     <div class="row">
         <div class="col-md-10 mx-auto">
@@ -55,9 +56,14 @@
                     {% if comments %}
                     <h2 class="card-title">نظرات</h2>
                     {% for comment in comments  %}
-                    <div class="border-bottom mb-2">
-                        <h5 class="mb-3 text-secondary">{{comment.user.username}}</h5>
+                    <div class="border-bottom mb-3">
+                        <h5 class="mb-3 text-primary">{{comment.user.username}} گفته :</h5>
                         <p class="text-justify"> {{comment.text}} </p>
+                        <div class="d-flex justify-content-end">
+                            <span class="text-muted">
+                                <span class="text-muted">{{comment.datetime_created|naturaltime}}</span>
+                            </span> 
+                        </div> 
                         {% comment %} <span class="badge bg-success mb-2">توصیه می‌شود</span> {% endcomment %}
                     </div>
                     {% endfor %}

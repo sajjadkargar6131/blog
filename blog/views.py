@@ -40,7 +40,7 @@ class PostDetailView(generic.DetailView, FormMixin):
     def get_context_data(self, **kwargs) :
         user = self.request.user
         context = super().get_context_data(**kwargs)
-        context['comments'] = self.object.comments.all()
+        context['comments'] = self.object.comments.filter().order_by('-datetime_created')
         context['comments_count'] = self.object.comments.count()
         context['likes_count'] = self.object.likes.count()
         context['form'] = self.get_form()
@@ -139,3 +139,25 @@ def like_post(request, post_id):
             liked = True
         like_count = post.likes.count()
         return JsonResponse({"liked": liked, "likes_count": like_count})
+    
+    
+    
+# def post_detail(request, pk):
+    
+#     post = get_object_or_404(Post, pk=pk)  #get post
+#     comments = post.comments.filter().order_by('-datetime_created') #get comment of post
+    
+#     if request.method == 'POST' : #if user send post request(send comments)
+#         comment_form = CommentForm(request.POST)
+#         if comment_form.is_valid():
+#             new_comment = comment_form.save(commit=False) 
+#             new_comment.post= post
+#             new_comment.user = request.user #if user login the request.user is created
+#             new_comment.save()
+#             comment_form = CommentForm()
+#     else :
+#         comment_form = CommentForm()
+#     return render(request, 'blog/post_detail.html', context={'detail':post, 'comments':comments, 'form':comment_form})
+                
+    
+    
