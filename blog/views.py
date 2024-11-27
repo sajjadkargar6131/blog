@@ -18,9 +18,15 @@ class IndexListView(generic.ListView):
     # model = Post  -> get all objects
     template_name = 'blog/post_list.html'
     context_object_name = 'list'
+    paginate_by = 6
 
     def get_queryset(self):
         return Post.objects.filter(status='pub').order_by('-created_at')
+    
+    def get_context_data(self, **kwargs):
+        context =super().get_context_data(**kwargs)
+        context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
+        return context
 
 
 # def post_detail(request, pk):
