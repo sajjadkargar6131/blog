@@ -18,4 +18,6 @@ urlpatterns = [
     path('<int:pk>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
     
     path('like/<int:post_id>/', views.like_post, name='like_post'),
+    
+    path('bookmark/<int:post_id>/', views.bookmark_post, name='bookmark_post'),
 ]

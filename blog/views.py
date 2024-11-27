@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 
-from .models import Post, Like
+from .models import Post, Like, BookmarkPost
 from .forms import PostCreateForm, CommentForm
 
 
@@ -43,11 +43,14 @@ class PostDetailView(generic.DetailView, FormMixin):
         context['comments'] = self.object.comments.filter().order_by('-datetime_created')
         context['comments_count'] = self.object.comments.count()
         context['likes_count'] = self.object.likes.count()
+        context['bookmark_count'] = self.object.bookmarks.count()
         context['form'] = self.get_form()
         if user.is_authenticated:
-            context['liked'] = Like.objects.filter(post=self.object, user=user).exists()
+            context['liked'] = Like.objects.filter(post=self.object, user=user).exists() #True
+            context['bookmarked'] = BookmarkPost.objects.filter(post=self.object, user=user).exists()
         else :
             context['liked'] = False
+            context['bookmarked'] = False
         return context
     
     def get_success_url(self):
@@ -140,8 +143,24 @@ def like_post(request, post_id):
         like_count = post.likes.count()
         return JsonResponse({"liked": liked, "likes_count": like_count})
     
-    
-    
+@login_required
+def bookmark_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+    if request.method == 'POST':
+        if BookmarkPost.objects.filter(post=post, user=user).exists():
+            BookmarkPost.objects.filter(post=post, user=user).delete()
+            bookmarked = False
+        else :
+            BookmarkPost.objects.create(post=post, user=user)
+            bookmarked = True
+        bookmarked_count = post.bookmarks.count() 
+        return JsonResponse({"bookarked" :bookmarked , "bookmarks_count":bookmarked_count})                   
+
+
+
+
+
 # def post_detail(request, pk):
     
 #     post = get_object_or_404(Post, pk=pk)  #get post

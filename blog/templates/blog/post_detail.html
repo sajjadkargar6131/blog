@@ -48,6 +48,18 @@
                             <i class="fa fa-comment" aria-hidden="true"></i>
                             <span class="text-primary"> {{comments_count}} </span>
                         </span> 
+
+                        {% if not bookmarked %}
+                        <span>
+                            <i class="fa fa-bookmark-o" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
+                            <span class="text-primary" id="bookmarks-count"> {{bookmark_count}}</span>
+                        </span>
+                        {% else %}
+                        <span>
+                            <i class="fa fa-bookmark text-muted" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
+                        <span class="text-primary"  id="bookmarks-count">{{bookmark_count}}</span>
+                        </span>
+                        {% endif %}
                     </div> 
                 </div>
             </div>
@@ -91,33 +103,63 @@
     </div>
   
 {% endblock content%}
+
 {% block scripts %}
-<script>
-    $(document).ready(function(){
-      $("#like-icon").click(function(){
-        var postId = $(this).data("post-id");
-        const url = window.location.href;
-        text = url.split('/')
-        new_url = text[0] + '//' + text[2] + '/' + text[3] + '/like/'
-        $.ajax({
-          url: new_url + postId + '/',
-          type: 'POST',
-          data: {
-            'csrfmiddlewaretoken': '{{ csrf_token }}'
-          },
-          success: function(response) {
-            if (response.liked) {
-                $("#like-icon").removeClass("fa fa-heart-o");
-                $("#like-icon").addClass("fa fa-heart text-danger");   
-            } else {
-                $("#like-icon").removeClass("fa fa-heart text-danger");
-                $("#like-icon").addClass("fa fa-heart-o");  
+
+    <script>
+        $(document).ready(function(){
+        $("#like-icon").click(function(){
+            var postId = $(this).data("post-id");
+            const url = window.location.href;
+            text = url.split('/')
+            new_url = text[0] + '//' + text[2] + '/' + text[3] + '/like/'
+            $.ajax({
+            url: new_url + postId + '/',
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.liked) {
+                    $("#like-icon").removeClass("fa fa-heart-o");
+                    $("#like-icon").addClass("fa fa-heart text-muted");   
+                } else {
+                    $("#like-icon").removeClass("fa fa-heart text-muted");
+                    $("#like-icon").addClass("fa fa-heart-o");  
+                }
+                $("#likes-count").text(response.likes_count);
             }
-            $("#likes-count").text(response.likes_count);
-          }
+            });
         });
-      });
-    });
-  </script>
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+        $("#bookmarks-icon").click(function(){
+            var postId = $(this).data("post-id");
+            const url = window.location.href;
+            text = url.split('/')
+            new_url = text[0] + '//' + text[2] + '/' + text[3] + '/bookmark/'
+            $.ajax({
+            url: new_url + postId + '/',
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.bookarked) {
+                    $("#bookmarks-icon").removeClass("fa fa-bookmark-o");
+                    $("#bookmarks-icon").addClass("fa fa-bookmark text-muted");   
+                } else {
+                    $("#bookmarks-icon").removeClass("fa fa-bookmark text-muted");
+                    $("#bookmarks-icon").addClass("fa fa-bookmark-o");  
+                }
+                $("#bookmarks-count").text(response.bookmarks_count);
+            }
+            });
+        });
+        });
+    </script>
 {% endblock scripts %}
 

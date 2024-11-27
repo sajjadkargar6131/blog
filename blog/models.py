@@ -38,3 +38,14 @@ class Like(models.Model):
     
     def __str__(self):
         return f'Like by {self.user} on {self.post.title}'
+    
+    
+
+class BookmarkPost(models.Model) :
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarks')
+    datetime_saved = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self) -> str:
+        return f'Post {self.post} saved by {self.user}'
+    
