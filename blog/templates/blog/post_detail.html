@@ -14,35 +14,35 @@
              {% endif %}
             <div class="card mb-4 shadow-sm">
                 {% if detail.cover %}
-                <img src="{{detail.cover.url}}" class="card-img-top post-image" alt="...">
+                    <img src="{{detail.cover.url}}" class="card-img-top post-image" alt="...">
                 {% endif %}
                 <div class="card-body">
                     <h1 class="card-title">{{detail.title}}</h1>
                     <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
                     <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|date:'D- d M -Y' }} </span></p>
                     {% if user.is_authenticated  %}
-                    <div> 
-                      <a href="{% url "post_update" detail.pk %}" class="text-decoration-none me-2">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </a>
-                      <a href="{%url "post_delete" detail.pk %}" class="text-decoration-none">
-                        <i class="text-danger fa fa-trash" aria-hidden="true"></i>
-                      </a>
-                    </div>
+                        <div> 
+                        <a href="{% url "post_update" detail.pk %}" class="text-decoration-none me-2">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                        </a>
+                        <a href="{%url "post_delete" detail.pk %}" class="text-decoration-none">
+                            <i class="text-danger fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                        </div>
                     {% endif %}
                     <hr>
                     <p class="card-text" style="text-align: justify;"> {{detail.text|linebreaksbr}} </p>  
                     <div class="d-flex justify-content-between">
                         {% if not liked %}
-                        <span>
-                            <i class="fa fa-heart-o" id="like-icon" data-post-id="{{ detail.id }}"></i>
-                            <span class="text-primary" id="likes-count"> {{likes_count}}</span>
-                        </span>
+                            <span>
+                                <i class="fa fa-heart-o" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                                <span class="text-primary" id="likes-count"> {{likes_count}}</span>
+                            </span>
                         {% else %}
-                        <span>
-                            <i class="fa fa-heart text-danger" id="like-icon" data-post-id="{{ detail.id }}"></i>
-                        <span class="text-primary"  id="likes-count"> {{likes_count}}</span>
-                        </span>
+                            <span>
+                                <i class="fa fa-heart text-danger" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                                <span class="text-primary"  id="likes-count"> {{likes_count}}</span>
+                            </span>
                         {% endif %}
                         <span class="text-muted">
                             <i class="fa fa-comment" aria-hidden="true"></i>
@@ -50,14 +50,14 @@
                         </span> 
 
                         {% if not bookmarked %}
-                        <span>
-                            <i class="fa fa-bookmark-o" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
-                            <span class="text-primary" id="bookmarks-count"> {{bookmark_count}}</span>
-                        </span>
+                            <span>
+                                <i class="fa fa-bookmark-o" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
+                                <span class="text-primary" id="bookmarks-count"> {{bookmark_count}}</span>
+                            </span>
                         {% else %}
                         <span>
                             <i class="fa fa-bookmark text-muted" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
-                        <span class="text-primary"  id="bookmarks-count">{{bookmark_count}}</span>
+                            <span class="text-primary"  id="bookmarks-count">{{bookmark_count}}</span>
                         </span>
                         {% endif %}
                     </div> 
@@ -66,36 +66,36 @@
             <div class="card shadow-sm mb-3">
                 <div class="card-body">
                     {% if comments %}
-                    <h2 class="card-title">نظرات</h2>
-                    {% for comment in comments  %}
-                    <div class="border-bottom mb-3">
-                        <h5 class="mb-3 text-primary">{{comment.user.username}} گفته :</h5>
-                        <p class="text-justify"> {{comment.text}} </p>
-                        <div class="d-flex justify-content-end">
-                            <span class="text-muted">
-                                <span class="text-muted">{{comment.datetime_created|naturaltime}}</span>
-                            </span> 
-                        </div> 
-                        {% comment %} <span class="badge bg-success mb-2">توصیه می‌شود</span> {% endcomment %}
-                    </div>
-                    {% endfor %}
+                        <h2 class="card-title">نظرات</h2>
+                        {% for comment in comments  %}
+                            <div class="border-bottom mb-3">
+                                <h5 class="mb-3 text-primary">{{comment.user.username}} گفته :</h5>
+                                <p class="text-justify"> {{comment.text}} </p>
+                                <div class="d-flex justify-content-end">
+                                    <span class="text-muted">
+                                        <span class="text-muted">{{comment.datetime_created|naturaltime}}</span>
+                                    </span> 
+                                </div> 
+                                {% comment %} <span class="badge bg-success mb-2">توصیه می‌شود</span> {% endcomment %}
+                            </div>
+                        {% endfor %}
                     {% else %}
-                    <div class="alert alert-primary">هنوز هیچ نظری برای این پست ارسال نشده است.</div>
+                        <div class="alert alert-primary">هنوز هیچ نظری برای این پست ارسال نشده است.</div>
                     {% endif %}
                     {% if user.is_authenticated  %}
-                    <!-- فرم ارسال نظر -->
-                    <div class="mt-4">
-                        <h3>نظر خود را وارد کنید:</h3>
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                {{form|crispy}}
-                            </div>
-                            <button type="submit" class="btn btn-primary">ارسال</button>
-                        </form>
-                    </div>
+                        <!-- فرم ارسال نظر -->
+                        <div class="mt-4">
+                            <h3>نظر خود را وارد کنید:</h3>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    {{form|crispy}}
+                                </div>
+                                <button type="submit" class="btn btn-primary">ارسال</button>
+                            </form>
+                        </div>
                     {% else %}
-                    <div class="alert alert-primary">لطفا برای پسندیدن و افزودن نظر ابتدا وارد شوید <span>|</span> <a class="text-decoration-none" href="{% url 'login' %}?next={% url 'post_detail' detail.pk %}">ورود</a></div>
+                        <div class="alert alert-primary">لطفا برای پسندیدن و افزودن نظر ابتدا وارد شوید <span>|</span> <a class="text-decoration-none" href="{% url 'login' %}?next={% url 'post_detail' detail.pk %}">ورود</a></div>
                     {% endif %}
                 </div>
             </div>
@@ -122,9 +122,9 @@
             success: function(response) {
                 if (response.liked) {
                     $("#like-icon").removeClass("fa fa-heart-o");
-                    $("#like-icon").addClass("fa fa-heart text-muted");   
+                    $("#like-icon").addClass("fa fa-heart text-danger");   
                 } else {
-                    $("#like-icon").removeClass("fa fa-heart text-muted");
+                    $("#like-icon").removeClass("fa fa-heart text-danger");
                     $("#like-icon").addClass("fa fa-heart-o");  
                 }
                 $("#likes-count").text(response.likes_count);

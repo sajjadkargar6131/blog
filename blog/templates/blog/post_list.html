@@ -12,14 +12,6 @@
             <div style="text-align: justify;">
               <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
             </div>
-            {% comment %} <div class="d-flex justify-content-between mt-3">
-              <span class="text-muted">
-                <i class="fas fa-thumbs-up"></i> {{comments_count}}
-              </span>
-              <span class="text-muted">
-                <i class="fas fa-comments"></i> 45
-              </span>
-            </div> {% endcomment %}
           </div>
           <div class="col-auto d-none d-lg-block">
             {% if item.cover %}
@@ -29,20 +21,22 @@
         </div>
       </div>
     {% endfor %}
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
-        {% if page_obj.has_previous %}
-          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
-        {% endif %}  
-        {% for page in page_numbers %}
-          <li class="page-item {% if page == page_obj.number %}active{% endif %}" {% if page == page_obj.number %} aria-current="page" {% endif %}>
-            <a class="page-link" href="?page={{ page }}">{{page}}</a>
-          </li>
-        {% endfor %}
-        {% if page_obj.has_next %}
-          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
-        {% endif %}
-      </ul>
-    </nav>
+    {% if list %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+          {% endif %}  
+          {% for page in page_numbers %}
+            <li class="page-item {% if page == page_obj.number %}active{% endif %}" {% if page == page_obj.number %} aria-current="page" {% endif %}>
+              <a class="page-link" href="?page={{ page }}">{{page}}</a>
+            </li>
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}  
   </div> 
   {% endblock %}
