@@ -3,8 +3,9 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormMixin
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 from .models import Post, Like, BookmarkPost
 from .forms import PostCreateForm, CommentForm
@@ -59,10 +60,12 @@ class PostDetailView(generic.DetailView, FormMixin):
             context['bookmarked'] = False
         return context
     
-    def get_success_url(self):
-        return reverse('post_detail', kwargs={'pk' : self.object.pk})
-    
+
     def post(self, request, *args, **kwargs):
+        
+        if not request.user.is_authenticated:   
+            return HttpResponseRedirect('/login/')
+        
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
@@ -75,7 +78,8 @@ class PostDetailView(generic.DetailView, FormMixin):
         else :
             return self.form_invalid(form)
     
-
+    def get_success_url(self):
+        return self.object.get_absolute_url()
 # def post_create(request):
 #     if request.method == "POST":
 #         user_form = PostCreateForm(request.POST)
@@ -87,7 +91,7 @@ class PostDetailView(generic.DetailView, FormMixin):
 #     return render(request, 'blog/post_create.html', {'form':user_form})
 
 
-class PostCreateView(generic.CreateView):
+class PostCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
     
@@ -104,7 +108,7 @@ class PostCreateView(generic.CreateView):
 #         return redirect('blog_index')
 #     return render(request, 'blog/post_create.html',{'form': form})
 
-class PostUpdateview(generic.UpdateView):
+class PostUpdateview(LoginRequiredMixin, generic.UpdateView):
     model = Post
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
@@ -122,7 +126,7 @@ class PostUpdateview(generic.UpdateView):
 #     return render(request, 'blog/post_delete.html', context ={'post' : post})
 
 
-class PostDeleteView(generic.DeleteView):
+class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
     # success_url ='/blog/' not reeverse('blog_index')
