@@ -3,7 +3,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormMixin
 from django.views import generic
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
 
@@ -98,7 +98,10 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form: form_class) :
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
-
+    
+    def form_valid(self, form) :
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 # def post_update(request, pk):
 #     post  = get_object_or_404(Post, pk=pk)
@@ -108,10 +111,15 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
 #         return redirect('blog_index')
 #     return render(request, 'blog/post_create.html',{'form': form})
 
-class PostUpdateview(LoginRequiredMixin, generic.UpdateView):
+class PostUpdateview(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Post
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
+    
+    def test_func(self):
+        object = self.get_object()
+        return object.author == self.request.user 
+    
     
     def form_valid(self, form: form_class) :
         messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
@@ -126,11 +134,15 @@ class PostUpdateview(LoginRequiredMixin, generic.UpdateView):
 #     return render(request, 'blog/post_delete.html', context ={'post' : post})
 
 
-class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
     # success_url ='/blog/' not reeverse('blog_index')
-
+    
+    def test_func(self):
+        object = self.get_object()
+        return object.author == self.request.user 
+    
     def get_success_url(self) -> str:
         return reverse('blog_index')
 
