@@ -11,9 +11,6 @@ from .models import Post, Like, BookmarkPost
 from .forms import PostCreateForm, CommentForm
 
 
-# def index(request):
-#     post_list = Post.objects.filter(status='pub').order_by('-created_at')
-#     return render(request, 'blog/post_list.html', {'list':post_list})
 
 class IndexListView(generic.ListView):
     # model = Post  -> get all objects
@@ -30,9 +27,6 @@ class IndexListView(generic.ListView):
         return context
 
 
-# def post_detail(request, pk):
-#     post_detail = get_object_or_404(Post, pk=pk, status='pub')
-#     return render(request, 'blog/post_detail.html', {'detail':post_detail})
 
 
 class PostDetailView(generic.DetailView, FormMixin):
@@ -62,12 +56,12 @@ class PostDetailView(generic.DetailView, FormMixin):
     
 
     def post(self, request, *args, **kwargs):
-        
         if not request.user.is_authenticated:   
             return HttpResponseRedirect('/login/')
         
         self.object = self.get_object()
         form = self.get_form()
+        
         if form.is_valid():
             comment  = form.save(commit=False)
             comment.post = self.object
@@ -80,15 +74,6 @@ class PostDetailView(generic.DetailView, FormMixin):
     
     def get_success_url(self):
         return self.object.get_absolute_url()
-# def post_create(request):
-#     if request.method == "POST":
-#         user_form = PostCreateForm(request.POST)
-#         if user_form.is_valid():
-#             user_form.save()
-#             user_form = user_form = PostCreateForm()
-#     else :
-#         user_form = PostCreateForm()
-#     return render(request, 'blog/post_create.html', {'form':user_form})
 
 
 class PostCreateView(LoginRequiredMixin, generic.CreateView):
@@ -100,14 +85,6 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.author = self.request.user
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
-    
-# def post_update(request, pk):
-#     post  = get_object_or_404(Post, pk=pk)
-#     form = PostCreateForm(request.POST or None, instance=post)
-#     if form.is_valid():
-#         form.save()
-#         return redirect('blog_index')
-#     return render(request, 'blog/post_create.html',{'form': form})
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Post
@@ -118,18 +95,9 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         object = self.get_object()
         return object.author == self.request.user 
     
-    
     def form_valid(self, form: form_class) :
         messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
         return super().form_valid(form)
-
-
-# def post_delete(request, pk):
-#     post  = get_object_or_404(Post, pk=pk)
-#     if request.method == 'POST':
-#         post.delete()
-#         return redirect('blog_index')
-#     return render(request, 'blog/post_delete.html', context ={'post' : post})
 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
@@ -145,9 +113,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         return reverse('blog_index')
 
     # success_url = reverse_lazy('blog_index')
-    
-
-    
     
 @login_required
 def like_post(request, post_id):
@@ -176,27 +141,3 @@ def bookmark_post(request, post_id):
             bookmarked = True
         bookmarked_count = post.bookmarks.count() 
         return JsonResponse({"bookarked" :bookmarked , "bookmarks_count":bookmarked_count})                   
-
-
-
-
-
-# def post_detail(request, pk):
-    
-#     post = get_object_or_404(Post, pk=pk)  #get post
-#     comments = post.comments.filter().order_by('-datetime_created') #get comment of post
-    
-#     if request.method == 'POST' : #if user send post request(send comments)
-#         comment_form = CommentForm(request.POST)
-#         if comment_form.is_valid():
-#             new_comment = comment_form.save(commit=False) 
-#             new_comment.post= post
-#             new_comment.user = request.user #if user login the request.user is created
-#             new_comment.save()
-#             comment_form = CommentForm()
-#     else :
-#         comment_form = CommentForm()
-#     return render(request, 'blog/post_detail.html', context={'detail':post, 'comments':comments, 'form':comment_form})
-                
-    
-    
