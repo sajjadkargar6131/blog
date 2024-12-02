@@ -20,7 +20,7 @@
                     <h1 class="card-title">{{detail.title}}</h1>
                     <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
                     <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|date:'D- d M -Y' }} </span></p>
-                    {% if user.is_authenticated and detail.author == user  %}
+                    {% if detail.author == user  %}
                         <div> 
                         <a href="{% url "post_update" detail.pk %}" class="text-decoration-none me-2">
                             <i class="fa fa-edit" aria-hidden="true"></i>

@@ -96,13 +96,11 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'blog/post_create.html'
     
     def form_valid(self, form: form_class) :
+        
+        form.instance.author = self.request.user
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
     
-    def form_valid(self, form) :
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
 # def post_update(request, pk):
 #     post  = get_object_or_404(Post, pk=pk)
 #     form = PostCreateForm(request.POST or None, instance=post)
@@ -111,7 +109,7 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
 #         return redirect('blog_index')
 #     return render(request, 'blog/post_create.html',{'form': form})
 
-class PostUpdateview(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Post
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
