@@ -5,13 +5,13 @@ class PostCreateForm(forms.ModelForm):
     
     class Meta:
         model = Post
-        fields = ("title", "text", "status", "cover", "category")
+        fields = ("title", "text", "status", "cover", "categories")
         labels = {
             'title' : 'عنوان',
             'text' : 'متن',
             'status' : 'وضعیت',
             'cover' : 'عکس',
-            'category' : 'دسته بندی',
+            'categories' : 'دسته بندی',
         }
         
 class CommentForm(forms.ModelForm):

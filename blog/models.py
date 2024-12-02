@@ -4,10 +4,10 @@ from django.contrib.auth import get_user_model
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     
     def __str__(self):
-        return self.title
+        return self.name
     
     
     
@@ -21,7 +21,7 @@ class Post(models.Model):
     text = models.TextField()
     status = models.CharField(choices=CHOICES, max_length=3)
     cover = models.ImageField(upload_to='covers/', blank=True)
-    category = models.ManyToManyField(Category, related_name='posts', blank=True)
+    categories = models.ManyToManyField(Category, related_name='posts', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
