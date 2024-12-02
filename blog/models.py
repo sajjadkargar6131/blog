@@ -2,6 +2,15 @@ from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth import get_user_model
 
+
+class Category(models.Model):
+    title = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.title
+    
+    
+    
 class Post(models.Model):
     CHOICES = [
         ['pub', 'Published'],
@@ -12,6 +21,7 @@ class Post(models.Model):
     text = models.TextField()
     status = models.CharField(choices=CHOICES, max_length=3)
     cover = models.ImageField(upload_to='covers/', blank=True)
+    category = models.ManyToManyField(Category, related_name='posts', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -48,4 +58,9 @@ class BookmarkPost(models.Model) :
     
     def __str__(self) -> str:
         return f'Post {self.post} saved by {self.user}'
+    
+    
+    
+
+    
     

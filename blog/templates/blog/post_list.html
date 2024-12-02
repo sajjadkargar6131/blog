@@ -1,25 +1,35 @@
 {% extends '_base.html' %}
 {% load humanize %}
 {% block content %}
-  <div class="row mb-2">
+<div class="row mb-2">
     {% for item in list %}
-      <div class="col-md-6">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col p-3 d-flex flex-column position-static">
-            <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>
-            <a href="{% url 'post_detail' item.pk %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>
-            <div class="mb-1 text-body-secondary">{{ item.created_at|naturaltime }}</div>
-            <div style="text-align: justify;">
-              <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
-            </div>
+      
+     <div class="col-md-6">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-3 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>
+          <a href="{% url 'post_detail' item.pk %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>
+          <div class="mb-1 text-body-secondary">{{ item.created_at|naturaltime }}</div>
+          <div style="text-align: justify;">
+            <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
           </div>
-          <div class="col-auto d-none d-lg-block">
-            {% if item.cover %}
-              <img class="" src="{{item.cover.url}}" alt="" width="192" height="268">
+          <div class="mb-1 ">
+            {% if item.category.all.exists  %}
+              {% for cat  in item.category.all %}
+                <span class="badge bg-success mb-2">{{cat.title}}</span>
+              {% endfor %}
+            {% else %}
+              <span class="badge bg-secondary mb-2">فاقد دسته بندی</span>
             {% endif %}
           </div>
         </div>
+        <div class="col-auto d-none d-lg-block">
+          {% if item.cover %}
+            <img class="" src="{{item.cover.url}}" alt="" width="192" height="268">
+          {% endif %}
+        </div>
       </div>
+    </div>
     {% endfor %}
     {% if list %}
       <nav aria-label="Page navigation example">
@@ -38,5 +48,10 @@
         </ul>
       </nav>
     {% endif %}  
-  </div> 
+  </div>  
+
   {% endblock %}
+
+
+
+
