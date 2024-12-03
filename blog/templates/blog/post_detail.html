@@ -20,6 +20,13 @@
                     <h1 class="card-title">{{detail.title}}</h1>
                     <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
                     <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|date:'D- d M -Y' }} </span></p>
+                    {% if detail.tags.exists %}
+                        <p class="card-text text-muted">تگ ها: 
+                            {% for tag in detail.tags.all  %}
+                            <a href=""><span class="badge bg-success mb-2">{{tag.name}}</span></a>
+                            {% endfor %}
+                        </p>
+                    {% endif %}
                     {% if detail.author == user  %}
                         <div> 
                         <a href="{% url "post_update" detail.pk %}" class="text-decoration-none me-2">
