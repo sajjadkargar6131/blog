@@ -4,7 +4,7 @@
     <h1>آیا مطمئنید؟</h1>
     <p>آیا از حذف پست <strong> " {{post.title}} "</strong> مطمئن هستید؟ </p>
     {% csrf_token %}
-    <a href="{% url "post_detail" post.pk %}" type="button" class="btn btn-primary">بازگشت</a>
+    <a href="{% url "post_detail" post.slug %}" type="button" class="btn btn-primary">بازگشت</a>
     <input type="submit" class="btn btn-danger" value="حذف">
 </form>
 

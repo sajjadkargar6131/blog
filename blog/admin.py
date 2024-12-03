@@ -9,6 +9,9 @@ class AdminPost(admin.ModelAdmin):
     formfield_overrides = {
         TaggableManager : {'help_text' : 'برچسب ها را با فاصله از هم جدا کنید.'}
     } 
+    prepopulated_fields={"slug" : ("title",)}
+    
+    
 admin.site.register(models.Post, AdminPost)
 
 admin.site.register(models.Comment, AdminComment)

@@ -2,15 +2,14 @@ from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
-
+from django.utils.text import slugify
+from unidecode import unidecode
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     
     def __str__(self):
         return self.name
-    
-    
     
 class Post(models.Model):
     CHOICES = [
@@ -24,6 +23,7 @@ class Post(models.Model):
     cover = models.ImageField(upload_to='covers/', blank=True)
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)
     tags = TaggableManager(blank=True)
+    slug = models.SlugField(unique=True, max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -31,7 +31,12 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("post_detail", kwargs={"pk": self.pk})
+        return reverse("post_detail", kwargs={"slug": self.slug})
+    
+    def save(self, *args, **kwargs) :
+        if not self.slug :
+            self.slug = slugify(unidecode(self.title))
+        super().save(*args, **kwargs)    
     
 class Comment(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE)
@@ -60,9 +65,3 @@ class BookmarkPost(models.Model) :
     
     def __str__(self) -> str:
         return f'Post {self.post} saved by {self.user}'
-    
-    
-    
-
-    
-    

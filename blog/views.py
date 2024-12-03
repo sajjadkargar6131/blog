@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
+from slugify import slugify
 
 from .models import Post, Like, BookmarkPost
 from .forms import PostCreateForm, CommentForm
@@ -54,14 +55,12 @@ class PostDetailView(generic.DetailView, FormMixin):
             context['bookmarked'] = False
         return context
     
-
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:   
             return HttpResponseRedirect('/login/')
-        
+         
         self.object = self.get_object()
         form = self.get_form()
-        
         if form.is_valid():
             comment  = form.save(commit=False)
             comment.post = self.object
@@ -82,6 +81,7 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
     
     def form_valid(self, form: form_class) :
         form.instance.author = self.request.user
+        form.instance.slug = slugify(form.cleaned_data['title'])
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
 
@@ -89,6 +89,9 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
     model = Post
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
+    
+    def get_object(self, queryset=None) :
+        return Post.objects.get(slug=self.kwargs['slug'])
     
     def get_initial(self) :
       initial = super().get_initial()
@@ -105,12 +108,15 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         self.object.tags.set(tags)
         messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
         return super().form_valid(form)
-
-
+    
+    
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
     # success_url ='/blog/' not reeverse('blog_index')
+    
+    def get_object(self, queryset=None) :
+        return Post.objects.get(slug=self.kwargs['slug'])
     
     def test_func(self):
         object = self.get_object()

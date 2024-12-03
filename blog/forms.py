@@ -9,7 +9,9 @@ class CustomTagfield(TagField):
 class PostCreateForm(forms.ModelForm):
     tags = CustomTagfield()
     tags = TagField(
-        help_text= "برچسب ها را با فاصله از هم جدا کنید."
+        help_text= "برچسب ها را با فاصله از هم جدا کنید.",
+        label = "تگ ها",
+        required=False,
     )
     class Meta:
         model = Post
@@ -20,7 +22,7 @@ class PostCreateForm(forms.ModelForm):
             'status' : 'وضعیت',
             'cover' : 'عکس',
             'categories' : 'دسته بندی',
-            'tags' : 'تگ ها',
+            
         }
         
 class CommentForm(forms.ModelForm):

@@ -7,7 +7,7 @@
       <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
         <div class="col p-3 d-flex flex-column position-static">
           {% comment %} <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong> {% endcomment %}
-          <a href="{% url 'post_detail' item.pk %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>
+          <a href="{% url 'post_detail' item.slug %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>
           <div class="mb-1 text-body-secondary">
             <small><span class="text-muted">زمان ایجاد:</span></small>
             {{ item.created_at|naturaltime }}
