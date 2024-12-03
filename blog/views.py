@@ -81,7 +81,6 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'blog/post_create.html'
     
     def form_valid(self, form: form_class) :
-        
         form.instance.author = self.request.user
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
@@ -91,11 +90,19 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
     
+    def get_initial(self) :
+      initial = super().get_initial()
+      initial['tags'] = " ".join(self.object.tags.names())
+      return initial
+    
+    
     def test_func(self):
         object = self.get_object()
         return object.author == self.request.user 
     
     def form_valid(self, form: form_class) :
+        tags = form.cleaned_data['tags'] #اعمال تغییرات برای اینکه در فرم ویرایش هم تگ ها با فاصله نمایش داده شوند و نه با کاما
+        self.object.tags.set(tags)
         messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
         return super().form_valid(form)
 
