@@ -1,6 +1,7 @@
 from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth import get_user_model
+from taggit.managers import TaggableManager
 
 
 class Category(models.Model):
@@ -22,6 +23,7 @@ class Post(models.Model):
     status = models.CharField(choices=CHOICES, max_length=3)
     cover = models.ImageField(upload_to='covers/', blank=True)
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)
+    tags = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 

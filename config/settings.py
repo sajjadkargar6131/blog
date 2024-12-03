@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #pip
     'crispy_forms',
     'crispy_bootstrap5',
+    'taggit',
     
     #local
     'index',
