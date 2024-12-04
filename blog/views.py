@@ -1,20 +1,19 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views.generic.edit import FormMixin
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
-from slugify import slugify
+from django.utils.text import slugify
 
 from .models import Post, Like, BookmarkPost
 from .forms import PostCreateForm, CommentForm
-
+import re
 
 
 class IndexListView(generic.ListView):
-    # model = Post  -> get all objects
     template_name = 'blog/post_list.html'
     context_object_name = 'list'
     paginate_by = 6
@@ -35,7 +34,8 @@ class PostDetailView(generic.DetailView, FormMixin):
     template_name = 'blog/post_detail.html'
     context_object_name = 'detail'
     form_class = CommentForm
-
+    slug_url_kwarg ='slug'
+    
     def get_queryset(self):
         return Post.objects.filter(status='pub').order_by('-created_at')
     
@@ -79,9 +79,25 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
     
-    def form_valid(self, form: form_class) :
+    def form_valid(self, form) :
         form.instance.author = self.request.user
-        form.instance.slug = slugify(form.cleaned_data['title'])
+
+        def clean_slug(title) :
+            title = re.sub(r'[^\w\s-]', '', title)
+            title = re.sub(r'[-\s]+', '-', title)
+            title = title.strip('-')
+            if not title :
+                title = 'پست'
+            return title
+        isinstance= form.save(commit=False)
+        base_slug = slugify(clean_slug(isinstance.title), allow_unicode=True)
+        unique_slug =base_slug
+        if Post.objects.filter(slug=unique_slug).exists():
+            isinstance.save()
+            unique_slug = f'{base_slug}-{isinstance.pk}'
+        isinstance.slug = unique_slug
+        isinstance.save()    
+    
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
 
@@ -89,7 +105,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
     model = Post
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
-    
+
     def get_object(self, queryset=None) :
         return Post.objects.get(slug=self.kwargs['slug'])
     
@@ -106,14 +122,31 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
     def form_valid(self, form: form_class) :
         tags = form.cleaned_data['tags'] #اعمال تغییرات برای اینکه در فرم ویرایش هم تگ ها با فاصله نمایش داده شوند و نه با کاما
         self.object.tags.set(tags)
-        messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
+        
+
+        def clean_slug(title) :
+            title = re.sub(r'[^\w\s-]', '', title)
+            title = re.sub(r'[-\s]+', '-', title)
+            title = title.strip('-')
+            if not title :
+                title = 'پست'
+            return title
+        isinstance= form.save(commit=False)
+        base_slug = slugify(clean_slug(isinstance.title), allow_unicode=True)
+      
+        if isinstance.slug != base_slug :
+            unique_slug = base_slug
+            if Post.objects.filter(slug=unique_slug).exclude(pk=isinstance.pk).exists():
+                unique_slug = f'{base_slug}-{isinstance.pk}'
+            isinstance.slug = unique_slug
+        isinstance.save()
+        messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')           
         return super().form_valid(form)
     
     
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
-    # success_url ='/blog/' not reeverse('blog_index')
     
     def get_object(self, queryset=None) :
         return Post.objects.get(slug=self.kwargs['slug'])
@@ -125,7 +158,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
     def get_success_url(self) -> str:
         return reverse('blog_index')
 
-    # success_url = reverse_lazy('blog_index')
     
 @login_required
 def like_post(request, post_id):

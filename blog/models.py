@@ -3,7 +3,7 @@ from django.shortcuts import reverse
 from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
 from django.utils.text import slugify
-from unidecode import unidecode
+import re
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -23,7 +23,7 @@ class Post(models.Model):
     cover = models.ImageField(upload_to='covers/', blank=True)
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)
     tags = TaggableManager(blank=True)
-    slug = models.SlugField(unique=True, max_length=200, blank=True)
+    slug = models.SlugField(unique=True, max_length=200, allow_unicode =True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -33,10 +33,21 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"slug": self.slug})
     
-    def save(self, *args, **kwargs) :
-        if not self.slug :
-            self.slug = slugify(unidecode(self.title))
-        super().save(*args, **kwargs)    
+    def clean_slug(title) :
+        title = re.sub(r'[^\w\s-]', '', title)
+        title = re.sub(r'[-\s]+', '-', title)
+        title = title.strip('-')
+        if not title :
+            title = 'default-slug'
+        return title
+    
+    # def save(self, *args, **kwargs) :
+    #     if not self.pk :
+    #         super().save(*args, **kwargs)
+    #     if not self.slug :
+    #         base_slug = slugify(self.clean_slug(self.title), allow_unicode=True)
+    #         self.slug = f'{base_slug}--{self.pk}'
+    #         super().save(*args, **kwargs)    
     
 class Comment(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE)

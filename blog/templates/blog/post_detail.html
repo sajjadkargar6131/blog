@@ -6,10 +6,10 @@
         <div class="col-md-10 mx-auto">
             {% if messages %}
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {% for message in messages %} 
-                    {{ message }}
-                {% endfor %}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {% for message in messages %} 
+                        {{ message }}
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
              {% endif %}
             <div class="card mb-4 shadow-sm">
@@ -29,10 +29,10 @@
                     {% endif %}
                     {% if detail.author == user  %}
                         <div> 
-                        <a href="{% url "post_update" detail.slug %}" class="text-decoration-none me-2">
+                        <a href="{% url 'post_update' detail.slug %}" class="text-decoration-none me-2">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                         </a>
-                        <a href="{%url "post_delete" detail.slug %}" class="text-decoration-none">
+                        <a href="{%url 'post_delete' detail.slug %}" class="text-decoration-none">
                             <i class="text-danger fa fa-trash" aria-hidden="true"></i>
                         </a>
                         </div>
