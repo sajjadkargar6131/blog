@@ -32,14 +32,7 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"slug": self.slug})
-    
-    def clean_slug(title) :
-        title = re.sub(r'[^\w\s-]', '', title)
-        title = re.sub(r'[-\s]+', '-', title)
-        title = title.strip('-')
-        if not title :
-            title = 'default-slug'
-        return title
+   
     
     # def save(self, *args, **kwargs) :
     #     if not self.pk :
