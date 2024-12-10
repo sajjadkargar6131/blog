@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
+{% load custom_filters %}
 {% load humanize %}
 {% block content %} 
     <div class="row">
@@ -43,28 +44,32 @@
                         {% if not liked %}
                             <span>
                                 <i class="fa fa-heart-o" id="like-icon" data-post-id="{{ detail.id }}"></i>
-                                <span class="text-primary" id="likes-count"> {{likes_count}}</span>
+                                <span class="text-primary" id="likes-count"> {{likes_count|format_number}}</span>
                             </span>
                         {% else %}
                             <span>
                                 <i class="fa fa-heart text-danger" id="like-icon" data-post-id="{{ detail.id }}"></i>
-                                <span class="text-primary"  id="likes-count"> {{likes_count}}</span>
+                                <span class="text-primary"  id="likes-count"> {{likes_count|format_number}}</span>
                             </span>
                         {% endif %}
                         <span class="text-muted">
                             <i class="fa fa-comment" aria-hidden="true"></i>
-                            <span class="text-primary"> {{comments_count}} </span>
+                            <span class="text-primary"> {{comments_count|format_number}} </span>
+                        </span> 
+                        <span class="text-muted">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                            <span class="text-primary"> {{11256|format_number}} </span>
                         </span> 
 
                         {% if not bookmarked %}
                             <span>
                                 <i class="fa fa-bookmark-o" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
-                                <span class="text-primary" id="bookmarks-count"> {{bookmark_count}}</span>
+                                <span class="text-primary" id="bookmarks-count"> {{bookmark_count|format_number}}</span>
                             </span>
                         {% else %}
                         <span>
                             <i class="fa fa-bookmark text-muted" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
-                            <span class="text-primary"  id="bookmarks-count">{{bookmark_count}}</span>
+                            <span class="text-primary"  id="bookmarks-count">{{bookmark_count|format_number}}</span>
                         </span>
                         {% endif %}
                     </div> 
