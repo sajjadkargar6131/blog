@@ -33,15 +33,7 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"slug": self.slug})
    
-    
-    # def save(self, *args, **kwargs) :
-    #     if not self.pk :
-    #         super().save(*args, **kwargs)
-    #     if not self.slug :
-    #         base_slug = slugify(self.clean_slug(self.title), allow_unicode=True)
-    #         self.slug = f'{base_slug}--{self.pk}'
-    #         super().save(*args, **kwargs)    
-    
+
 class Comment(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE)
     text = models.TextField()
@@ -69,3 +61,11 @@ class BookmarkPost(models.Model) :
     
     def __str__(self) -> str:
         return f'Post {self.post} saved by {self.user}'
+
+
+class PostView(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='views')
+    ip_address = models.GenericIPAddressField()
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)
+    datetime_viewed = models.DateField(auto_now_add=True)
+    

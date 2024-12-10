@@ -8,7 +8,8 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
 from django.utils.text import slugify
 
-from .models import Post, Like, BookmarkPost
+from .utils import get_clinet_ip
+from .models import Post, Like, BookmarkPost, PostView
 from .forms import PostCreateForm, CommentForm
 import re
 
@@ -46,6 +47,7 @@ class PostDetailView(generic.DetailView, FormMixin):
         context['comments_count'] = self.object.comments.count()
         context['likes_count'] = self.object.likes.count()
         context['bookmark_count'] = self.object.bookmarks.count()
+        context['unique_views'] = self.object.views.count()
         context['form'] = self.get_form()
         if user.is_authenticated:
             context['liked'] = Like.objects.filter(post=self.object, user=user).exists() #True
@@ -58,9 +60,10 @@ class PostDetailView(generic.DetailView, FormMixin):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:   
             return HttpResponseRedirect('/login/')
-         
+        
         self.object = self.get_object()
         form = self.get_form()
+        
         if form.is_valid():
             comment  = form.save(commit=False)
             comment.post = self.object
@@ -70,7 +73,22 @@ class PostDetailView(generic.DetailView, FormMixin):
             return self.form_valid(form)
         else :
             return self.form_invalid(form)
-    
+        
+    def get(self, request, *args, **kwargs):
+        self.object  = self.get_object()
+        context = self.get_context_data(object=self.object)
+        ip = get_clinet_ip(request)
+        user = request.user if request.user.is_authenticated else None
+        
+        if not PostView.objects.filter(post=self.object, ip_address=ip, user=user).exists():
+            PostView.objects.create(post=self.object, ip_address=ip, user=user)
+        return self.render_to_response(context)
+        
+         
+        
+        
+        
+         
     def get_success_url(self):
         return self.object.get_absolute_url()
 
