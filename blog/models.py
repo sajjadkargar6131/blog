@@ -67,5 +67,5 @@ class PostView(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='views')
     ip_address = models.GenericIPAddressField()
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)
-    datetime_viewed = models.DateField(auto_now_add=True)
+    datetime_viewed = models.DateTimeField(auto_now_add=True)
     
