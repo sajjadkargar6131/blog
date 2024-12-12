@@ -130,7 +130,7 @@
           <h4 class="fst-italic">آرشیو ماهانه</h4>
           <ol class="list-unstyled mb-0">
             {% for date in monthly_archive  %}
-              <li><a href="#">{{date|date:"F Y"}}</a></li>
+              <li><a href="{% url "archive_month" date.year date.month %}">{{date|date:"F Y"}}</a></li>
             {% endfor %}
           </ol>
         </div>

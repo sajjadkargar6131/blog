@@ -16,4 +16,6 @@ urlpatterns = [
     path('like/<int:post_id>/', views.like_post, name='like_post'),
     
     path('bookmark/<int:post_id>/', views.bookmark_post, name='bookmark_post'),
+    
+    path('archives/<int:year>/<int:month>/', views.archive_month, name='archive_month'),
 ]

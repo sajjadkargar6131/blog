@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.edit import FormMixin
 from django.views import generic
@@ -204,3 +205,14 @@ def bookmark_post(request, post_id):
             bookmarked = True
         bookmarked_count = post.bookmarks.count() 
         return JsonResponse({"bookarked" :bookmarked , "bookmarks_count":bookmarked_count})                   
+    
+def archive_month(request, year, month):
+    posts = Post.objects.filter(
+        created_at__year = year,
+        created_at__month = month
+    )
+    return render(request, 'blog/archive.html', {'list':posts})
+        
+    
+    
+    
