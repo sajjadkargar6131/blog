@@ -2,6 +2,10 @@
 {% load humanize %}
 {% block content %}
 <div class="row mb-2">
+    <h5> نمایش پست ها با دسته بندی:
+         <span class="text-primary"> {{category.name}} </span>|
+         <a href="{% url "blog_index" %}" class="btn btn-primary" role="button">بازگشت</a>
+    </h5>
     {% for item in list %}
      <div class="col-md-6">
       <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
@@ -20,10 +24,8 @@
           <div class="mb-1 ">
             <small><span class="text-muted">دسته بندی ها:</span></small>
             {% if item.categories.all.exists  %}
-              {% for category  in item.categories.all %}
-                <a href="{% url "category_post" category.name %}">
-                  <span class="badge bg-success mb-2">{{category.name}}</span>
-                </a>
+              {% for category in item.categories.all %}
+                <a href="{% url "category_post" category.name %}"><span class="badge bg-success mb-2">{{category.name}}</span></a>
               {% endfor %}
             {% else %}
               <span class="badge bg-secondary mb-2">فاقد دسته بندی</span>
@@ -38,6 +40,23 @@
       </div>
     </div>
     {% endfor %}
+    {% if list %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+          {% endif %}  
+          {% for page in page_numbers %}
+            <li class="page-item {% if page == page_obj.number %}active{% endif %}" {% if page == page_obj.number %} aria-current="page" {% endif %}>
+              <a class="page-link" href="?page={{ page }}">{{page}}</a>
+            </li>
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}  
   </div>  
 
   {% endblock %}

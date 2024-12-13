@@ -18,4 +18,6 @@ urlpatterns = [
     path('bookmark/<int:post_id>/', views.bookmark_post, name='bookmark_post'),
     
     path('archives/<int:year>/<int:month>/', views.archive_month, name='archive_month'),
+    
+    path('category/<str:name>/', views.CategoryPostListView.as_view(), name='category_post'),
 ]

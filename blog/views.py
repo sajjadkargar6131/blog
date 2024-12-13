@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
@@ -10,7 +11,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.utils.text import slugify
 
 from .utils import get_clinet_ip
-from .models import Post, Like, BookmarkPost, PostView
+from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
 import re
 
@@ -27,8 +28,6 @@ class IndexListView(generic.ListView):
         context =super().get_context_data(**kwargs)
         context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
         return context
-
-
 
 
 class PostDetailView(generic.DetailView, FormMixin):
@@ -85,11 +84,6 @@ class PostDetailView(generic.DetailView, FormMixin):
             PostView.objects.create(post=self.object, ip_address=ip, user=user)
         return self.render_to_response(context)
         
-         
-        
-        
-        
-         
     def get_success_url(self):
         return self.object.get_absolute_url()
 
@@ -220,6 +214,18 @@ def archive_month(request, year, month):
     )
     return render(request, 'blog/archive.html', {'list':posts})
         
+class CategoryPostListView(generic.ListView):
+    model = Post
+    template_name = 'blog/category_posts.html'
+    context_object_name = 'list'
+    paginate_by = 6
     
+    def get_queryset(self) :
+        category_name = self.kwargs['name']
+        return Post.objects.filter(categories__name=category_name).distinct()
     
-    
+    def get_context_data(self, **kwargs):
+        context =super().get_context_data(**kwargs)
+        context['category']=Category.objects.get(name=self.kwargs['name'])
+        context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
+        return context

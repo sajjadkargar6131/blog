@@ -20,8 +20,8 @@
           <div class="mb-1 ">
             <small><span class="text-muted">دسته بندی ها:</span></small>
             {% if item.categories.all.exists  %}
-              {% for cat  in item.categories.all %}
-                <a href=""><span class="badge bg-success mb-2">{{cat.name}}</span></a>
+              {% for category in item.categories.all %}
+                <a href="{% url "category_post" category.name %}"><span class="badge bg-success mb-2">{{category.name}}</span></a>
               {% endfor %}
             {% else %}
               <span class="badge bg-secondary mb-2">فاقد دسته بندی</span>
