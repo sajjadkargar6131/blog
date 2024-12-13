@@ -32,6 +32,12 @@ class PostCreateForm(forms.ModelForm):
             'categories':forms.CheckboxSelectMultiple,
         }
         
+    def __init__(self, *args, **kwargs):
+        is_create = kwargs.pop('is_create', False)
+        super().__init__(*args, **kwargs)
+        if not is_create:
+            self.fields.pop('new_category')
+            
     def save(self, commit=True):
         isinstance = super().save(commit=False)
         new_category_name = self.cleaned_data.get('new_category')

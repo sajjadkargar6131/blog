@@ -116,10 +116,15 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
             unique_slug = f'{base_slug}-{isinstance.pk}'
         isinstance.slug = unique_slug
         isinstance.save()    
-    
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['is_create'] = True
+        return kwargs
+        
+        
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Post
     form_class = PostCreateForm
@@ -142,7 +147,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         tags = form.cleaned_data['tags'] #اعمال تغییرات برای اینکه در فرم ویرایش هم تگ ها با فاصله نمایش داده شوند و نه با کاما
         self.object.tags.set(tags)
         
-
         def clean_slug(title) :
             title = re.sub(r'[^\w\s-]', '', title)
             title = re.sub(r'[-\s]+', '-', title)
@@ -151,8 +155,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
                 title = 'پست'
             return title
         isinstance= form.save(commit=False)
-        base_slug = slugify(clean_slug(isinstance.title), allow_unicode=True)
-      
+        base_slug = slugify(clean_slug(isinstance.title), allow_unicode=True)  
         if isinstance.slug != base_slug :
             unique_slug = base_slug
             if Post.objects.filter(slug=unique_slug).exclude(pk=isinstance.pk).exists():
@@ -162,6 +165,10 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')           
         return super().form_valid(form)
     
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['is_create'] = False
+        return kwargs
     
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Post
