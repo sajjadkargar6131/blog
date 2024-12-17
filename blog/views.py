@@ -233,8 +233,7 @@ class CategoryPostListView(generic.ListView):
     
     
 class PostListByTagView(generic.ListView):
-    model = Post
-    template_name = 'posts_by_tag.html'  
+    model = Post 
     context_object_name = 'list'  
     paginate_by = 6
     
