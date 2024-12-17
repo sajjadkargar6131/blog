@@ -39,16 +39,25 @@ class PostCreateForm(forms.ModelForm):
             self.fields.pop('new_category')
             
     def save(self, commit=True):
-        isinstance = super().save(commit=False)
+      
+         # ذخیره پست بدون تغییرات در categories
+        post_instance = super().save(commit=False)
+        
+        # ذخیره پست قبل از هر چیز
+        post_instance.save()
+
+        # افزودن دسته بندی جدید در صورتی که مشخص شده باشد
         new_category_name = self.cleaned_data.get('new_category')
         if new_category_name:
             category, created = Category.objects.get_or_create(name=new_category_name)
-            isinstance.save()
-            isinstance.categories.add(category)
+            post_instance.categories.add(category)  # افزودن دسته بندی جدید
+
+        # افزودن دسته بندی های انتخابی
         categories = self.cleaned_data.get('categories')
         if categories:
-            isinstance.categories.set(categories)
-        return isinstance    
+            post_instance.categories.set(categories)  # تنظیم دسته بندی ها (حذف گزینه های قبلی و افزودن جدید)
+
+        return post_instance
     
                     
 class CommentForm(forms.ModelForm):
