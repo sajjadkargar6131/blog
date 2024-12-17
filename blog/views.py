@@ -13,6 +13,7 @@ from django.utils.text import slugify
 from .utils import get_clinet_ip
 from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
+from taggit.models import Tag
 import re
 
 
@@ -216,7 +217,7 @@ def archive_month(request, year, month):
         
 class CategoryPostListView(generic.ListView):
     model = Post
-    template_name = 'blog/category_posts.html'
+    template_name = 'blog/posts_by_category.html'
     context_object_name = 'list'
     paginate_by = 6
     
@@ -227,5 +228,25 @@ class CategoryPostListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context =super().get_context_data(**kwargs)
         context['category']=Category.objects.get(name=self.kwargs['name'])
+        context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
+        return context
+    
+    
+class PostListByTagView(generic.ListView):
+    model = Post
+    template_name = 'posts_by_tag.html'  
+    context_object_name = 'list'  
+    paginate_by = 6
+    
+    def get_queryset(self):
+        # دریافت تگ از URL بر اساس slug
+        tag_slug = self.kwargs['tag_slug']
+        tag = Tag.objects.get(slug=tag_slug)
+        # فیلتر کردن پست‌ها بر اساس تگ
+        return Post.objects.filter(tags=tag)
+
+    def get_context_data(self, **kwargs):
+        context =super().get_context_data(**kwargs)
+        # context['tag']=Tag.objects.get(name=self.kwargs['name'])
         context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
         return context

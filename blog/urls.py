@@ -20,4 +20,6 @@ urlpatterns = [
     path('archives/<int:year>/<int:month>/', views.archive_month, name='archive_month'),
     
     path('category/<str:name>/', views.CategoryPostListView.as_view(), name='category_post'),
+    
+    path('tag/<slug:tag_slug>/', views.PostListByTagView.as_view(), name='posts_by_tag'),
 ]
