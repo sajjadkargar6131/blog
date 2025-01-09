@@ -109,9 +109,24 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
             unique_slug = f'{base_slug}-{isinstance.pk}'
         isinstance.slug = unique_slug
         isinstance.save()  
+        # tags = form.cleaned_data.get('tags')
+        # if tags:
+        #     isinstance.tags.set(tags)  
         tags = form.cleaned_data.get('tags')
         if tags:
-            isinstance.tags.set(tags)  
+            cleaned_tags = []
+            for tag in tags:
+                # Clean each tag by removing unwanted characters
+                cleaned_tag = re.sub(r'[^\w\s-]', '', tag)  # Remove non-alphanumeric characters
+                cleaned_tag = re.sub(r'[-\s]+', '-', tag)
+                cleaned_tag = cleaned_tag.strip()  # Strip any leading/trailing spaces
+                if cleaned_tag:  # Only add non-empty tags
+                    cleaned_tags.append(cleaned_tag)
+        if not cleaned_tags or cleaned_tags == '':
+            cleaned_tags = ['tag']  
+
+            # Set cleaned tags to the post
+        isinstance.tags.set(cleaned_tags)
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
 
