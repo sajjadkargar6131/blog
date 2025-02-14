@@ -14,8 +14,8 @@ from .utils import get_clinet_ip
 from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
 from taggit.models import Tag
-import re
 
+import re
 
 class IndexListView(generic.ListView):
     template_name = 'blog/post_list.html'
@@ -90,43 +90,48 @@ class PostDetailView(generic.DetailView, FormMixin):
 class PostCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
-    
-    def form_valid(self, form) :
+
+    def form_valid(self, form):
         form.instance.author = self.request.user
 
-        def clean_slug(title) :
+        def clean_slug(title):
             title = re.sub(r'[^\w\s-]', '', title)
             title = re.sub(r'[-\s]+', '-', title)
             title = title.strip('-')
-            if not title :
+            if not title:
                 title = 'پست'
             return title
-        isinstance= form.save(commit=False)
+
+        isinstance = form.save(commit=False)
         base_slug = slugify(clean_slug(isinstance.title), allow_unicode=True)
-        unique_slug =base_slug
+        unique_slug = base_slug
         if Post.objects.filter(slug=unique_slug).exists():
             isinstance.save()
             unique_slug = f'{base_slug}-{isinstance.pk}'
         isinstance.slug = unique_slug
-        isinstance.save()  
-        # tags = form.cleaned_data.get('tags')
-        # if tags:
-        #     isinstance.tags.set(tags)  
-        tags = form.cleaned_data.get('tags')
-        if tags:
-            cleaned_tags = []
-            for tag in tags:
-                # Clean each tag by removing unwanted characters
-                cleaned_tag = re.sub(r'[^\w\s-]', '', tag)  # Remove non-alphanumeric characters
-                cleaned_tag = re.sub(r'[-\s]+', '-', tag)
-                cleaned_tag = cleaned_tag.strip()  # Strip any leading/trailing spaces
-                if cleaned_tag:  # Only add non-empty tags
-                    cleaned_tags.append(cleaned_tag)
-        if not cleaned_tags or cleaned_tags == '':
-            cleaned_tags = ['tag']  
+        isinstance.save()
 
-            # Set cleaned tags to the post
-        isinstance.tags.set(cleaned_tags)
+        # دریافت تگ‌ها
+        tags = form.cleaned_data.get('tags')
+        cleaned_tags = []
+
+        # if tags:
+        #     for tag in tags:
+        #         # پاکسازی تگ: حذف کاراکترهای غیرمجاز
+        #         cleaned_tag = re.sub(r'[^\w\s-]', '', tag)  # حذف کاراکترهای غیرالفبایی
+        #         cleaned_tag = re.sub(r'[-\s]+', '-', cleaned_tag)  # تبدیل فاصله‌ها و خط تیره‌ها به یک خط تیره
+        #         cleaned_tag = cleaned_tag.strip()  # حذف فاصله‌های اضافی
+        #         if cleaned_tag:  # فقط تگ‌های غیرخالی اضافه شوند
+        #             cleaned_tags.append(cleaned_tag)
+        #     print(cleaned_tags)
+        # # اگر هیچ تگی وارد نشده، cleaned_tags خالی می‌ماند
+        # if cleaned_tags:
+        #     # فقط تگ‌های معتبر را به پست اضافه می‌کنیم
+        #     isinstance.tags.set(cleaned_tags)
+        # else:
+        #     # اگر هیچ تگی وجود ندارد، هیچ تغییری در تگ‌ها ایجاد نمی‌کنیم
+        #     isinstance.tags.clear()
+
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
 
@@ -134,7 +139,7 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['is_create'] = True
         return kwargs
-              
+    
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Post
     form_class = PostCreateForm
@@ -244,8 +249,7 @@ class PostListByCategoryView(generic.ListView):
         context['category']=Category.objects.get(name=self.kwargs['name'])
         context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
         return context
-    
-    
+           
 class PostListByTagView(generic.ListView):
     model = Post
     context_object_name = 'list'
