@@ -23,8 +23,12 @@
                     <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|date:'D- d M -Y' }} </span></p>
                     {% if detail.tags.exists %}
                         <p class="card-text text-muted">تگ ها: 
-                            {% for tag in detail.tags.all  %}
-                            <a href="{% url "posts_by_tag" tag.slug %}"><span class="badge bg-primary mb-2">{{tag.name}}</span></a>
+                            {% for tag in detail.tags.all %}
+                                {% if tag.slug %}
+                                    <a href="{% url 'posts_by_tag' tag.slug %}">
+                                        <span class="badge bg-primary mb-2">{{ tag.name }}</span>
+                                    </a>
+                                {% endif %}
                             {% endfor %}
                         </p>
                     {% endif %}

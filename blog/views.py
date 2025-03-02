@@ -30,7 +30,6 @@ class IndexListView(generic.ListView):
         context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
         return context
 
-
 class PostDetailView(generic.DetailView, FormMixin):
     model = Post
     template_name = 'blog/post_detail.html'
@@ -88,7 +87,6 @@ class PostDetailView(generic.DetailView, FormMixin):
     def get_success_url(self):
         return self.object.get_absolute_url()
 
-
 class PostCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
@@ -111,6 +109,7 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
             unique_slug = f'{base_slug}-{isinstance.pk}'
         isinstance.slug = unique_slug
         isinstance.save()    
+        form.save_m2m() 
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
 
@@ -118,7 +117,6 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['is_create'] = True
         return kwargs
-        
         
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Post
@@ -179,7 +177,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
     def get_success_url(self) -> str:
         return reverse('blog_index')
 
-    
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -231,21 +228,19 @@ class CategoryPostListView(generic.ListView):
         context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
         return context
     
-    
 class PostListByTagView(generic.ListView):
-    model = Post 
-    context_object_name = 'list'  
+    model = Post
+    context_object_name = 'list'
+    template_name = 'blog/posts_by_tag.html'  # حتماً بررسی کن که این فایل وجود دارد
     paginate_by = 6
     
     def get_queryset(self):
-        # دریافت تگ از URL بر اساس slug
         tag_slug = self.kwargs['tag_slug']
-        tag = Tag.objects.get(slug=tag_slug)
-        # فیلتر کردن پست‌ها بر اساس تگ
+        tag = get_object_or_404(Tag, slug=tag_slug)
         return Post.objects.filter(tags=tag)
-
+    
     def get_context_data(self, **kwargs):
-        context =super().get_context_data(**kwargs)
-        # context['tag']=Tag.objects.get(name=self.kwargs['name'])
+        context = super().get_context_data(**kwargs)
+        context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])  
         context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
         return context
