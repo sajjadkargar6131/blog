@@ -1,5 +1,28 @@
-db.sqlite3
-venv/
-*.pyc
+# General Python ignores
 __pycache__/
-media/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.env/
+
+# Django specific
+*.sqlite3
+/media/
+/staticfiles/
+/static/
+
+# Logs
+logs/
+*.log
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Git ignore itself
+.gitignore
