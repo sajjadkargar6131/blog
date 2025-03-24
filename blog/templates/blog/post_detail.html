@@ -25,7 +25,7 @@
                         <p class="card-text text-muted">تگ ها: 
                             {% for tag in detail.tags.all %}
                                 {% if tag.slug %}
-                                    <a href="{% url 'posts_by_tag' tag.slug %}">
+                                    <a class="text-decoration-none" href="{% url 'posts_by_tag' tag.slug %}">
                                         <span class="badge bg-primary mb-2">{{ tag.name }}</span>
                                     </a>
                                 {% endif %}
