@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lateef">
     <link rel="stylesheet" href="{% static "fonts/font-awesome-4.7.0/css/font-awesome.min.css" %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block header %}{% endblock header %}
   </head>
   <body>
     <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
@@ -105,6 +106,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="{% static 'js/color-modes.js' %}" ></script>
+
     {% block scripts %}
     {% endblock scripts %}
 </html> 

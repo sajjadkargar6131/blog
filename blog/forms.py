@@ -2,15 +2,17 @@ from django import forms
 from .models import Post, Category, Comment
 from taggit.forms import TagField
 
+
 class CustomTagfield(TagField):
     def clean(self, value):
         return [t.strip() for t in value.split() if t.strip()]
-   
+
+
 class PostCreateForm(forms.ModelForm):
     tags = CustomTagfield()
     tags = TagField(
-        help_text= "برچسب ها را با فاصله از هم جدا کنید.",
-        label = "تگ ها",
+        help_text="برچسب ها را با فاصله از هم جدا کنید.",
+        label="تگ ها",
         required=False,
     )
     new_category = forms.CharField(
@@ -18,31 +20,32 @@ class PostCreateForm(forms.ModelForm):
         required=False,
         label='ایجاد دسته بندی جدید'
     )
+
     class Meta:
         model = Post
         fields = ("title", "text", "status", "cover", "categories", "tags")
         labels = {
-            'title' : 'عنوان',
-            'text' : 'متن',
-            'status' : 'وضعیت',
-            'cover' : 'عکس',  
-            'categories' : 'دسته بندی ها'
+            'title': 'عنوان',
+            'text': 'متن',
+            'status': 'وضعیت',
+            'cover': 'عکس',
+            'categories': 'دسته بندی ها'
         }
-        widgets={
-            'categories':forms.CheckboxSelectMultiple,
+        widgets = {
+            'categories': forms.CheckboxSelectMultiple,
         }
-        
+
     def __init__(self, *args, **kwargs):
         is_create = kwargs.pop('is_create', False)
         super().__init__(*args, **kwargs)
         if not is_create:
             self.fields.pop('new_category')
-            
+
     def save(self, commit=True):
-      
-         # ذخیره پست بدون تغییرات در categories
+
+        # ذخیره پست بدون تغییرات در categories
         post_instance = super().save(commit=False)
-        
+
         # ذخیره پست قبل از هر چیز
         post_instance.save()
 
@@ -58,13 +61,12 @@ class PostCreateForm(forms.ModelForm):
             post_instance.categories.set(categories)  # تنظیم دسته بندی ها (حذف گزینه های قبلی و افزودن جدید)
 
         return post_instance
-    
-                    
+
+
 class CommentForm(forms.ModelForm):
-    
-    class Meta :
+    class Meta:
         model = Comment
-        fields = ('text', )
+        fields = ('text',)
         labels = {
-            'text' : 'نظر شما'
+            'text': 'نظر شما'
         }

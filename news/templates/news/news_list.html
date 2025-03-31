@@ -1,0 +1,121 @@
+{% extends '_base.html' %}
+{% load humanize %}
+{% block content %}
+{#<div class="row mb-2">#}
+{#    {% for item in list %}#}
+{#     <div class="col-md-6">#}
+{#      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">#}
+{#        <div class="col p-3 d-flex flex-column position-static">#}
+{#          <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>#}
+{#          <a href="#" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>#}
+{#          <div class="mb-1 text-body-secondary">#}
+{#            <small><span class="text-muted">زمان ایجاد:</span></small>#}
+{#            {{ item.created_at|naturaltime }}#}
+{#            <small><span class="text-muted">توسط</span></small>#}
+{#            {{ item.author }}#}
+{#          </div>#}
+{#          <div style="text-align: justify;">#}
+{#            <p class="card-text mb-auto ">{{ item.text|truncatewords:15|safe}}</p>#}
+{#          </div>#}
+{#          <div class="mb-1 ">#}
+{#            <small><span class="text-muted">دسته بندی ها:</span></small>#}
+{#            {% if item.categories.all.exists  %}#}
+{#              {% for category in item.categories.all %}#}
+{#                <a href="{% url "category_post" category.name %}"><span class="badge bg-success mb-2">{{category.name}}</span></a>#}
+{#              {% endfor %}#}
+{#            {% else %}#}
+{#              <span class="badge bg-secondary mb-2">فاقد دسته بندی</span>#}
+{#            {% endif %}#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="col-auto d-none d-lg-block">#}
+{#          {% if item.cover %}#}
+{#            <img class="" src="{{item.cover.url}}" alt="" width="192" height="268">#}
+{#          {% endif %}#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#    {% endfor %}#}
+{#    {% if list %}#}
+{#      <nav aria-label="Page navigation example">#}
+{#        <ul class="pagination">#}
+{#          {% if page_obj.has_previous %}#}
+{#            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>#}
+{#          {% endif %}#}
+{#          {% for page in page_numbers %}#}
+{#            <li class="page-item {% if page == page_obj.number %}active{% endif %}" {% if page == page_obj.number %} aria-current="page" {% endif %}>#}
+{#              <a class="page-link" href="?page={{ page }}">{{page}}</a>#}
+{#            </li>#}
+{#          {% endfor %}#}
+{#          {% if page_obj.has_next %}#}
+{#            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>#}
+{#          {% endif %}#}
+{#        </ul>#}
+{#      </nav>#}
+{#    {% endif %}#}
+{#  </div>#}
+{#<div class="container mt-5">#}
+{#    <h2 class="text-center mb-4">آخرین اخبار</h2>#}
+{##}
+{#    <div class="row">#}
+{#        {% for item in list %}#}
+{#            <div class="col-md-4">#}
+{#                <div class="card shadow-lg border-0 rounded-lg mb-4">#}
+{#                    {% if item.cover %}#}
+{#                        <img src="{{ item.cover.url }}" class="img-fluid w-100" style="object-fit: cover; height: 250px;" alt="تصویر خبر">#}
+{#                    {% else %}#}
+{#                        <img src="default-image.jpg" class="img-fluid w-100" style="object-fit: cover; height: 250px;" alt="تصویر پیش فرض">#}
+{#                    {% endif %}#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title">{{ item.title }}</h5>#}
+{#                        <p class="text-muted mb-1">📝 نویسنده: {{ item.author }}</p>#}
+{#                        <p class="text-muted">📅 تاریخ انتشار: {{ item.created_at|naturaltime }}</p>#}
+{#                        <p class="card-text">{{ item.text|truncatewords:10|safe}}</p>#}
+{#                        <a href="" class="btn btn-primary">مشاهده خبر</a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{##}
+{#    <div class="text-center mt-4">#}
+{#        <a href="all-news.html" class="btn btn-outline-secondary">مشاهده همه اخبار</a>#}
+{#    </div>#}
+{#</div>#}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">آخرین اخبار</h2>
+ {% for item in list %}
+    <ul class="list-group">
+            <li class="list-group-item mb-4">
+                <div class="row">
+                    {% if item.cover %}
+                        <div class="col-md-4">
+                            <img src="{{ item.cover.url }}" class="img-fluid w-100" style="object-fit: cover; height: 150px;" alt="تصویر خبر">
+                        </div>
+                    {% else %}
+                        <div class="col-md-4">
+                            <img src="default-image.jpg" class="img-fluid w-100" style="object-fit: cover; height: 150px;" alt="تصویر پیش فرض">
+                        </div>
+                    {% endif %}
+                    <div class="col-md-8">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <p class="text-muted mb-1">📝 نویسنده: {{ item.author }}</p>
+                        <p class="text-muted">📅 تاریخ انتشار: {{ item.created_at|naturaltime }}</p>
+                        <p class="card-text">{{ item.text|truncatewords:10|safe }}</p>
+                        <a href="" class="btn btn-primary">مشاهده خبر</a>
+                    </div>
+                </div>
+            </li>
+    </ul>
+{% endfor %}
+    <div class="text-center mt-4">
+        <a href="all-news.html" class="btn btn-outline-secondary">مشاهده همه اخبار</a>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+

@@ -15,7 +15,7 @@ def clean_slug(title):
 
 
 class AdminComment(admin.ModelAdmin):
-    list_display = ['user', 'post', 'text', 'datetime_created','publish']
+    list_display = ['user', 'post', 'text', 'datetime_created', 'publish']
 
 
 class AdminPost(admin.ModelAdmin):
