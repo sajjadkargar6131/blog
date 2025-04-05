@@ -102,7 +102,7 @@
                         <p class="text-muted mb-1"><span class="fa fa-user"></span> نویسنده: {{ item.author }}</p>
                         <p class="text-muted"><span class="fa fa-calendar"></span> تاریخ انتشار: {{ item.created_at|naturaltime }}</p>
                         <p class="card-text">{{ item.text|truncatewords:10|safe }}</p>
-                        <a href="" class="btn btn-primary">مشاهده خبر</a>
+                        <a href="{% url 'news_detail' item.pk %}" class="btn btn-primary">مشاهده خبر</a>
                     </div>
                 </div>
             </li>

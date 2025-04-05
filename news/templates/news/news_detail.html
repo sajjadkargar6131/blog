@@ -1,5 +1,84 @@
 {% extends '_base.html' %}
 {% load humanize %}
 {% block content %}
-    
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        {% if messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {% for message in messages %} 
+                    {{ message }}
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+         {% endif %}
+        <div class="card mb-4 shadow-sm">
+            {% if detail.cover %}
+                <img src="{{detail.cover.url}}" class="card-img-top post-image" alt="...">
+            {% endif %}
+            <div class="card-body">
+                <h1 class="card-title">{{detail.title}}</h1>
+                <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
+                <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|date:'D- d M -Y' }} </span></p>
+                {% comment %} {% if detail.tags.exists %}
+                    <p class="card-text text-muted">تگ ها: 
+                        {% for tag in detail.tags.all %}
+                            {% if tag.slug %}
+                                <a class="text-decoration-none" href="{% url 'posts_by_tag' tag.slug %}">
+                                    <span class="badge bg-primary mb-2">{{ tag.name }}</span>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %} {% endcomment %}
+                {% if detail.author == user  %}
+                    <div> 
+                    <a href="" class="text-decoration-none me-2">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                    </a>
+                    <a href="" class="text-decoration-none">
+                        <i class="text-danger fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                    </div>
+                {% endif %}
+                <hr>
+                <p class="card-text" style="text-align: justify;"> {{detail.text|safe|linebreaksbr}} </p>  
+                {% comment %} <div class="d-flex justify-content-between">
+                    {% if not liked %}
+                        <span>
+                            <i class="fa fa-heart-o" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                            <span class="text-primary" id="likes-count"> {{likes_count|format_number}}</span>
+                        </span>
+                    {% else %}
+                        <span>
+                            <i class="fa fa-heart text-danger" id="like-icon" data-post-id="{{ detail.id }}"></i>
+                            <span class="text-primary"  id="likes-count"> {{likes_count|format_number}}</span>
+                        </span>
+                    {% endif %}
+                    <span class="text-muted">
+                        <i class="fa fa-comment" aria-hidden="true"></i>
+                        <span class="text-primary"> {{comments_count|format_number}} </span>
+                    </span> 
+                    <span class="text-muted">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                        <span class="text-primary"> {{unique_views|format_number}} </span>
+                    </span> 
+
+                    {% if not bookmarked %}
+                        <span>
+                            <i class="fa fa-bookmark-o" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
+                            <span class="text-primary" id="bookmarks-count"> {{bookmark_count|format_number}}</span>
+                        </span>
+                    {% else %}
+                    <span>
+                        <i class="fa fa-bookmark text-muted" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
+                        <span class="text-primary"  id="bookmarks-count">{{bookmark_count|format_number}}</span>
+                    </span>
+                    {% endif %}
+                </div>  {% endcomment %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+
 {% endblock %}
