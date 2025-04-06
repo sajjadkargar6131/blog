@@ -32,10 +32,10 @@
                 {% endif %} {% endcomment %}
                 {% if detail.author == user  %}
                     <div> 
-                    <a href="" class="text-decoration-none me-2">
+                    <a href="{% url 'news_update' detail.pk %}" class="text-decoration-none me-2">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                     </a>
-                    <a href="" class="text-decoration-none">
+                    <a href="{% url 'news_delete' detail.pk %}" class="text-decoration-none">
                         <i class="text-danger fa fa-trash" aria-hidden="true"></i>
                     </a>
                     </div>

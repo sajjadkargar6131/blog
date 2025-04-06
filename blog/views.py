@@ -1,4 +1,3 @@
-from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
@@ -136,8 +135,8 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         return initial
 
     def test_func(self):
-        object = self.get_object()
-        return object.author == self.request.user
+        obj = self.get_object()
+        return obj.author == self.request.user
 
     def form_valid(self, form: form_class):
         tags = form.cleaned_data[

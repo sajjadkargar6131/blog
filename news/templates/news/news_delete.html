@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+{% block content %}
+<form action="" class="form form-control" method="post">
+    <h1>آیا مطمئنید؟</h1>
+    <p>آیا از حذف خبر <strong> " {{news.title}} "</strong> مطمئن هستید؟ </p>
+    {% csrf_token %}
+    <a href="{% url "news_detail" news.pk %}" type="button" class="btn btn-primary">بازگشت</a>
+    <input type="submit" class="btn btn-danger" value="حذف">
+</form>
+
+{% endblock content%}

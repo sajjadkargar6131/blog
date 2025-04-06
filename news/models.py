@@ -24,4 +24,4 @@ class News(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('news_detail', kwargs={'id': self.pk})
+        return reverse('news_detail', kwargs={'pk': self.pk})
