@@ -33,6 +33,21 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"slug": self.slug})
 
+    @property
+    def comments_count(self):
+        return self.comments.filter(publish=True).count()
+
+    @property
+    def likes_count(self):
+        return self.likes.count()
+
+    @property
+    def bookmark_count(self):
+        return self.bookmarks.count()
+
+    @property
+    def unique_views(self):
+        return self.views.count()
 
 class Comment(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)

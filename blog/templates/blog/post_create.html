@@ -1,14 +1,6 @@
 {% extends '_base.html' %}
 {%load crispy_forms_tags %}
 {% block content %}
-  {% if messages %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      {% for message in messages %} 
-        {{ message }}
-      {% endfor %}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  {% endif %}
   <form class="form form-control"  method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{form|crispy}}

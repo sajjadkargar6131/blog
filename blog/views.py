@@ -7,13 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
-from django.utils.text import slugify
 
-from .utils import get_clinet_ip
+
+from .utils import get_clinet_ip, generate_unique_slug
 from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
 from taggit.models import Tag
-import re
+
 
 
 class IndexListView(generic.ListView):
@@ -43,18 +43,20 @@ class PostDetailView(generic.DetailView, FormMixin):
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super().get_context_data(**kwargs)
-        context['comments'] = self.object.comments.filter(publish=True).order_by('-datetime_created')
-        context['comments_count'] = self.object.comments.filter(publish=True).count()
-        context['likes_count'] = self.object.likes.count()
-        context['bookmark_count'] = self.object.bookmarks.count()
-        context['unique_views'] = self.object.views.count()
-        context['form'] = self.get_form()
+        comments_qs = self.object.comments.filter(publish=True)
+        context['comments'] = comments_qs.order_by('-datetime_created')
+        context.update({
+            'comments_count': self.object.comments_count,
+            'likes_count': self.object.likes_count,
+            'bookmark_count': self.object.bookmark_count,
+            'unique_views': self.object.unique_views,
+            'form': self.get_form(),
+            'liked': False,
+            'bookmarked': False,
+        })
         if user.is_authenticated:
-            context['liked'] = Like.objects.filter(post=self.object, user=user).exists()  # True
-            context['bookmarked'] = BookmarkPost.objects.filter(post=self.object, user=user).exists()
-        else:
-            context['liked'] = False
-            context['bookmarked'] = False
+            context['liked'] = self.object.likes.filter(user=user).exists()  # True
+            context['bookmarked'] = self.object.bookmarks.filter(user=user).exists()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -94,22 +96,8 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-
-        def clean_slug(title):
-            title = re.sub(r'[^\w\s-]', '', title)
-            title = re.sub(r'[-\s]+', '-', title)
-            title = title.strip('-')
-            if not title:
-                title = 'پست'
-            return title
-
         isinstance = form.save(commit=False)
-        base_slug = slugify(clean_slug(isinstance.title), allow_unicode=True)
-        unique_slug = base_slug
-        if Post.objects.filter(slug=unique_slug).exists():
-            isinstance.save()
-            unique_slug = f'{base_slug}-{isinstance.pk}'
-        isinstance.slug = unique_slug
+        isinstance.slug = generate_unique_slug(isinstance.title, instance=isinstance)
         isinstance.save()
         form.save_m2m()
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
@@ -143,21 +131,8 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
             'tags']  # اعمال تغییرات برای اینکه در فرم ویرایش هم تگ ها با فاصله نمایش داده شوند و نه با کاما
         self.object.tags.set(tags)
 
-        def clean_slug(title):
-            title = re.sub(r'[^\w\s-]', '', title)
-            title = re.sub(r'[-\s]+', '-', title)
-            title = title.strip('-')
-            if not title:
-                title = 'پست'
-            return title
-
         isinstance = form.save(commit=False)
-        base_slug = slugify(clean_slug(isinstance.title), allow_unicode=True)
-        if isinstance.slug != base_slug:
-            unique_slug = base_slug
-            if Post.objects.filter(slug=unique_slug).exclude(pk=isinstance.pk).exists():
-                unique_slug = f'{base_slug}-{isinstance.pk}'
-            isinstance.slug = unique_slug
+        isinstance.slug = generate_unique_slug(isinstance.title, instance=isinstance)
         isinstance.save()
         messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
         return super().form_valid(form)
@@ -210,7 +185,7 @@ def bookmark_post(request, post_id):
             BookmarkPost.objects.create(post=post, user=user)
             bookmarked = True
         bookmarked_count = post.bookmarks.count()
-        return JsonResponse({"bookarked": bookmarked, "bookmarks_count": bookmarked_count})
+        return JsonResponse({"bookmarked": bookmarked, "bookmarks_count": bookmarked_count})
 
 
 def archive_month(request, year, month):
