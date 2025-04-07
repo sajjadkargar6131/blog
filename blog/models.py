@@ -24,6 +24,11 @@ class Post(models.Model):
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)
     tags = TaggableManager(blank=True)
     slug = models.SlugField(unique=True, max_length=200, allow_unicode=True)
+    meta_description = models.CharField(
+        max_length=160,
+        blank=True,
+        help_text="توضیح کوتاه برای سئو. حداکثر 160 کاراکتر.",
+        null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -48,6 +53,7 @@ class Post(models.Model):
     @property
     def unique_views(self):
         return self.views.count()
+
 
 class Comment(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)

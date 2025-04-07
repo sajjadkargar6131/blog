@@ -19,6 +19,8 @@ class AdminComment(admin.ModelAdmin):
 
 
 class AdminPost(admin.ModelAdmin):
+    list_display = ['title', 'author', 'status', 'created_at']
+    fields = ['title', 'slug', 'author', 'status', 'text', 'cover', 'categories', 'tags', 'meta_description']
     formfield_overrides = {
         TaggableManager: {'help_text': 'برچسب ها را با فاصله از هم جدا کنید.'}
     }

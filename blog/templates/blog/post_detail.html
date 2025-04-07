@@ -2,6 +2,28 @@
 {% load crispy_forms_tags %}
 {% load custom_filters %}
 {% load humanize %}
+
+{% block seo %}
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:title" content="{{ detail.title }}">
+    <meta property="og:title" content="{{ detail.title }}">
+{% if detail.meta_description %}
+    <meta name="description" content="{{ detail.meta_description }}">
+    <meta property="og:description" content="{{ detail.meta_description }}">
+    <meta name="twitter:description" content="{{ detail.meta_description }}">
+{% else %}
+    <meta name="description" content="{{ detail.text|truncatechars:160}}">
+    <meta property="og:description" content="{{  detail.text|truncatechars:160 }}">
+    <meta name="twitter:description" content="{{ detail.text|truncatechars:160 }}">
+{% endif %}
+{% if detail.cover %}
+    <meta property="og:image" content="{{ detail.cover.url }}">
+    <meta name="twitter:image" content="{{ detail.cover.url }}">
+{% endif %}
+     <meta name="twitter:card" content="summary_large_image">
+{% endblock seo%}
+
+{% block title %}{{detail.title}}{% endblock title %}
 {% block content %} 
     <div class="row">
         <div class="col-md-10 mx-auto">

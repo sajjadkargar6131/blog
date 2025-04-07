@@ -23,7 +23,7 @@ class PostCreateForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ("title", "text", "status", "cover", "categories", "tags")
+        fields = ("title", "text", "status", "cover", "categories", "tags", "meta_description")
         labels = {
             'title': 'عنوان',
             'text': 'متن',
@@ -33,6 +33,7 @@ class PostCreateForm(forms.ModelForm):
         }
         widgets = {
             'categories': forms.CheckboxSelectMultiple,
+            'meta_description': forms.Textarea(attrs={'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):
