@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load humanize %}
+{% load jalali_tags %}
 {% block content %}
 {#<div class="row mb-2">#}
 {#    {% for item in list %}#}
@@ -100,7 +101,7 @@
                     <div class="col-md-8">
                         <h5 class="card-title">{{ item.title }}</h5>
                         <p class="text-muted mb-1"><span class="fa fa-user"></span> نویسنده: {{ item.author }}</p>
-                        <p class="text-muted"><span class="fa fa-calendar"></span> تاریخ انتشار: {{ item.created_at|naturaltime }}</p>
+                        <p class="text-muted"><span class="fa fa-calendar"></span> تاریخ انتشار: {{ item.created_at|to_jalali:'%Y/%m/%d' }}</p>
                         <a href="{% url 'news_detail' item.pk %}" class="btn btn-primary">مشاهده خبر</a>
                     </div>
                 </div>
