@@ -4,8 +4,11 @@ crispy-bootstrap5==2024.10
 Django==4.2.16
 django-ckeditor-5==0.2.17
 django-crispy-forms==2.3
+django-jalali-date==2.0.0
 django-taggit==6.1.0
 humanize==4.10.0
+jalali-core==1.0.0
+jdatetime==5.0.0
 pillow==10.4.0
 sqlparse==0.5.2
 typing-extensions==4.12.2
