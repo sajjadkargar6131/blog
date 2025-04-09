@@ -18,9 +18,6 @@
             <small><span class="text-muted">توسط</span></small>
             {{ item.author }}
           </div>
-          <div style="text-align: justify;">
-            <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
-          </div>
           <div class="mb-1 ">
             <small><span class="text-muted">دسته بندی ها:</span></small>
             {% if item.categories.all.exists  %}
