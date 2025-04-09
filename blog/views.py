@@ -371,7 +371,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         return obj.author == self.request.user
 
     def form_valid(self, form):
-        tags = form.cleaned_data['tags']  # اصلاح نمایش تگ‌ها
+        tags = form.cleaned_data['tags']  
         self.object.tags.set(tags)
 
         instance = form.save(commit=False)
@@ -389,8 +389,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
-    success_url = reverse_lazy('blog_index')  # استفاده از reverse_lazy به جای reverse
-
+    success_url = reverse_lazy('blog_index')  
     def get_object(self, queryset=None):
         return Post.objects.get(slug=self.kwargs['slug'])
 
