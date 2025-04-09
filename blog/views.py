@@ -22,7 +22,7 @@ from taggit.models import Tag
 class IndexListView(generic.ListView):
     template_name = 'blog/post_list.html'
     context_object_name = 'list'
-    paginate_by = 6
+    paginate_by = 10
 
     def get_queryset(self):
         return Post.objects.filter(status='pub').order_by('-created_at')
@@ -216,7 +216,7 @@ class CategoryPostListView(generic.ListView):
     model = Post
     template_name = 'blog/posts_by_category.html'
     context_object_name = 'list'
-    paginate_by = 6
+    paginate_by = 10
 
     def get_queryset(self):
         category_name = self.kwargs['name']
@@ -233,7 +233,7 @@ class PostListByTagView(generic.ListView):
     model = Post
     context_object_name = 'list'
     template_name = 'blog/posts_by_tag.html' 
-    paginate_by = 6
+    paginate_by = 10
 
     def get_queryset(self):
         tag_slug = self.kwargs['tag_slug']
