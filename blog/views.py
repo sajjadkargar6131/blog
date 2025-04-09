@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
+from jalali_date import datetime2jalali
+from datetime import datetime
 
 
 from .utils import get_clinet_ip, generate_unique_slug
@@ -193,7 +195,16 @@ def archive_month(request, year, month):
         created_at__year=year,
         created_at__month=month
     )
-    return render(request, 'blog/archive.html', {'list': posts})
+    # تبدیل تاریخ میلادی به یک شیء datetime
+    date = datetime(year, month, 1)
+
+    # تبدیل تاریخ میلادی به تاریخ شمسی
+    jalali_date = datetime2jalali(date)
+
+    # نمایش نام ماه و سال شمسی
+    month_name = jalali_date.strftime('%B %Y')  # نمایش نام ماه و سال به شمسی
+
+    return render(request, 'blog/archive.html', {'list': posts, 'month_name':month_name})
 
 
 class CategoryPostListView(generic.ListView):
