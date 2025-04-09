@@ -36,6 +36,29 @@
       </div>
     </div>
     {% endfor %}
+    {% if list %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {% if list.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ list.previous_page_number }}">قبلی</a>
+            </li>
+          {% endif %}
+    
+          {% for page in list.paginator.page_range %}
+            <li class="page-item {% if page == list.number %}active{% endif %}" {% if page == list.number %} aria-current="page" {% endif %}>
+              <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+            </li>
+          {% endfor %}
+    
+          {% if list.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ list.next_page_number }}">بعدی</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
   </div>  
 
   {% endblock %}

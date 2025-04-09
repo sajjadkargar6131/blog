@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
 from jalali_date import datetime2jalali
 from datetime import datetime
+from django.core.paginator import Paginator
 
 
 from .utils import get_clinet_ip, generate_unique_slug
@@ -204,7 +205,11 @@ def archive_month(request, year, month):
     # نمایش نام ماه و سال شمسی
     month_name = jalali_date.strftime('%B %Y')  # نمایش نام ماه و سال به شمسی
 
-    return render(request, 'blog/archive.html', {'list': posts, 'month_name':month_name})
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'blog/archive.html', {'list': page_obj, 'month_name':month_name})
 
 
 class CategoryPostListView(generic.ListView):
@@ -227,7 +232,7 @@ class CategoryPostListView(generic.ListView):
 class PostListByTagView(generic.ListView):
     model = Post
     context_object_name = 'list'
-    template_name = 'blog/posts_by_tag.html'  # حتماً بررسی کن که این فایل وجود دارد
+    template_name = 'blog/posts_by_tag.html' 
     paginate_by = 6
 
     def get_queryset(self):
