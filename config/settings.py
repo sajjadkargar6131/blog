@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     
+    'jalali_date',
+    
     #pip
     'crispy_forms',
     'crispy_bootstrap5',

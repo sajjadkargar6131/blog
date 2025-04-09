@@ -2,9 +2,8 @@
 {% load humanize %}
 {% block content %}
 <div class="row mb-2">
-    <h5> نمایش پست ها با دسته بندی:
-         <span class="text-primary"> {{category.name}} </span>|
-         <a href="{% url "blog_index" %}" class="btn btn-primary" role="button">بازگشت</a>
+    <h5>  دسته بندی
+         <span class="text-primary"> {{category.name}} </span>
     </h5>
     {% for item in list %}
      <div class="col-md-6">
@@ -17,9 +16,6 @@
             {{ item.created_at|naturaltime }}
             <small><span class="text-muted">توسط</span></small>
             {{ item.author }}
-          </div>
-          <div style="text-align: justify;">
-            <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
           </div>
           <div class="mb-1 ">
             <small><span class="text-muted">دسته بندی ها:</span></small>

@@ -1,9 +1,6 @@
 import os
-from abc import ABC
-
-from django.http import HttpResponseRedirect
 from django.contrib import messages
-# from django.shortcuts import render
+from django.shortcuts import redirect
 # from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import generic
@@ -19,7 +16,8 @@ class NewsCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         news_instance = form.save()
-        return HttpResponseRedirect(news_instance.get_absolute_url())
+        messages.success(self.request,'خبر با موفقیت ثبت شد.')
+        return redirect(news_instance.get_absolute_url())
 
 
 class NewsListView(generic.ListView):

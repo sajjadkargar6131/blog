@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Category(models.Model):
@@ -18,7 +19,7 @@ class Post(models.Model):
     ]
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
-    text = models.TextField()
+    text = CKEditor5Field(config_name='extends')
     status = models.CharField(choices=CHOICES, max_length=3)
     cover = models.ImageField(upload_to='covers/', blank=True)
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)

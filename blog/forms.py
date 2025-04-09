@@ -1,6 +1,7 @@
 from django import forms
 from .models import Post, Category, Comment
 from taggit.forms import TagField
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 
 class CustomTagfield(TagField):
@@ -34,6 +35,9 @@ class PostCreateForm(forms.ModelForm):
         widgets = {
             'categories': forms.CheckboxSelectMultiple,
             'meta_description': forms.Textarea(attrs={'rows': 3}),
+            'text': CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"}, config_name="extends"
+            ),
         }
 
     def __init__(self, *args, **kwargs):

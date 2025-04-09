@@ -1,4 +1,7 @@
 {% extends '_base.html' %}
+{% block header %}
+    {{ form.media }}
+{% endblock %}
 {%load crispy_forms_tags %}
 {% block content %}
   <form class="form form-control"  method="post" enctype="multipart/form-data">

@@ -1,6 +1,7 @@
 {% extends '_base.html' %}
 {% load humanize %}
 {% block content %}
+<h4><i class="fa fa-archive"></i> آرشیو{{month_name}}</h4>
 <div class="row mb-2">
     {% for item in list %}
      <div class="col-md-6">
@@ -13,9 +14,6 @@
             {{ item.created_at|naturaltime }}
             <small><span class="text-muted">توسط</span></small>
             {{ item.author }}
-          </div>
-          <div style="text-align: justify;">
-            <p class="card-text mb-auto ">{{ item.text|truncatewords:15 }}</p>
           </div>
           <div class="mb-1 ">
             <small><span class="text-muted">دسته بندی ها:</span></small>
@@ -38,6 +36,29 @@
       </div>
     </div>
     {% endfor %}
+    {% if list %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {% if list.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ list.previous_page_number }}">قبلی</a>
+            </li>
+          {% endif %}
+    
+          {% for page in list.paginator.page_range %}
+            <li class="page-item {% if page == list.number %}active{% endif %}" {% if page == list.number %} aria-current="page" {% endif %}>
+              <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+            </li>
+          {% endfor %}
+    
+          {% if list.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ list.next_page_number }}">بعدی</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
   </div>  
 
   {% endblock %}

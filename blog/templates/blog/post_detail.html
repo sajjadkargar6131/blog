@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 {% load crispy_forms_tags %}
 {% load custom_filters %}
+{% load jalali_tags %}
 {% load humanize %}
 
 {% block seo %}
@@ -34,7 +35,7 @@
                 <div class="card-body">
                     <h1 class="card-title">{{detail.title}}</h1>
                     <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
-                    <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|date:'D- d M -Y' }} </span></p>
+                    <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|to_jalali:'%Y/%m/%d _ %H:%M:%S' }} </span></p>
                     {% if detail.tags.exists %}
                         <p class="card-text text-muted">تگ ها: 
                             {% for tag in detail.tags.all %}
@@ -57,7 +58,7 @@
                         </div>
                     {% endif %}
                     <hr>
-                    <p class="card-text" style="text-align: justify;"> {{detail.text|linebreaksbr}} </p>  
+                    <p class="card-text" style="text-align: justify;"> {{detail.text|safe|linebreaksbr}} </p>  
                     <div class="d-flex justify-content-between">
                         {% if not liked %}
                             <span>
