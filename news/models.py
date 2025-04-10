@@ -2,13 +2,15 @@ from django.db import models
 from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
 
+from config import settings
+
 
 class News(models.Model):
     CHOICES = [
         ['pub', 'Published'],
         ['drf', 'Draft']
     ]
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = CKEditor5Field(config_name='extends')
     status = models.CharField(choices=CHOICES, max_length=3)

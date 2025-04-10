@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
 from django_ckeditor_5.fields import CKEditor5Field
 
+from config import settings
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -17,7 +19,7 @@ class Post(models.Model):
         ['pub', 'Published'],
         ['drf', 'Draft']
     ]
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = CKEditor5Field(config_name='extends')
     status = models.CharField(choices=CHOICES, max_length=3)
