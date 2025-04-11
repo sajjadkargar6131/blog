@@ -1,0 +1,127 @@
+/	index.views.index	index
+/accounts/3rdparty/	allauth.socialaccount.views.ConnectionsView	socialaccount_connections
+/accounts/3rdparty/login/cancelled/	allauth.socialaccount.views.LoginCancelledView	socialaccount_login_cancelled
+/accounts/3rdparty/login/error/	allauth.socialaccount.views.LoginErrorView	socialaccount_login_error
+/accounts/3rdparty/signup/	allauth.socialaccount.views.SignupView	socialaccount_signup
+/accounts/confirm-email/	allauth.account.views.email_verification_sent	account_email_verification_sent
+/accounts/confirm-email/<key>/	allauth.account.views.ConfirmEmailView	account_confirm_email
+/accounts/email/	allauth.account.views.EmailView	account_email
+/accounts/github/login/	allauth.socialaccount.providers.oauth2.views.view	github_login
+/accounts/github/login/callback/	allauth.socialaccount.providers.oauth2.views.view	github_callback
+/accounts/google/login/	allauth.socialaccount.providers.oauth2.views.view	google_login
+/accounts/google/login/callback/	allauth.socialaccount.providers.oauth2.views.view	google_callback
+/accounts/google/login/token/	allauth.socialaccount.providers.google.views.LoginByTokenView	google_login_by_token
+/accounts/inactive/	allauth.account.views.AccountInactiveView	account_inactive
+/accounts/instagram/login/	allauth.socialaccount.providers.oauth2.views.view	instagram_login
+/accounts/instagram/login/callback/	allauth.socialaccount.providers.oauth2.views.view	instagram_callback
+/accounts/login/	allauth.account.views.LoginView	account_login
+/accounts/login/code/confirm/	allauth.account.views.ConfirmLoginCodeView	account_confirm_login_code
+/accounts/logout/	allauth.account.views.LogoutView	account_logout
+/accounts/password/change/	allauth.account.views.PasswordChangeView	account_change_password
+/accounts/password/reset/	allauth.account.views.PasswordResetView	account_reset_password
+/accounts/password/reset/done/	allauth.account.views.PasswordResetDoneView	account_reset_password_done
+/accounts/password/reset/key/<uidb36>-<key>/	allauth.account.views.PasswordResetFromKeyView	account_reset_password_from_key
+/accounts/password/reset/key/done/	allauth.account.views.PasswordResetFromKeyDoneView	account_reset_password_from_key_done
+/accounts/password/set/	allauth.account.views.PasswordSetView	account_set_password
+/accounts/reauthenticate/	allauth.account.views.ReauthenticateView	account_reauthenticate
+/accounts/signup/	allauth.account.views.SignupView	account_signup
+/accounts/social/connections/	django.views.generic.base.RedirectView
+/accounts/social/login/cancelled/	django.views.generic.base.RedirectView
+/accounts/social/login/error/	django.views.generic.base.RedirectView
+/accounts/social/signup/	django.views.generic.base.RedirectView
+/admin/	django.contrib.admin.sites.index	admin:index
+/admin/<app_label>/	django.contrib.admin.sites.app_index	admin:app_list
+/admin/<url>	django.contrib.admin.sites.catch_all_view
+/admin/account/emailaddress/	django.contrib.admin.options.changelist_view	admin:account_emailaddress_changelist
+/admin/account/emailaddress/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/account/emailaddress/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:account_emailaddress_change
+/admin/account/emailaddress/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:account_emailaddress_delete
+/admin/account/emailaddress/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:account_emailaddress_history
+/admin/account/emailaddress/add/	django.contrib.admin.options.add_view	admin:account_emailaddress_add
+/admin/auth/group/	django.contrib.admin.options.changelist_view	admin:auth_group_changelist
+/admin/auth/group/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/auth/group/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:auth_group_change
+/admin/auth/group/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:auth_group_delete
+/admin/auth/group/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:auth_group_history
+/admin/auth/group/add/	django.contrib.admin.options.add_view	admin:auth_group_add
+/admin/autocomplete/	django.contrib.admin.sites.autocomplete_view	admin:autocomplete
+/admin/blog/category/	django.contrib.admin.options.changelist_view	admin:blog_category_changelist
+/admin/blog/category/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/blog/category/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:blog_category_change
+/admin/blog/category/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:blog_category_delete
+/admin/blog/category/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:blog_category_history
+/admin/blog/category/add/	django.contrib.admin.options.add_view	admin:blog_category_add
+/admin/blog/comment/	django.contrib.admin.options.changelist_view	admin:blog_comment_changelist
+/admin/blog/comment/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/blog/comment/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:blog_comment_change
+/admin/blog/comment/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:blog_comment_delete
+/admin/blog/comment/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:blog_comment_history
+/admin/blog/comment/add/	django.contrib.admin.options.add_view	admin:blog_comment_add
+/admin/blog/like/	django.contrib.admin.options.changelist_view	admin:blog_like_changelist
+/admin/blog/like/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/blog/like/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:blog_like_change
+/admin/blog/like/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:blog_like_delete
+/admin/blog/like/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:blog_like_history
+/admin/blog/like/add/	django.contrib.admin.options.add_view	admin:blog_like_add
+/admin/blog/post/	django.contrib.admin.options.changelist_view	admin:blog_post_changelist
+/admin/blog/post/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/blog/post/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:blog_post_change
+/admin/blog/post/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:blog_post_delete
+/admin/blog/post/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:blog_post_history
+/admin/blog/post/add/	django.contrib.admin.options.add_view	admin:blog_post_add
+/admin/jsi18n/	django.contrib.admin.sites.i18n_javascript	admin:jsi18n
+/admin/login/	django.contrib.admin.sites.login	admin:login
+/admin/logout/	django.contrib.admin.sites.logout	admin:logout
+/admin/news/news/	django.contrib.admin.options.changelist_view	admin:news_news_changelist
+/admin/news/news/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/news/news/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:news_news_change
+/admin/news/news/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:news_news_delete
+/admin/news/news/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:news_news_history
+/admin/news/news/add/	django.contrib.admin.options.add_view	admin:news_news_add
+/admin/password_change/	django.contrib.admin.sites.password_change	admin:password_change
+/admin/password_change/done/	django.contrib.admin.sites.password_change_done	admin:password_change_done
+/admin/r/<path:content_type_id>/<path:object_id>/	django.contrib.contenttypes.views.shortcut	admin:view_on_site
+/admin/socialaccount/socialaccount/	django.contrib.admin.options.changelist_view	admin:socialaccount_socialaccount_changelist
+/admin/socialaccount/socialaccount/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/socialaccount/socialaccount/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:socialaccount_socialaccount_change
+/admin/socialaccount/socialaccount/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:socialaccount_socialaccount_delete
+/admin/socialaccount/socialaccount/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:socialaccount_socialaccount_history
+/admin/socialaccount/socialaccount/add/	django.contrib.admin.options.add_view	admin:socialaccount_socialaccount_add
+/admin/socialaccount/socialapp/	django.contrib.admin.options.changelist_view	admin:socialaccount_socialapp_changelist
+/admin/socialaccount/socialapp/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/socialaccount/socialapp/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:socialaccount_socialapp_change
+/admin/socialaccount/socialapp/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:socialaccount_socialapp_delete
+/admin/socialaccount/socialapp/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:socialaccount_socialapp_history
+/admin/socialaccount/socialapp/add/	django.contrib.admin.options.add_view	admin:socialaccount_socialapp_add
+/admin/socialaccount/socialtoken/	django.contrib.admin.options.changelist_view	admin:socialaccount_socialtoken_changelist
+/admin/socialaccount/socialtoken/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/socialaccount/socialtoken/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:socialaccount_socialtoken_change
+/admin/socialaccount/socialtoken/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:socialaccount_socialtoken_delete
+/admin/socialaccount/socialtoken/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:socialaccount_socialtoken_history
+/admin/socialaccount/socialtoken/add/	django.contrib.admin.options.add_view	admin:socialaccount_socialtoken_add
+/admin/taggit/tag/	django.contrib.admin.options.changelist_view	admin:taggit_tag_changelist
+/admin/taggit/tag/<path:object_id>/	django.views.generic.base.RedirectView
+/admin/taggit/tag/<path:object_id>/change/	django.contrib.admin.options.change_view	admin:taggit_tag_change
+/admin/taggit/tag/<path:object_id>/delete/	django.contrib.admin.options.delete_view	admin:taggit_tag_delete
+/admin/taggit/tag/<path:object_id>/history/	django.contrib.admin.options.history_view	admin:taggit_tag_history
+/admin/taggit/tag/add/	django.contrib.admin.options.add_view	admin:taggit_tag_add
+/admin/taggit/tag/merge-tags/	taggit.admin.merge_tags_view	admin:taggit_tag_merge_tags
+/blog/	blog.views.IndexListView	blog_index
+/blog/<slug>/	blog.views.PostDetailView	post_detail
+/blog/archives/<int:year>/<int:month>/	blog.views.archive_month	archive_month
+/blog/bookmark/<int:post_id>/	blog.views.bookmark_post	bookmark_post
+/blog/category/<str:name>/	blog.views.CategoryPostListView	category_post
+/blog/create/	blog.views.PostCreateView	post_create
+/blog/delete/<str:slug>	blog.views.PostDeleteView	post_delete
+/blog/like/<int:post_id>/	blog.views.like_post	like_post
+/blog/tag/<tag_slug>/	blog.views.PostListByTagView	posts_by_tag
+/blog/update/<str:slug>	blog.views.PostUpdateView	post_update
+/ckeditor5/image_upload/	django_ckeditor_5.permissions._wrapped_view	ck_editor_5_upload_file
+/media/<path>	django.views.static.serve
+/news/	news.views.NewsListView	news_list
+/news/create/	news.views.NewsCreateView	news_create
+/news/delete/<int:pk>	news.views.NewsDeleteView	news_delete
+/news/detail/<int:pk>	news.views.NewsDetailView	news_detail
+/news/rss/	news.feeds.LatestNewsFeeds()	news_rss
+/news/update/<int:pk>	news.views.NewsUpdateView	news_update
+/static/<path>	django.views.static.serve
