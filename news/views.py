@@ -16,7 +16,7 @@ class NewsCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         news_instance = form.save()
-        messages.success(self.request,'خبر با موفقیت ثبت شد.')
+        messages.success(self.request, 'خبر با موفقیت ثبت شد.')
         return redirect(news_instance.get_absolute_url())
 
 
@@ -41,6 +41,19 @@ class NewsDetailView(generic.DetailView):
 
     def get_success_url(self):
         return self.object.get_absolute_url()
+
+    def get_queryset(self):
+        return News.objects.filter(status='pub').select_related('author')
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        context = super().get_context_data(**kwargs)
+        comments_qs = self.object.comments.filter(publish=True)
+        context['comments'] = comments_qs.order_by('-datetime_created')
+        context.update({
+            'comments_count': self.object.comments_count,
+        })
+        return context
 
 
 class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
