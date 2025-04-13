@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
@@ -27,3 +28,14 @@ class News(models.Model):
 
     def get_absolute_url(self):
         return reverse('news_detail', kwargs={'pk': self.pk})
+
+
+class NewsComment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    text = models.TextField()
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='comments')
+    publish = models.BooleanField(default=False)
+    datetime_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} : {self.text}'
