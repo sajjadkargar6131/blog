@@ -29,6 +29,9 @@ class News(models.Model):
     def get_absolute_url(self):
         return reverse('news_detail', kwargs={'pk': self.pk})
 
+    @property
+    def comments_count(self):
+        return self.comments.filter(publish=True).count()
 
 class NewsComment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -43,3 +46,4 @@ class NewsComment(models.Model):
 
     def __str__(self):
         return f'{self.user} : {self.text}'
+
