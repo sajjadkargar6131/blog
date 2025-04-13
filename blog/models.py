@@ -1,6 +1,5 @@
 from django.db import models
 from django.shortcuts import reverse
-from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
 from django_ckeditor_5.fields import CKEditor5Field
 
@@ -59,7 +58,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     publish = models.BooleanField(default=False)
@@ -70,7 +69,7 @@ class Comment(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
     datetime_created = models.DateTimeField(auto_now_add=True)
 
@@ -79,7 +78,7 @@ class Like(models.Model):
 
 
 class BookmarkPost(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarks')
     datetime_saved = models.DateTimeField(auto_now_add=True)
 
@@ -90,5 +89,5 @@ class BookmarkPost(models.Model):
 class PostView(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='views')
     ip_address = models.GenericIPAddressField()
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     datetime_viewed = models.DateTimeField(auto_now_add=True)
