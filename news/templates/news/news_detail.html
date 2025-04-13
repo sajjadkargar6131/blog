@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load jalali_tags %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="row">
     <div class="col-md-10 mx-auto">
@@ -10,7 +11,7 @@
             <div class="card-body">
                 <h1 class="card-title">{{detail.title}}</h1>
                 <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
-                <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|to_jalali:'%Y/%m/%d _ %H:%M:%S' }} </span></p>
+                <p class="card-text text-muted">تاریخ انتشار: <span> {{ detail.created_at|to_jalali:'%Y/%m/%d _ %H:%M:%S' }} </span></p>
                 {% comment %} {% if detail.tags.exists %}
                     <p class="card-text text-muted">تگ ها: 
                         {% for tag in detail.tags.all %}
@@ -34,42 +35,54 @@
                 {% endif %}
                 <hr>
                 <p class="card-text" style="text-align: justify;"> {{detail.text|safe|linebreaksbr}} </p>  
-                {% comment %} <div class="d-flex justify-content-between">
-                    {% if not liked %}
-                        <span>
-                            <i class="fa fa-heart-o" id="like-icon" data-post-id="{{ detail.id }}"></i>
-                            <span class="text-primary" id="likes-count"> {{likes_count|format_number}}</span>
-                        </span>
-                    {% else %}
-                        <span>
-                            <i class="fa fa-heart text-danger" id="like-icon" data-post-id="{{ detail.id }}"></i>
-                            <span class="text-primary"  id="likes-count"> {{likes_count|format_number}}</span>
-                        </span>
-                    {% endif %}
+                <div class="d-flex justify-content-between">
                     <span class="text-muted">
                         <i class="fa fa-comment" aria-hidden="true"></i>
-                        <span class="text-primary"> {{comments_count|format_number}} </span>
-                    </span> 
+                        <span class="text-primary"> {{comments_count}} </span>
+                    </span>
                     <span class="text-muted">
                         <i class="fa fa-eye" aria-hidden="true"></i>
-                        <span class="text-primary"> {{unique_views|format_number}} </span>
-                    </span> 
-
-                    {% if not bookmarked %}
-                        <span>
-                            <i class="fa fa-bookmark-o" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
-                            <span class="text-primary" id="bookmarks-count"> {{bookmark_count|format_number}}</span>
-                        </span>
-                    {% else %}
-                    <span>
-                        <i class="fa fa-bookmark text-muted" id="bookmarks-icon" data-post-id="{{ detail.id }}"></i>
-                        <span class="text-primary"  id="bookmarks-count">{{bookmark_count|format_number}}</span>
+                        <span class="text-primary"> {{unique_views}} </span>
                     </span>
-                    {% endif %}
-                </div>  {% endcomment %}
+                </div>
             </div>
         </div>
-        
+        <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    {% if comments %}
+                        <h2 class="card-title">نظرات</h2>
+                        {% for comment in comments  %}
+                            <div class="border-bottom mb-3">
+                                <h5 class="mb-3 text-primary">{{comment.user.username}} گفته :</h5>
+                                <p class="text-justify"> {{comment.text}} </p>
+                                <div class="d-flex justify-content-end">
+                                    <span class="text-muted">
+                                        <span class="text-muted">{{comment.datetime_created}}</span>
+                                    </span>
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-primary">هنوز هیچ نظری برای این پست ارسال نشده است.</div>
+                    {% endif %}
+                    {% if user.is_authenticated  %}
+                        <!-- فرم ارسال نظر -->
+                        <div class="mt-4">
+                            <h3>نظر خود را وارد کنید:</h3>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    {{form|crispy}}
+                                </div>
+                                <button type="submit" class="btn btn-primary">ارسال</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-primary">لطفا برای پسندیدن و افزودن نظر ابتدا وارد شوید <span>|</span> <a class="text-decoration-none" href="{% url 'login' %}?next={% url 'post_detail' detail.pk %}">ورود</a></div>
+                    {% endif %}
+                </div>
+            </div>
     </div>
 </div>
 
