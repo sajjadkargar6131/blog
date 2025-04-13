@@ -12,6 +12,10 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'دسته بندی'
+        verbose_name_plural = 'دسته بندی ها'
+
 
 class Post(models.Model):
     CHOICES = [
@@ -33,6 +37,10 @@ class Post(models.Model):
         null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'پست'
+        verbose_name_plural = 'پست ها'
 
     def __str__(self) -> str:
         return self.title
@@ -67,6 +75,10 @@ class Comment(models.Model):
     def __str__(self) -> str:
         return f'{self.user} : {self.text}'
 
+    class Meta:
+        verbose_name = 'کامنت'
+        verbose_name_plural = 'کامنت ها'
+
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -75,6 +87,10 @@ class Like(models.Model):
 
     def __str__(self):
         return f'Like by {self.user} on {self.post.title}'
+
+    class Meta:
+        verbose_name = 'لایک'
+        verbose_name_plural = 'لایک ها'
 
 
 class BookmarkPost(models.Model):

@@ -37,5 +37,9 @@ class NewsComment(models.Model):
     publish = models.BooleanField(default=False)
     datetime_created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'کامنت'
+        verbose_name_plural = 'کامنت ها'
+
     def __str__(self):
         return f'{self.user} : {self.text}'
