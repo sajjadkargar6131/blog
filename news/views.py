@@ -1,11 +1,11 @@
 import os
 from django.contrib import messages
 from django.shortcuts import redirect
-# from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import generic
+from django.views.generic.edit import FormMixin
 from django.urls import reverse
-from .forms import NewsCreateForm
+from .forms import NewsCreateForm, NewsCommentForm
 from .models import News
 
 
@@ -34,10 +34,11 @@ class NewsListView(generic.ListView):
         return context
 
 
-class NewsDetailView(generic.DetailView):
+class NewsDetailView(FormMixin, generic.DetailView):
     model = News
     context_object_name = 'detail'
     template_name = 'news/news_detail.html'
+    form_class = NewsCommentForm
 
     def get_success_url(self):
         return self.object.get_absolute_url()
@@ -52,8 +53,26 @@ class NewsDetailView(generic.DetailView):
         context['comments'] = comments_qs.order_by('-datetime_created')
         context.update({
             'comments_count': self.object.comments_count,
+            'form': self.get_form()
         })
         return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('account_login')  # استفاده از redirect به جای HttpResponseRedirect
+
+        self.object = self.get_object()
+        form = self.get_form()
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.news = self.object
+            comment.user = request.user
+            comment.save()
+            messages.success(request, 'نظر شما با موفقیت ثبت شد. در صورت تایید مدیر نمایش داده میشود')
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):

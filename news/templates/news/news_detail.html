@@ -70,7 +70,7 @@
                         <!-- فرم ارسال نظر -->
                         <div class="mt-4">
                             <h3>نظر خود را وارد کنید:</h3>
-                            <form method="post">
+                            <form method="POST">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     {{form|crispy}}
