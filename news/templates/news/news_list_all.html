@@ -1,11 +1,10 @@
 {% extends '_base.html' %}
 {% load humanize %}
 {% load jalali_tags %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">آخرین اخبار</h2>
- {% for item in list %}
-    <ul class="list-group">
+     {% for item in list %}
+        <ul class="list-group">
             <li class="list-group-item mb-4">
                 <div class="row">
                     {% if item.cover %}
@@ -26,15 +25,24 @@
                 </div>
             </li>
     </ul>
-{% endfor %}
-    <div class="text-center mt-4">
-        <a href="{% url 'all_news' %}" class="btn btn-outline-secondary">مشاهده همه اخبار</a>
+    {% endfor %}
+    <div class="row mb-2">
+        {% if list %}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+                  {% endif %}
+                  {% for page in page_numbers %}
+                      <li class="page-item {% if page == page_obj.number %}active{% endif %}" {% if page == page_obj.number %} aria-current="page" {% endif %}>
+                        <a class="page-link" href="?page={{ page }}">{{page}}</a>
+                      </li>
+                  {% endfor %}
+                  {% if page_obj.has_next %}
+                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+                  {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
-</div>
-
-
-{% endblock %}
-
-
-
-
+{% endblock content %}

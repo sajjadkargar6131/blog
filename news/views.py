@@ -20,18 +20,26 @@ class NewsCreateView(LoginRequiredMixin, generic.CreateView):
         return redirect(news_instance.get_absolute_url())
 
 
-class NewsListView(generic.ListView):
-    template_name = 'news/news_list.html'
+class AllNewsListView(generic.ListView):
+    template_name = 'news/news_list_all.html'
     context_object_name = 'list'
-    paginate_by = 6
+    paginate_by = 10
 
     def get_queryset(self):
         return News.objects.filter(status='pub').order_by('-created_at')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['page_numbers'] = range(1, context['paginator'].num_pages + 1)
+        context['page_numbers'] = context['paginator'].page_range
         return context
+
+
+class NewsListView(generic.ListView):
+    template_name = 'news/news_list.html'
+    context_object_name = 'list'
+
+    def get_queryset(self):
+        return News.objects.filter(status='pub').order_by('-created_at')[:10]
 
 
 class NewsDetailView(FormMixin, generic.DetailView):
