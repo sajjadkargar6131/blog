@@ -20,13 +20,37 @@
   <div class="row">
     <!-- ستون پروفایل -->
     <div class="col-md-4 text-center bg-white p-4 rounded shadow-sm">
-      <img src="https://via.placeholder.com/120" alt="پروفایل" class="profile-img border mb-3">
-      <button class="btn btn-outline-secondary btn-sm mb-3"><i class="fa fa-camera"></i> تغییر عکس</button>
-      <h4 class="mb-0">نام کاربری</h4>
-      <p class="text-muted">{{ user.username }}</p>
-      <p><i class="fa fa-calendar-alt"></i> عضویت: {{ user.date_joined|to_jalali:'%Y/%m/%d'}}</p>
-      <p><i class="fa fa-clock"></i> آخرین ورود: {{ user.last_login|to_jalali:'%Y/%m/%d'}}</p>
-      <button class="btn btn-primary btn-sm"><i class="fa fa-user-edit"></i> ویرایش پروفایل</button>
+          {% if user.profile_picture %}
+              <img src="{{ user.profile_picture.url}}" alt="پروفایل" class="profile-img border mb-3">
+          {% else %}
+              <img src="https://via.placeholder.com/120" alt="پروفایل" class="profile-img border mb-3">
+          {% endif %}
+            <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.profile_picture }}
+
+    <label for="id_profile_picture" class="btn btn-outline-secondary btn-sm mb-3">
+        <i class="fa fa-camera"></i> تغییر عکس
+    </label>
+</form>
+
+<script>
+    const fileInput = document.getElementById('id_profile_picture');
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            this.form.submit();
+        });
+    }
+</script>
+
+
+
+          <h4 class="mb-0">نام کاربری</h4>
+          <p class="text-muted">{{ user.username }}</p>
+          <p><i class="fa fa-calendar-alt"></i> عضویت: {{ user.date_joined|to_jalali:'%Y/%m/%d'}}</p>
+          <p><i class="fa fa-clock"></i> آخرین ورود: {{ user.last_login|to_jalali:'%Y/%m/%d'}}</p>
+          <button class="btn btn-primary btn-sm"><i class="fa fa-user-edit"></i> ویرایش پروفایل</button>
     </div>
 
     <!-- تب‌ها -->
