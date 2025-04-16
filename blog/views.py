@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -10,6 +12,10 @@ from django.http import JsonResponse
 from jalali_date import datetime2jalali
 from datetime import datetime
 from django.core.paginator import Paginator
+
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 from .utils import get_clinet_ip, generate_unique_slug
 from .models import Post, Like, BookmarkPost, PostView, Category
@@ -160,6 +166,17 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         obj = self.get_object()
         return obj.author == self.request.user
 
+    def form_valid(self, form):
+        obj = self.get_object()
+        if obj.cover:
+            try:
+                obj.cover.delete(save=False)
+            except Exception as e:
+                print(f"Error deleting file: {e}")
+
+        messages.success(self.request, "پست با موفقیت حذف شد")
+        return super().form_valid(form)
+
 
 # --- Like Post ---
 @login_required
@@ -247,3 +264,4 @@ class PostListByTagView(generic.ListView):
         context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
         context['page_numbers'] = context['paginator'].page_range
         return context
+
