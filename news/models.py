@@ -15,7 +15,7 @@ class News(models.Model):
     title = models.CharField(max_length=200)
     text = CKEditor5Field(config_name='extends')
     status = models.CharField(choices=CHOICES, max_length=3)
-    cover = models.ImageField(upload_to='news/', blank=True)
+    cover = models.ImageField(upload_to='news/cover/', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 

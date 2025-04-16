@@ -1,3 +1,8 @@
+import os
+import re
+import shutil
+from datetime import date
+
 from django.db import models
 from django.shortcuts import reverse
 from taggit.managers import TaggableManager
@@ -26,7 +31,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     text = CKEditor5Field(config_name='extends')
     status = models.CharField(choices=CHOICES, max_length=3)
-    cover = models.ImageField(upload_to='covers/', blank=True)
+    cover = models.ImageField(upload_to='blog/covers/', blank=True)
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)
     tags = TaggableManager(blank=True)
     slug = models.SlugField(unique=True, max_length=200, allow_unicode=True)
@@ -47,6 +52,38 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("post_detail", kwargs={"slug": self.slug})
+
+    def extract_uploaded_image_paths(self, html):
+        pattern = rf'src="(?:{re.escape(settings.MEDIA_URL)}|/media/)(uploads/\d{{4}}-\d{{2}}-\d{{2}}/[^"]+)"'
+        return re.findall(pattern, html)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                old_instance = Post.objects.get(pk=self.pk)
+                old_images = set(self.extract_uploaded_image_paths(old_instance.text))
+                new_images = set(self.extract_uploaded_image_paths(self.text))
+                unused_images = old_images - new_images
+
+                # حذف تصاویر و بررسی پوشه
+                for relative_path in unused_images:
+                    file_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+
+                # بررسی و حذف پوشه خالی
+                today_str = date.today().isoformat()  # تاریخ امروز
+                folder_path = os.path.join(settings.MEDIA_ROOT, 'uploads', today_str)
+
+                # فقط در صورتی که پوشه وجود داشته باشد، آن را بررسی و حذف می‌کنیم
+                if os.path.exists(folder_path) and not any(
+                        os.scandir(folder_path)):  # اگر پوشه وجود داشته باشد و خالی باشد
+                    shutil.rmtree(folder_path)
+
+            except Post.DoesNotExist:
+                pass
+
+        super().save(*args, **kwargs)
 
     @property
     def comments_count(self):
