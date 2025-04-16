@@ -1,0 +1,115 @@
+{% extends '_base.html' %}
+{% load jalali_tags %}
+{% block title %}پروفایل کاربری{% endblock title %}
+{% block header %}
+      <style>
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .activity-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+{% endblock header %}
+{% block content %}
+   <div class="container py-5">
+  <div class="row">
+    <!-- ستون پروفایل -->
+    <div class="col-md-4 text-center bg-white p-4 rounded shadow-sm">
+      <img src="https://via.placeholder.com/120" alt="پروفایل" class="profile-img border mb-3">
+      <button class="btn btn-outline-secondary btn-sm mb-3"><i class="fa fa-camera"></i> تغییر عکس</button>
+      <h4 class="mb-0">نام کاربری</h4>
+      <p class="text-muted">{{ user.username }}</p>
+      <p><i class="fa fa-calendar-alt"></i> عضویت: {{ user.date_joined|to_jalali:'%Y/%m/%d'}}</p>
+      <p><i class="fa fa-clock"></i> آخرین ورود: {{ user.last_login|to_jalali:'%Y/%m/%d'}}</p>
+      <button class="btn btn-primary btn-sm"><i class="fa fa-user-edit"></i> ویرایش پروفایل</button>
+    </div>
+
+    <!-- تب‌ها -->
+    <div class="col-md-8 mt-4 mt-md-0">
+      <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"><i class="fa fa-user"></i> اطلاعات</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button"><i class="fa fa-lock"></i> تغییر رمز</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"><i class="fa fa-cog"></i> تنظیمات</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button"><i class="fa fa-history"></i> فعالیت‌ها</button>
+        </li>
+      </ul>
+      <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
+
+        <!-- تب اطلاعات -->
+        <div class="tab-pane fade show active" id="info">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">نام کامل</label>
+              <input type="text" class="form-control" value="{{ user.first_name }}">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">ایمیل</label>
+              <input type="email" class="form-control" value="{{ user.email }}">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">شماره تماس</label>
+              <input type="text" class="form-control" value="0912xxxxxxx">
+            </div>
+            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> ذخیره تغییرات</button>
+          </form>
+        </div>
+
+        <!-- تب رمز -->
+        <div class="tab-pane fade" id="password">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">رمز فعلی</label>
+              <input type="password" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">رمز جدید</label>
+              <input type="password" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">تکرار رمز جدید</label>
+              <input type="password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>
+          </form>
+        </div>
+
+        <!-- تب تنظیمات -->
+        <div class="tab-pane fade" id="settings">
+          <form>
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" role="switch" checked>
+              <label class="form-check-label">دریافت ایمیل اطلاع‌رسانی</label>
+            </div>
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" role="switch">
+              <label class="form-check-label">پروفایل عمومی باشد</label>
+            </div>
+            <button type="submit" class="btn btn-secondary"><i class="fa fa-cog"></i> ذخیره تنظیمات</button>
+          </form>
+        </div>
+
+        <!-- تب فعالیت‌ها -->
+        <div class="tab-pane fade" id="activity">
+          <div class="activity-item"><i class="fa fa-check-circle text-success"></i> ورود به حساب کاربری</div>
+          <div class="activity-item"><i class="fa fa-edit text-primary"></i> ویرایش پروفایل</div>
+          <div class="activity-item"><i class="fa fa-file-alt text-info"></i> ارسال یک پست جدید</div>
+          <div class="activity-item"><i class="fa fa-comment text-warning"></i> ارسال یک دیدگاه</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
