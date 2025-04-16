@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/45.0.0/ckeditor5.css" />
 
-<!-- If you are using premium features: -->
     {% block header %}{% endblock header %}
     <style>{% block style %}{% endblock style %}</style>
 
@@ -68,7 +67,7 @@
             </a> {% endcomment %}
             {% if user.is_authenticated %} 
               <span class="text-muted">
-                welcome {{user.username}}
+                welcome <a href="{% url 'profile' %}">{{user.username}}</a>
                 | <a class="" href="{% url "account_logout" %}">خروج</a>
 
               </span> 
