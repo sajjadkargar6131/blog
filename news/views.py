@@ -99,11 +99,7 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         obj = self.get_object()
         if obj.cover:
             try:
-                cover_path = obj.cover.path
-                if os.path.isfile(cover_path):
-                    os.remove(cover_path)
-                else:
-                    print(f"File not found: {cover_path}")
+                obj.cover.delete()
             except Exception as e:
                 print(f"Error deleting file: {e}")
 
