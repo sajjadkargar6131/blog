@@ -13,10 +13,6 @@ from jalali_date import datetime2jalali
 from datetime import datetime
 from django.core.paginator import Paginator
 
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-
 from .utils import get_clinet_ip, generate_unique_slug
 from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
