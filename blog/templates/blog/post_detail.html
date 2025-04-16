@@ -25,6 +25,8 @@
 {% endblock seo%}
 
 {% block title %}{{detail.title}}{% endblock title %}
+{% block style %}
+{% endblock %}
 {% block content %} 
     <div class="row">
         <div class="col-md-10 mx-auto">
@@ -58,7 +60,9 @@
                         </div>
                     {% endif %}
                     <hr>
-                    <p class="card-text" style="text-align: justify;"> {{detail.text|safe|linebreaksbr}} </p>  
+                    <div class="card-text ck-content">
+                        <p>{{detail.text|safe|linebreaksbr}}</p>
+                    </div>
                     <div class="d-flex justify-content-between">
                         {% if not liked %}
                             <span>
@@ -74,11 +78,11 @@
                         <span class="text-muted">
                             <i class="fa fa-comment" aria-hidden="true"></i>
                             <span class="text-primary"> {{comments_count|format_number}} </span>
-                        </span> 
+                        </span>
                         <span class="text-muted">
                             <i class="fa fa-eye" aria-hidden="true"></i>
                             <span class="text-primary"> {{unique_views|format_number}} </span>
-                        </span> 
+                        </span>
 
                         {% if not bookmarked %}
                             <span>
@@ -91,7 +95,7 @@
                             <span class="text-primary"  id="bookmarks-count">{{bookmark_count|format_number}}</span>
                         </span>
                         {% endif %}
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="card shadow-sm mb-3">
