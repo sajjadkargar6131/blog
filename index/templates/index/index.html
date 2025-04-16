@@ -2,11 +2,15 @@
 {% load jalali_tags %}
 {% block content %}
   {% if top_post %}
-    <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+    <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis {% if not top_post.cover %} bg-body-secondary  {% endif %}"
+         {% if top_post.cover %}
+    style="background-image: url('{{ top_post.cover.url }}'); background-size: cover; background-position: center;"
+         {% endif %}
+    >
       <div class="col-lg-12 px-0">
         <h1 class="display-4 fst-italic"> {{top_post.title}} </h1>
-        <p class="lead my-3">
-          {{top_post.text|safe|truncatewords:50}}
+        <p class="lead my-3  {% if top_post.cover %} text-white {% endif %}">
+          {{top_post.text|safe|truncatewords:50|striptags }}
         </p>
         <p class="lead mb-0"><a href="{% url "post_detail" top_post.slug  %}" class=" fw-bold text-decoration-none"> نمایش کامل </a></p>
       </div>
