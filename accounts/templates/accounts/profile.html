@@ -13,7 +13,25 @@
       padding: 8px 0;
       border-bottom: 1px solid #eee;
     }
+
+
+  .profile-picture-container {
+    position: relative; /* موقعیت‌دادن نسبت به این container */
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+}
+
+.profile-picture-container .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%; /* دایره‌ای کردن عکس */
+}
+
+
   </style>
+
 {% endblock header %}
 {% block content %}
    <div class="container py-5">
@@ -22,6 +40,7 @@
     <div class="col-md-4 text-center bg-white p-4 rounded shadow-sm">
           {% if user.profile_picture %}
               <img src="{{ user.profile_picture.url}}" alt="پروفایل" class="profile-img border mb-3">
+
           {% else %}
               <img src="https://via.placeholder.com/120" alt="پروفایل" class="profile-img border mb-3">
           {% endif %}
@@ -31,8 +50,13 @@
     {{ form.profile_picture }}
 
     <label for="id_profile_picture" class="btn btn-outline-secondary btn-sm mb-3">
-        <i class="fa fa-camera"></i> تغییر عکس
+        <i class="fa fa-camera"></i> تغییر
     </label>
+                {% if user.profile_picture %}
+                    <button id="delete-picture-btn" class="btn btn-outline-secondary btn-sm mb-3">
+                     <i class="fa fa-times text-danger"></i>حذف
+                    </button>
+                {% endif %}
 </form>
 
 <script>
