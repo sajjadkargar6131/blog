@@ -40,7 +40,7 @@
               <img src="{{ user.profile_picture.url}}" alt="پروفایل" class="profile-img border mb-3">
 
           {% else %}
-              <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random&color=fff" class="profile-img" alt="پروفایل" class="profile-img border mb-3">
+              <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=a0a0a0&color=fff" class="profile-img" alt="پروفایل" class="profile-img border mb-3">
           {% endif %}
         <form  class="mt-2" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
