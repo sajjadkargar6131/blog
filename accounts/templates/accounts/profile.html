@@ -2,7 +2,7 @@
 {% load jalali_tags %}
 {% block title %}پروفایل کاربری{% endblock title %}
 {% block header %}
-      <style>
+  <style>
     .profile-img {
       width: 120px;
       height: 120px;
@@ -28,9 +28,7 @@
     object-fit: cover;
     border-radius: 50%; /* دایره‌ای کردن عکس */
 }
-
-
-  </style>
+      </style>
 
 {% endblock header %}
 {% block content %}
@@ -42,22 +40,23 @@
               <img src="{{ user.profile_picture.url}}" alt="پروفایل" class="profile-img border mb-3">
 
           {% else %}
-              <img src="https://via.placeholder.com/120" alt="پروفایل" class="profile-img border mb-3">
+              <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random&color=fff" class="profile-img" alt="پروفایل" class="profile-img border mb-3">
           {% endif %}
-            <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    {{ form.profile_picture }}
-
-    <label for="id_profile_picture" class="btn btn-outline-secondary btn-sm mb-3">
-        <i class="fa fa-camera"></i> تغییر
-    </label>
-                {% if user.profile_picture %}
-                    <button id="delete-picture-btn" class="btn btn-outline-secondary btn-sm mb-3">
-                     <i class="fa fa-times text-danger"></i>حذف
-                    </button>
-                {% endif %}
-</form>
+        <form  class="mt-2" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.profile_picture }}
+            <label for="id_profile_picture" class="btn btn-outline-secondary btn-sm mb-3">
+                 <i class="fa fa-camera"></i> تغییر
+            </label>
+        </form>
+    {% if user.profile_picture %}
+        <form id="delete-picture-form" action="{% url 'delete_profile_picture' %}">
+            {% csrf_token %}
+            <button type="button" onclick="confirmDelete()" class="btn btn-outline-secondary btn-sm mb-3">
+                <i class="fa fa-times text-danger"></i>حذف
+            </button>
+        </form>
+    {% endif %}
 
 <script>
     const fileInput = document.getElementById('id_profile_picture');
@@ -160,4 +159,22 @@
     </div>
   </div>
 </div>
+<script>
+    function confirmDelete() {
+    Swal.fire({
+        title: 'حذف عکس پروفایل؟',
+        text: "آیا مطمئنی که می‌خوای این عکس رو پاک کنی؟",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'بله، حذفش کن!',
+        cancelButtonText: 'بی‌خیال'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('delete-picture-form').submit();
+        }
+    })
+}
+</script>
 {% endblock content %}
