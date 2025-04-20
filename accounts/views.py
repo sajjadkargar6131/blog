@@ -2,21 +2,29 @@ import os
 
 from allauth.account.views import PasswordChangeView
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from allauth.account.forms import ChangePasswordForm
-from django.urls import reverse, reverse_lazy
-from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
+from django.utils.timezone import now
 
 from .forms import ProfilePictureForm
+from .models import Activity
 
 
 @login_required
 def profile(request):
     user = request.user
     active_tab = request.GET.get("tab", "info")
+    activities = Activity.objects.filter(user=user).order_by('-timestamp')
     change_password_form = ChangePasswordForm(request.user)
+
+    # صفحه‌بندی فعالیت‌ها
+    paginator = Paginator(activities, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     if request.method == 'POST':
         old_picture_path = user.profile_picture.path if user.profile_picture else None
         form = ProfilePictureForm(request.POST, request.FILES, instance=user)
@@ -26,6 +34,12 @@ def profile(request):
                 if old_picture_path and os.path.exists(old_picture_path):
                     os.remove(old_picture_path)
             form.save()
+            Activity.objects.create(
+                user=user,
+                action='profile_edit',
+                timestamp=now(),
+                description='ویرایش عکس  پروفایل'
+            )
             messages.success(request, 'عکس پروفایل با موفقیت به روز شد.')
             return redirect('profile')
     else:
@@ -35,6 +49,7 @@ def profile(request):
         'form': form,
         'change_password_form': change_password_form,
         'active_tab': active_tab,
+        'activities': page_obj,
     })
 
 
@@ -44,6 +59,12 @@ def delete_profile_picture(request):
     if user.profile_picture:
         user.profile_picture.delete(save=False)
         user.save()
+        Activity.objects.create(
+            user=user,
+            action='profile_edit',
+            timestamp=now(),
+            description='حذف عکس پروفایل'
+        )
         messages.success(request, 'عکس پروفایل با موفقیت حذف شد.')
     else:
         messages.info(request, 'عکسی برای حذف وجود نداشت.')
@@ -73,4 +94,3 @@ class CustomPasswordChangeView(PasswordChangeView):
         context = super().get_context_data(**kwargs)
         context["change_password_form"] = context.get("form")  # این خط مهمه
         return context
-

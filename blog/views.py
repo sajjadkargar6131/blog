@@ -1,4 +1,3 @@
-import os
 
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
@@ -11,8 +10,9 @@ from django.contrib import messages
 from django.http import JsonResponse
 from jalali_date import datetime2jalali
 from datetime import datetime
-from django.core.paginator import Paginator
+from django.utils.timezone import now
 
+from accounts.models import Activity
 from .utils import get_clinet_ip, generate_unique_slug
 from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
@@ -77,6 +77,12 @@ class PostDetailView(generic.DetailView, FormMixin):
             comment.user = request.user
             comment.save()
             messages.success(request, 'نظر شما با موفقیت ثبت شد. در صورت تایید مدیر نمایش داده میشود')
+            Activity.objects.create(
+                user=self.request.user,
+                action='comment_create',
+                timestamp=now(),
+                description='ثبت یک کامنت جدید'
+            )
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -106,6 +112,12 @@ class PostCreateView(LoginRequiredMixin, generic.CreateView):
         instance.slug = generate_unique_slug(instance.title, instance=instance)
         instance.save()
         form.save_m2m()
+        Activity.objects.create(
+            user=self.request.user,
+            action='post_create',
+            timestamp=now(),
+            description='ارسال یک پست جدید'
+        )
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
         return super().form_valid(form)
 
@@ -141,6 +153,12 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         instance.slug = generate_unique_slug(instance.title, instance=instance)
         instance.save()
         messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
+        Activity.objects.create(
+            user=self.request.user,
+            action='post_edit',
+            timestamp=now(),
+            description='ویرایش پست'
+        )
         return super().form_valid(form)
 
     def get_form_kwargs(self):
@@ -171,6 +189,12 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
                 print(f"Error deleting file: {e}")
 
         messages.success(self.request, "پست با موفقیت حذف شد")
+        Activity.objects.create(
+            user=self.request.user,
+            action='post_delete',
+            timestamp=now(),
+            description='حذف پست'
+        )
         return super().form_valid(form)
 
 

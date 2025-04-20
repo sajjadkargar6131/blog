@@ -78,77 +78,186 @@
     </div>
 
     <!-- تب‌ها -->
-    <div class="col-md-8 mt-4 mt-md-0">
-      <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-        <li class="nav-item">
-          <button class="nav-link {% if active_tab == 'info' %} active{% endif %}" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"><i class="fa fa-user"></i> اطلاعات</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link {% if active_tab == 'password' %}active{% endif %}" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button"><i class="fa fa-lock"></i> تغییر رمز</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"><i class="fa fa-cog"></i> تنظیمات</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button"><i class="fa fa-history"></i> فعالیت‌ها</button>
-        </li>
-      </ul>
-      <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
+{#    <div class="col-md-8 mt-4 mt-md-0">#}
+{#      <ul class="nav nav-tabs" id="profileTabs" role="tablist">#}
+{#        <li class="nav-item">#}
+{#          <button class="nav-link {% if active_tab == 'info' %} active{% endif %}" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"><i class="fa fa-user"></i> اطلاعات</button>#}
+{#        </li>#}
+{#        <li class="nav-item">#}
+{#          <button class="nav-link {% if active_tab == 'password' %}active{% endif %}" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button"><i class="fa fa-lock"></i> تغییر رمز</button>#}
+{#        </li>#}
+{#        <li class="nav-item">#}
+{#          <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"><i class="fa fa-cog"></i> تنظیمات</button>#}
+{#        </li>#}
+{#        <li class="nav-item">#}
+{#          <button class="nav-link {% if active_tab == 'activity' %}active{% endif %}" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button"><i class="fa fa-history"></i> فعالیت‌ها</button>#}
+{#        </li>#}
+{#      </ul>#}
+{#      <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">#}
+{##}
+{#        <!-- تب اطلاعات -->#}
+{#        <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">#}
+{#          <form>#}
+{#            <div class="mb-3">#}
+{#              <label class="form-label">نام کامل</label>#}
+{#              <input type="text" class="form-control" value="{{ user.first_name }}">#}
+{#            </div>#}
+{#            <div class="mb-3">#}
+{#              <label class="form-label">ایمیل</label>#}
+{#              <input type="email" class="form-control" value="{{ user.email }}">#}
+{#            </div>#}
+{#            <div class="mb-3">#}
+{#              <label class="form-label">شماره تماس</label>#}
+{#              <input type="text" class="form-control" value="0912xxxxxxx">#}
+{#            </div>#}
+{#            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> ذخیره تغییرات</button>#}
+{#          </form>#}
+{#        </div>#}
+{##}
+{#        <!-- تب رمز -->#}
+{#        <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">#}
+{#            <form id="password-change-form" method="post" action="{% url 'account_change' %}">#}
+{#                {% csrf_token %}#}
+{#                {{ change_password_form|crispy }}#}
+{#                <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>#}
+{#            </form>#}
+{#        </div>#}
+{##}
+{#        <!-- تب تنظیمات -->#}
+{#        <div class="tab-pane fade" id="settings">#}
+{#          <form>#}
+{#            <div class="form-check form-switch mb-2">#}
+{#              <input class="form-check-input" type="checkbox" role="switch" checked>#}
+{#              <label class="form-check-label">دریافت ایمیل اطلاع‌رسانی</label>#}
+{#            </div>#}
+{#            <div class="form-check form-switch mb-2">#}
+{#              <input class="form-check-input" type="checkbox" role="switch">#}
+{#              <label class="form-check-label">پروفایل عمومی باشد</label>#}
+{#            </div>#}
+{#            <button type="submit" class="btn btn-secondary"><i class="fa fa-cog"></i> ذخیره تنظیمات</button>#}
+{#          </form>#}
+{#        </div>#}
+{##}
+{#        <!-- تب فعالیت‌ها -->#}
+{#        <div class="tab-pane fade {% if active_tab == 'activity' %}show active{% endif %}" id="activity">#}
+{#          {% for activity in activities %}#}
+{#            <div class="activity-item">#}
+{#                <i class="fa {{ activity.get_icon }}"></i> {{ activity.get_action_display }} -#}
+{#                <small>{{ activity.timestamp|to_jalali:'%Y/%m/%d _ %H:%M:%S' }}</small>#}
+{#            </div>#}
+{#            {% empty %}#}
+{#                <div>هیچ فعالیتی وجود ندارد.</div>#}
+{#            {% endfor %}#}
+{#            <div class="pagination">#}
+{#                <span class="step-links">#}
+{#                    {% if activities.has_previous %}#}
+{#                        <a href="?page=1&tab=activity">&laquo; اول</a>#}
+{#                        <a href="?page={{ activities.previous_page_number }}&tab=activity">قبل</a>#}
+{#                    {% endif %}#}
+{##}
+{#                    <span class="current">#}
+{#                        صفحه {{ activities.number }} از {{ activities.paginator.num_pages }}.#}
+{#                    </span>#}
+{##}
+{#                    {% if activities.has_next %}#}
+{#                        <a href="?page={{ activities.next_page_number }}&tab=activity">بعد</a>#}
+{#                        <a href="?page={{ activities.paginator.num_pages }}&tab=activity">آخر &raquo;</a>#}
+{#                    {% endif %}#}
+{#                </span>#}
+{#            </div>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#    </div>#}
+  <div class="col-md-8 mt-4 mt-md-0">
+  <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link {% if active_tab == 'info' %} active{% endif %}" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"><i class="fa fa-user"></i> اطلاعات</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link {% if active_tab == 'password' %}active{% endif %}" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button"><i class="fa fa-lock"></i> تغییر رمز</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"><i class="fa fa-cog"></i> تنظیمات</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link {% if active_tab == 'activity' %}active{% endif %}" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button"><i class="fa fa-history"></i> فعالیت‌ها</button>
+    </li>
+  </ul>
+  <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
 
-        <!-- تب اطلاعات -->
-        <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">
-          <form>
-            <div class="mb-3">
-              <label class="form-label">نام کامل</label>
-              <input type="text" class="form-control" value="{{ user.first_name }}">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">ایمیل</label>
-              <input type="email" class="form-control" value="{{ user.email }}">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">شماره تماس</label>
-              <input type="text" class="form-control" value="0912xxxxxxx">
-            </div>
-            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> ذخیره تغییرات</button>
-          </form>
+    <!-- تب اطلاعات -->
+    <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">
+      <form>
+        <div class="mb-3">
+          <label class="form-label">نام کامل</label>
+          <input type="text" class="form-control" value="{{ user.first_name }}">
         </div>
-
-        <!-- تب رمز -->
-        <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">
-            <form id="password-change-form" method="post" action="{% url 'account_change' %}">
-                {% csrf_token %}
-                {{ change_password_form|crispy }}
-                <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>
-            </form>
+        <div class="mb-3">
+          <label class="form-label">ایمیل</label>
+          <input type="email" class="form-control" value="{{ user.email }}">
         </div>
-
-        <!-- تب تنظیمات -->
-        <div class="tab-pane fade" id="settings">
-          <form>
-            <div class="form-check form-switch mb-2">
-              <input class="form-check-input" type="checkbox" role="switch" checked>
-              <label class="form-check-label">دریافت ایمیل اطلاع‌رسانی</label>
-            </div>
-            <div class="form-check form-switch mb-2">
-              <input class="form-check-input" type="checkbox" role="switch">
-              <label class="form-check-label">پروفایل عمومی باشد</label>
-            </div>
-            <button type="submit" class="btn btn-secondary"><i class="fa fa-cog"></i> ذخیره تنظیمات</button>
-          </form>
+        <div class="mb-3">
+          <label class="form-label">شماره تماس</label>
+          <input type="text" class="form-control" value="0912xxxxxxx">
         </div>
+        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> ذخیره تغییرات</button>
+      </form>
+    </div>
 
-        <!-- تب فعالیت‌ها -->
-        <div class="tab-pane fade" id="activity">
-          <div class="activity-item"><i class="fa fa-check-circle text-success"></i> ورود به حساب کاربری</div>
-          <div class="activity-item"><i class="fa fa-edit text-primary"></i> ویرایش پروفایل</div>
-          <div class="activity-item"><i class="fa fa-file-alt text-info"></i> ارسال یک پست جدید</div>
-          <div class="activity-item"><i class="fa fa-comment text-warning"></i> ارسال یک دیدگاه</div>
+    <!-- تب رمز -->
+    <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">
+      <form id="password-change-form" method="post" action="{% url 'account_change' %}">
+        {% csrf_token %}
+        {{ change_password_form|crispy }}
+        <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>
+      </form>
+    </div>
+
+    <!-- تب تنظیمات -->
+    <div class="tab-pane fade" id="settings">
+      <form>
+        <div class="form-check form-switch mb-2">
+          <input class="form-check-input" type="checkbox" role="switch" checked>
+          <label class="form-check-label">دریافت ایمیل اطلاع‌رسانی</label>
         </div>
+        <div class="form-check form-switch mb-2">
+          <input class="form-check-input" type="checkbox" role="switch">
+          <label class="form-check-label">پروفایل عمومی باشد</label>
+        </div>
+        <button type="submit" class="btn btn-secondary"><i class="fa fa-cog"></i> ذخیره تنظیمات</button>
+      </form>
+    </div>
 
+    <!-- تب فعالیت‌ها -->
+    <div class="tab-pane fade {% if active_tab == 'activity' %}show active{% endif %}" id="activity">
+      {% for activity in activities %}
+        <div class="activity-item">
+          <i class="fa {{ activity.get_icon }}"></i> {{ activity.get_action_display }} -
+          <small>{{ activity.timestamp|to_jalali:'%Y/%m/%d _ %H:%M:%S' }}</small>
+        </div>
+      {% empty %}
+        <div>هیچ فعالیتی وجود ندارد.</div>
+      {% endfor %}
+      <div class="pagination">
+        <span class="step-links">
+          {% if activities.has_previous %}
+            <a href="?page=1&tab=activity">&laquo; اول</a>
+            <a href="?page={{ activities.previous_page_number }}&tab=activity">قبل</a>
+          {% endif %}
+          <span class="current">
+            صفحه {{ activities.number }} از {{ activities.paginator.num_pages }}.
+          </span>
+          {% if activities.has_next %}
+            <a href="?page={{ activities.next_page_number }}&tab=activity">بعد</a>
+            <a href="?page={{ activities.paginator.num_pages }}&tab=activity">آخر &raquo;</a>
+          {% endif %}
+        </span>
       </div>
     </div>
   </div>
+</div>
+
 </div>
 <script>
     function confirmDelete() {

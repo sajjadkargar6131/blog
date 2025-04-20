@@ -5,6 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import generic
 from django.views.generic.edit import FormMixin
 from django.urls import reverse
+from django.utils.timezone import now
+
+from accounts.models import Activity
 from .forms import NewsCreateForm, NewsCommentForm
 from .models import News
 
@@ -17,6 +20,12 @@ class NewsCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.author = self.request.user
         news_instance = form.save()
         messages.success(self.request, 'خبر با موفقیت ثبت شد.')
+        Activity.objects.create(
+            user=self.request.user,
+            action='news_create',
+            timestamp=now(),
+            description='ارسال خبر جدید'
+        )
         return redirect(news_instance.get_absolute_url())
 
 
@@ -102,7 +111,12 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
                 obj.cover.delete()
             except Exception as e:
                 print(f"Error deleting file: {e}")
-
+        Activity.objects.create(
+            user=self.request.user,
+            action='news_delete',
+            timestamp=now(),
+            description='حذف خبر'
+        )
         messages.success(self.request, "خبر با موفقیت حذف شد")
         return super().form_valid(form)
 
@@ -115,3 +129,13 @@ class NewsUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
     def test_func(self):
         obj = self.get_object()
         return obj.author == self.request.user
+
+    def form_valid(self, form):
+        Activity.objects.create(
+            user=self.request.user,
+            action='news_edit',
+            timestamp=now(),
+            description='ویرایش خبر'
+        )
+        messages.success(self.request, "خبر با موفقیت ویرایش شد")
+        return super().form_valid(form)

@@ -11,9 +11,16 @@ class CustomUser(AbstractUser):
 class Activity(models.Model):
     ACTION_CHOICES = [
         ('login', 'ورود به حساب کاربری'),
+        ('logout', 'خروج از حساب کاربری'),
         ('profile_edit', 'ویرایش پروفایل'),
         ('post_create', 'ارسال پست جدید'),
         ('comment_create', 'ارسال دیدگاه'),
+        ('post_edit', 'ویرایش پست '),
+        ('post_delete', 'حذف پست '),
+        ('news_create', 'ارسال خبر جدید'),
+        ('news_edit', 'ویرایش خبر '),
+        ('news_delete', 'حذف خبر '),
+
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -26,9 +33,16 @@ class Activity(models.Model):
 
     def get_icon(self):
         icons = {
-            'login': 'fa-check-circle text-success',
+            'login': 'fa-sign-in text-success',
+            'logout': 'fa-sign-out  text-danger',
             'profile_edit': 'fa-edit text-primary',
-            'post_create': 'fa-file-alt text-info',
+            'post_create': 'fa-file text-info',
             'comment_create': 'fa-comment text-warning',
+            'post_edit': 'fa-pencil text-primary',
+            'post_delete': 'fa-trash text-danger',
+            'news_create': 'fa-rss-square text-info',
+            'news_edit': 'fa-edit text-primary',
+            'news_delete': 'fa-trash text-danger',
+
         }
         return icons.get(self.action, 'fa-info-circle')
