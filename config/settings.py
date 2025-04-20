@@ -268,10 +268,10 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_CONFIRMATION_HTML = True
 ACCOUNT_RATE_LIMITS = {
-    "login": "2/m/ip",
+    "login": "10/m/ip",
     "signup": "10/m/ip",
     "reset_password": "5/m/key",
-    "login_failed": "2/m/ip",
+    "login_failed": "10/m/ip",
 }
 
 CACHES = {
