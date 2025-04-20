@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load jalali_tags %}
+{%load crispy_forms_tags %}
 {% block title %}پروفایل کاربری{% endblock title %}
 {% block header %}
   <style>
@@ -80,10 +81,10 @@
     <div class="col-md-8 mt-4 mt-md-0">
       <ul class="nav nav-tabs" id="profileTabs" role="tablist">
         <li class="nav-item">
-          <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"><i class="fa fa-user"></i> اطلاعات</button>
+          <button class="nav-link {% if active_tab == 'info' %} active{% endif %}" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"><i class="fa fa-user"></i> اطلاعات</button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button"><i class="fa fa-lock"></i> تغییر رمز</button>
+          <button class="nav-link {% if active_tab == 'password' %}active{% endif %}" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button"><i class="fa fa-lock"></i> تغییر رمز</button>
         </li>
         <li class="nav-item">
           <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"><i class="fa fa-cog"></i> تنظیمات</button>
@@ -95,7 +96,7 @@
       <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
 
         <!-- تب اطلاعات -->
-        <div class="tab-pane fade show active" id="info">
+        <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">
           <form>
             <div class="mb-3">
               <label class="form-label">نام کامل</label>
@@ -114,22 +115,12 @@
         </div>
 
         <!-- تب رمز -->
-        <div class="tab-pane fade" id="password">
-          <form>
-            <div class="mb-3">
-              <label class="form-label">رمز فعلی</label>
-              <input type="password" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">رمز جدید</label>
-              <input type="password" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">تکرار رمز جدید</label>
-              <input type="password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>
-          </form>
+        <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">
+            <form id="password-change-form" method="post" action="{% url 'account_change' %}">
+                {% csrf_token %}
+                {{ change_password_form|crispy }}
+                <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>
+            </form>
         </div>
 
         <!-- تب تنظیمات -->
