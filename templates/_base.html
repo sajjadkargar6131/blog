@@ -86,8 +86,10 @@
         <nav class="nav nav-underline justify-content-between">
           <a class="nav-item nav-link link-body-emphasis" href="{% url "index" %}">صفحه اصلی</a>
           <a class="nav-item nav-link link-body-emphasis" href="{% url "blog_index" %}">پست ها</a>
-          {% if user.is_authenticated %}
+          {% if  perms.blog.add_post  %}
             <a class="nav-item nav-link link-body-emphasis" href="{% url "post_create" %}"> اضافه کردن پست </a>
+          {% endif %}
+          {% if perms.news.add_news  %}
             <a class="nav-item nav-link link-body-emphasis" href="{% url "news_create" %}"> اضافه کردن خبر </a>
           {% endif %}
           <a class="nav-item nav-link link-body-emphasis" href="{% url "news_list" %}">اخبار</a>

@@ -5,12 +5,13 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin
 from django.views import generic
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.http import JsonResponse
 from jalali_date import datetime2jalali
 from datetime import datetime
 from django.utils.timezone import now
+
 
 from accounts.models import Activity
 from .utils import get_clinet_ip, generate_unique_slug
@@ -102,9 +103,10 @@ class PostDetailView(generic.DetailView, FormMixin):
 
 
 # --- Post Create View ---
-class PostCreateView(LoginRequiredMixin, generic.CreateView):
+class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     form_class = PostCreateForm
     template_name = 'blog/post_create.html'
+    permission_required = 'blog.add_post'
 
     def form_valid(self, form):
         form.instance.author = self.request.user

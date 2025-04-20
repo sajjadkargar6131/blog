@@ -1,7 +1,7 @@
 import os
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.views import generic
 from django.views.generic.edit import FormMixin
 from django.urls import reverse
@@ -12,9 +12,10 @@ from .forms import NewsCreateForm, NewsCommentForm
 from .models import News
 
 
-class NewsCreateView(LoginRequiredMixin, generic.CreateView):
+class NewsCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     form_class = NewsCreateForm
     template_name = 'news/news_create.html'
+    permission_required = 'news.add_news'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
