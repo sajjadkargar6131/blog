@@ -9,7 +9,7 @@ def index(request):
 
     monthly_archive = Post.objects.dates('created_at', 'month', order='DESC')
 
-    tags = Tag.objects.all()
+    tags = Tag.objects.annotate(post_count=Count('taggit_taggeditem_items')).filter(post_count__gt=0)
 
     return render(request, 'index/index.html',
                   {'top_post': top_post, 'monthly_archive': monthly_archive, 'tags': tags}
