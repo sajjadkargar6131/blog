@@ -1,56 +1,66 @@
 {% extends '_base.html' %}
 {% load humanize %}
 {% block content %}
-<div class="row mb-2">
-    {% for item in list %}
-     <div class="col-md-6">
-      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-        <div class="col p-3 d-flex flex-column position-static">
-          <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>
-          <a href="{% url 'post_detail' slug=item.slug %}" class="text-decoration-none"><h3 class="mb-0">{{ item.title|truncatewords:20 }}</h3></a>
-          <div class="mb-1 text-body-secondary">
-            <small><span class="text-muted">زمان ایجاد:</span></small>
-            {{ item.created_at|naturaltime }}
-            <small><span class="text-muted">توسط</span></small>
-            {{ item.author }}
-          </div>
-          <div class="mb-1 ">
-            <small><span class="text-muted">دسته بندی ها:</span></small>
-            {% if item.categories.all.exists  %}
-              {% for category in item.categories.all %}
-                <a href="{% url "category_post" category.name %}"><span class="badge bg-success mb-2">{{category.name}}</span></a>
-              {% endfor %}
-            {% else %}
-              <span class="badge bg-secondary mb-2">فاقد دسته بندی</span>
-            {% endif %}
-          </div>
-        </div>
-        <div class="col-auto d-none d-lg-block">
-          {% if item.cover %}
-            <img class="" src="{{item.cover.url}}" alt="" width="192" height="268">
-          {% endif %}
-        </div>
-      </div>
+<div class="container my-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for item in list %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 rounded">
+                    {% if item.cover %}
+                        <img src="{{ item.cover.url }}" class="card-img-top" alt="{{ item.title }}">
+                    {% else %}
+                        <div class="card-img-top bg-secondary" style="height: 200px;"></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>
+                        <a href="{% url 'post_detail' slug=item.slug %}" class="text-decoration-none">
+                            <h6 class="card-title">{{ item.title|truncatewords:15 }}</h6>
+                        </a>
+                        <p class="card-text text-muted">
+                            <small>
+                                <span class="text-muted">زمان ایجاد:</span>
+                                {{ item.created_at|naturaltime }}
+                            </small>
+                        </p>
+                        <div class="mb-2">
+                            <small><span class="text-muted">دسته بندی ها:</span></small>
+                            {% if item.categories.all.exists %}
+                                {% for category in item.categories.all %}
+                                    <a href="{% url 'category_post' category.name %}">
+                                        <span class="badge bg-success mb-2">{{ category.name }}</span>
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <span class="badge bg-secondary">فاقد دسته بندی</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a href="{% url 'post_detail' slug=item.slug %}" class="btn btn-outline-primary w-100">مشاهده بیشتر</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+
     {% if list %}
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
-          {% endif %}  
-          {% for page in page_numbers %}
-            <li class="page-item {% if page == page_obj.number %}active{% endif %}" {% if page == page_obj.number %} aria-current="page" {% endif %}>
-              <a class="page-link" href="?page={{ page }}">{{page}}</a>
-            </li>
-          {% endfor %}
-          {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
-          {% endif %}
-        </ul>
-      </nav>
-    {% endif %}  
-  </div>  
+        <nav aria-label="Page navigation example" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+                {% endif %}
+                {% for page in page_numbers %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
 
   {% endblock %}
 

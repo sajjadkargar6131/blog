@@ -32,10 +32,10 @@
         <div class="col-md-10 mx-auto">
             <div class="card mb-4 shadow-sm">
                 {% if detail.cover %}
-                    <img src="{{detail.cover.url}}" class="card-img-top post-image" alt="...">
+                    <img src="{{detail.cover.url}}" class="card-img-top-detail post-image" alt="...">
                 {% endif %}
                 <div class="card-body">
-                    <h1 class="card-title">{{detail.title}}</h1>
+                    <h4 class="card-title">{{detail.title}}</h4>
                     <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
                     <p class="card-text text-muted">تاریخ: <span> {{ detail.created_at|to_jalali:'%Y/%m/%d _ %H:%M:%S' }} </span></p>
                     {% if detail.tags.exists %}
@@ -101,13 +101,14 @@
             <div class="card shadow-sm mb-3">
                 <div class="card-body">
                     {% if comments %}
-                        <h2 class="card-title">نظرات</h2>
+                        <h5 class="card-title">نظرات</h5>
+                        <hr>
                         {% for comment in comments  %}
                             <div class="border-bottom mb-3">
-                                <h5 class="mb-3 text-primary">{{comment.user.username}} گفته :</h5>
-                                <p class="text-justify"> {{comment.text}} </p>
+                                <strong class="mb-3 text-muted">{{comment.user.username}} گفته :</strong>
+                                <p class="text-justify mt-1"> {{comment.text}} </p>
                                 <div class="d-flex justify-content-end">
-                                    <span class="text-muted">
+                                    <span class="text-muted mb-2">
                                         <span class="text-muted">{{comment.datetime_created|naturaltime}}</span>
                                     </span> 
                                 </div> 
@@ -120,7 +121,7 @@
                     {% if user.is_authenticated  %}
                         <!-- فرم ارسال نظر -->
                         <div class="mt-4">
-                            <h3>نظر خود را وارد کنید:</h3>
+                            <h5>نظر خود را وارد کنید:</h5>
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="mb-3">
