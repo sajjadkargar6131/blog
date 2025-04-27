@@ -9,7 +9,7 @@
                 <img src="{{detail.cover.url}}" class="card-img-top post-image" alt="...">
             {% endif %}
             <div class="card-body">
-                <h1 class="card-title">{{detail.title}}</h1>
+                <h3 class="card-title">{{detail.title}}</h3>
                 <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
                 <p class="card-text text-muted">تاریخ انتشار: <span> {{ detail.created_at|to_jalali:'%Y/%m/%d _ %H:%M:%S' }} </span></p>
                 {% comment %} {% if detail.tags.exists %}
