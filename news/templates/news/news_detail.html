@@ -79,7 +79,7 @@
                             </form>
                         </div>
                     {% else %}
-                        <div class="alert alert-primary">لطفا برای پسندیدن و افزودن نظر ابتدا وارد شوید <span>|</span> <a class="text-decoration-none" href="{% url 'login' %}?next={% url 'post_detail' detail.pk %}">ورود</a></div>
+                        <div class="alert alert-primary">لطفا برای پسندیدن و افزودن نظر ابتدا وارد شوید <span>|</span> <a class="text-decoration-none" href="{% url 'account_login' %}?next={% url 'post_detail' detail.pk %}">ورود</a></div>
                     {% endif %}
                 </div>
             </div>
