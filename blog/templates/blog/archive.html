@@ -1,7 +1,7 @@
 {% extends '_base.html' %}
 {% load humanize %}
 {% block content %}
-<h4><i class="fa fa-archive"></i> آرشیو{{month_name}}</h4>
+<h5 class="text-muted text-center"><i class="fa fa-archive p-2"></i>           آرشیو {{month_name}}</h5>
 <div class="row mb-2">
     {% for item in list %}
      <div class="col-md-6">
@@ -44,13 +44,13 @@
               <a class="page-link" href="?page={{ list.previous_page_number }}">قبلی</a>
             </li>
           {% endif %}
-    
+
           {% for page in list.paginator.page_range %}
             <li class="page-item {% if page == list.number %}active{% endif %}" {% if page == list.number %} aria-current="page" {% endif %}>
               <a class="page-link" href="?page={{ page }}">{{ page }}</a>
             </li>
           {% endfor %}
-    
+
           {% if list.has_next %}
             <li class="page-item">
               <a class="page-link" href="?page={{ list.next_page_number }}">بعدی</a>
@@ -59,7 +59,7 @@
         </ul>
       </nav>
     {% endif %}
-  </div>  
+  </div>
 
   {% endblock %}
 

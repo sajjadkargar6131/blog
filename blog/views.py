@@ -1,4 +1,3 @@
-
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -11,7 +10,7 @@ from django.http import JsonResponse
 from jalali_date import datetime2jalali
 from datetime import datetime
 from django.utils.timezone import now
-
+from django.core.paginator import Paginator
 
 from accounts.models import Activity
 from .utils import get_clinet_ip, generate_unique_slug
@@ -232,6 +231,9 @@ def bookmark_post(request, post_id):
         return JsonResponse({"bookmarked": bookmarked, "bookmarks_count": bookmarked_count})
 
 
+MONTH_NAMES_FA = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن',
+                   'اسفند']
+
 # --- Archive Month ---
 def archive_month(request, year, month):
     posts = Post.objects.filter(
@@ -242,7 +244,7 @@ def archive_month(request, year, month):
     # تبدیل تاریخ میلادی به یک شیء datetime
     date = datetime(year, month, 1)
     jalali_date = datetime2jalali(date)
-    month_name = jalali_date.strftime('%B %Y')  # نمایش نام ماه و سال به شمسی
+    month_name = f"{MONTH_NAMES_FA[jalali_date.month]} {jalali_date.year}"
 
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
@@ -286,4 +288,3 @@ class PostListByTagView(generic.ListView):
         context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
         context['page_numbers'] = context['paginator'].page_range
         return context
-

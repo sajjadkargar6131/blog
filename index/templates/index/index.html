@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load jalali_tags %}
+{% load jalali_extras %}
 {% block content %}
   {% if top_post %}
     <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis {% if not top_post.cover %} bg-body-secondary  {% endif %}"
@@ -146,7 +147,7 @@
             <h4 class="fst-italic">آرشیو ماهانه</h4>
             <ol class="list-unstyled mb-0">
               {% for date in monthly_archive  %}
-                <li><a href="{% url "archive_month" date.year date.month %}" class="text-decoration-none">{{date|to_jalali:'%B %Y'}}</a></li>
+                <li><a href="{% url "archive_month" date.year date.month %}" class="text-decoration-none">{{date|persian_month_name}} {{ date|to_jalali:'%Y' }}</a></li>
               {% endfor %}
             </ol>
           </div>
