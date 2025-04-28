@@ -98,38 +98,30 @@
           <h4 class="fst-italic">درباره وبلاگ</h4>
           <p class="mb-0">به وبلاگ ما خوش آمدید! اینجا جایی است که دنیای جذاب نویسندگی و داستان‌سرایی با شما به اشتراک گذاشته می‌شود. هدف ما از ایجاد این وبلاگ، فراهم کردن بستری برای به اشتراک گذاری افکار، ایده‌ها و داستان‌هایی است که قلب‌ها را به هم نزدیک‌تر می‌کند.</p>
         </div>
+      {% if recent_posts %}
         <div>
-          <h4 class="fst-italic">المشاركات الاخيرة</h4>
+          <h4 class="fst-italic">پست های اخیر</h4>
           <ul class="list-unstyled">
-            <li>
-              <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                <svg class="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
-                <div class="col-lg-8">
-                  <h6 class="mb-0">مثال على عنوان منشور المدونة</h6>
-                  <small class="text-body-secondary">15 يناير 2024</small>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                <svg class="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
-                <div class="col-lg-8">
-                  <h6 class="mb-0">هذا عنوان آخر للمدونة</h6>
-                  <small class="text-body-secondary">14 يناير 2024</small>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                <svg class="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
-                <div class="col-lg-8">
-                  <h6 class="mb-0">أطول عنوان منشور للمدونة: يحتوي هذا الخط على عدة أسطر!</h6>
-                  <small class="text-body-secondary">13 يناير 2024</small>
-                </div>
-              </a>
-            </li>
+              {% for post in recent_posts %}
+                    <li>
+                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="{% url 'post_detail' slug=post.slug %}">
+                            {% if post.cover %}
+                                <img class="bd-placeholder-img"  height="75px" width="75px" src="{{ post.cover.url}}" alt="" style="object-fit: cover; border-radius: 50%;">
+{#                                <svg class="bd-placeholder-img" width="100%" height="96"  aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>#}
+                            {% else %}
+                                <svg class="bd-placeholder-img"   style="object-fit: cover; border-radius: 50%;" width="75px" height="75px" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777" ></rect></svg>
+                            {% endif %}
+                            <div class="col-lg-8">
+                              <h6 class="mb-0">{{ post.title }}</h6>
+                              <small class="text-body-secondary">{{ post.created_at|to_jalali:'%Y/%m/%d' }} -- {{ post.author }}</small>
+                            </div>
+                        </a>
+                    </li>
+              {% endfor %}
           </ul>
         </div>
+          <hr>
+      {% endif %}
         {% if tags %}
           <div class="p-4 mb-3 bg-body-tertiary rounded " >
             <h4 class="fst-italic">تگ ها</h4>
