@@ -9,7 +9,7 @@ from allauth.account.forms import ChangePasswordForm
 from django.urls import reverse
 from django.utils.timezone import now
 
-from .forms import ProfilePictureForm
+from .forms import ProfilePictureForm, ProfileNameForm
 from .models import Activity
 
 
@@ -19,34 +19,51 @@ def profile(request):
     active_tab = request.GET.get("tab", "info")
     activities = Activity.objects.filter(user=user).order_by('-timestamp')
     change_password_form = ChangePasswordForm(request.user)
+    change_name_family_form = ProfileNameForm(instance=user)
 
     # صفحه‌بندی فعالیت‌ها
     paginator = Paginator(activities, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # ساخت فرم ها در صورت ارسال درخواست GET
+    form = ProfilePictureForm(instance=user)
+    form2 = ProfileNameForm(instance=user)
+
     if request.method == 'POST':
-        old_picture_path = user.profile_picture.path if user.profile_picture else None
-        form = ProfilePictureForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            if 'profile_picture' in request.FILES:
-                # حذف عکس قبلی
-                if old_picture_path and os.path.exists(old_picture_path):
-                    os.remove(old_picture_path)
-            form.save()
-            Activity.objects.create(
-                user=user,
-                action='profile_edit',
-                timestamp=now(),
-                description='ویرایش عکس  پروفایل'
-            )
-            messages.success(request, 'عکس پروفایل با موفقیت به روز شد.')
-            return redirect('profile')
-    else:
-        form = ProfilePictureForm(instance=user)
+        form_type = request.POST.get('form_type')
+        if form_type == 'update_picture':
+            old_picture_path = user.profile_picture.path if user.profile_picture else None
+            form = ProfilePictureForm(request.POST, request.FILES, instance=user)
+            if form.is_valid():
+                if 'profile_picture' in request.FILES:
+                    # حذف عکس قبلی
+                    if old_picture_path and os.path.exists(old_picture_path):
+                        os.remove(old_picture_path)
+                form.save()
+                Activity.objects.create(
+                    user=user,
+                    action='profile_edit',
+                    timestamp=now(),
+                    description='ویرایش عکس  پروفایل'
+                )
+                messages.success(request, 'عکس پروفایل با موفقیت به روز شد.')
+                return redirect('profile')
+        elif form_type == 'update_name':
+            name_form = ProfileNameForm(request.POST, instance=user)
+            if name_form.is_valid():
+                name_form.save()
+                Activity.objects.create(
+                    user=user,
+                    action='profile_edit',
+                    timestamp=now(),
+                    description='ویرایش   پروفایل'
+                )
+                messages.success(request, 'پروفایل با موفقیت به روز شد.')
 
     return render(request, 'accounts/profile.html', {
         'form': form,
+        'form2': change_name_family_form,
         'change_password_form': change_password_form,
         'active_tab': active_tab,
         'activities': page_obj,
