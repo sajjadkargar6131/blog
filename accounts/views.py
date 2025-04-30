@@ -12,6 +12,8 @@ from django.utils.timezone import now
 from .forms import ProfilePictureForm, ProfileNameForm
 from .models import Activity
 
+from blog.models import Post
+
 
 @login_required
 def profile(request):
@@ -25,6 +27,8 @@ def profile(request):
     paginator = Paginator(activities, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
+    bookmarks = Post.objects.filter(bookmarks__user=request.user).distinct()
 
     # ساخت فرم ها در صورت ارسال درخواست GET
     form = ProfilePictureForm(instance=user)
@@ -67,6 +71,7 @@ def profile(request):
         'change_password_form': change_password_form,
         'active_tab': active_tab,
         'activities': page_obj,
+        'bookmarks': bookmarks,
     })
 
 
