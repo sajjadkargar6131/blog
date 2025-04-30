@@ -183,7 +183,7 @@
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(response) {
-                if (response.bookarked) {
+                if (response.bookmarked) {
                     $("#bookmarks-icon").removeClass("fa fa-bookmark-o");
                     $("#bookmarks-icon").addClass("fa fa-bookmark text-muted");   
                 } else {
