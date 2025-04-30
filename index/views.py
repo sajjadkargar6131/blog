@@ -1,6 +1,8 @@
+import random
+
 from django.shortcuts import render
 from django.db.models import Count
-from blog.models import Post
+from blog.models import Post, Category
 from taggit.models import Tag
 
 
@@ -13,9 +15,18 @@ def index(request):
 
     recent_posts = Post.objects.all().order_by('-created_at')[:5]
 
+    categories = Category.objects.annotate(post_count=Count('posts'))
+
+    ids = Post.objects.values_list('id', flat=True)
+    random_ids = random.sample(list(ids), min(len(ids), 3))  # حداکثر ۳ پست
+    random_posts = Post.objects.filter(id__in=random_ids)
+
     return render(request, 'index/index.html',
                   {'top_post': top_post,
                    'monthly_archive': monthly_archive,
                    'tags': tags,
-                   'recent_posts': recent_posts}
+                   'recent_posts': recent_posts,
+                   'categories': categories,
+                   'random_posts': random_posts,
+                   }
                   )
