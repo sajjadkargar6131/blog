@@ -242,7 +242,8 @@ def archive_month(request, year, month):
 
     # فیلتر پست‌هایی که shamsi_date با این ماه شروع میشه
     posts = Post.objects.filter(
-        shamsi_date__startswith=month_str
+        shamsi_date__startswith=month_str,
+        status='pub'
     ).select_related('author')
 
     # ساخت نام فارسی ماه برای عنوان صفحه
@@ -268,7 +269,7 @@ class CategoryPostListView(generic.ListView):
 
     def get_queryset(self):
         category_name = self.kwargs['name']
-        return Post.objects.filter(categories__name=category_name).distinct()
+        return Post.objects.filter(categories__name=category_name, status='pub').distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -287,10 +288,11 @@ class PostListByTagView(generic.ListView):
     def get_queryset(self):
         tag_slug = self.kwargs['tag_slug']
         tag = get_object_or_404(Tag, slug=tag_slug)
-        return Post.objects.filter(tags=tag)
+        return Post.objects.filter(tags=tag, status='pub').select_related('author')  # optional: برای بهینه‌سازی
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
         context['page_numbers'] = context['paginator'].page_range
         return context
+
