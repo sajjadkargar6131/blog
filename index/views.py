@@ -2,6 +2,9 @@ import random
 
 from django.shortcuts import render
 from django.db.models import Count
+from django.db.models.functions import Substr
+
+from blog import models
 from blog.models import Post, Category
 from taggit.models import Tag
 
@@ -9,7 +12,13 @@ from taggit.models import Tag
 def index(request):
     top_post = Post.objects.annotate(view_count=Count('views')).order_by('-view_count').first()
 
-    monthly_archive = Post.objects.dates('created_at', 'month', order='DESC')
+    monthly_archive = (
+        Post.objects
+            .annotate(shamsi_month=Substr('shamsi_date', 1, 7))  # "1404-02"
+            .values('shamsi_month')
+            .annotate(post_count=Count('id'))
+            .order_by('-shamsi_month')
+    )
 
     tags = Tag.objects.annotate(post_count=Count('taggit_taggeditem_items')).filter(post_count__gt=0)
 

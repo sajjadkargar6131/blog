@@ -1,30 +1,18 @@
 from django import template
-from jalali_date import datetime2jalali
-from datetime import datetime
 
 register = template.Library()
 
-
 @register.filter
-def persian_month_name(value):
-    month_names = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن',
-                   'اسفند']
-
+def shamsi_month_name(value):
+    MONTH_NAMES_FA = [
+        'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+        'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+    ]
     try:
-        # اگر ورودی datetime یا date باشه
-        if hasattr(value, 'month'):
-            # اگر شیء فقط date بود (بدون زمان)، تبدیلش کن به datetime
-            if isinstance(value, datetime):
-                dt = value
-            else:
-                dt = datetime(value.year, value.month, value.day)
-
-            # تبدیل تاریخ میلادی به شمسی
-            jalali_date = datetime2jalali(dt)
-            month_number = jalali_date.month
-        else:
-            return ''
-
-        return month_names[month_number]
-    except (ValueError, IndexError):
+        month_index = int(value)
+        if 1 <= month_index <= 12:
+            return MONTH_NAMES_FA[month_index - 1]
         return ''
+    except (ValueError, TypeError):
+        return ''
+

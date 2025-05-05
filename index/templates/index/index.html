@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load jalali_tags %}
+{% load jalali_extras %}
 {% block content %}
   {% if top_post %}
     <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis {% if not top_post.cover %} bg-body-secondary  {% endif %}"
@@ -72,17 +73,21 @@
             <h4 class="fst-italic">دسته بندی ها</h4>
             {% for category in categories  %}
                 <a class="text-decoration-none" href="{% url "category_post" category.name %}">
-                    <span class="badge bg-success mb-2"> {{ category.name }} ({{ category.post_count }})</span>
+                    <span class="badge bg-success mb-2"> {{ category.name }} <span class="badge bg-secondary"> {{ category.post_count }} </span></span>
                 </a>
             {% endfor %}
           </div>
       {% endif %}
        {% if monthly_archive %}
-          <div class="p-4">
+          <div class="p-4 mb-3 bg-body-tertiary rounded ">
             <h4 class="fst-italic">آرشیو ماهانه</h4>
             <ol class="list-unstyled mb-0">
               {% for date in monthly_archive  %}
-                <li><a href="{% url "archive_month" date.year date.month %}" class="text-decoration-none">{{ date|to_jalali:'%B %Y' }}</a></li>
+                <li>
+                    <a href="{% url 'archive_month' date.shamsi_month|slice:":4" date.shamsi_month|slice:"5:" %}" class="text-decoration-none">
+                        {{ date.shamsi_month|slice:"5:"|shamsi_month_name }} <span class="badge bg-secondary">{{ date.post_count }}</span>
+                    </a>
+                </li>
               {% endfor %}
             </ol>
           </div>

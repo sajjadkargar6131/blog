@@ -232,25 +232,31 @@ def bookmark_post(request, post_id):
 
 
 MONTH_NAMES_FA = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن',
-                   'اسفند']
+                  'اسفند']
+
 
 # --- Archive Month ---
 def archive_month(request, year, month):
+    # ساخت رشته‌ای شبیه "1404-02"
+    month_str = f"{year}-{int(month):02d}"
+
+    # فیلتر پست‌هایی که shamsi_date با این ماه شروع میشه
     posts = Post.objects.filter(
-        created_at__year=year,
-        created_at__month=month
+        shamsi_date__startswith=month_str
     ).select_related('author')
 
-    # تبدیل تاریخ میلادی به یک شیء datetime
-    date = datetime(year, month, 1)
-    jalali_date = datetime2jalali(date)
-    month_name = f"{MONTH_NAMES_FA[jalali_date.month]} {jalali_date.year}"
+    # ساخت نام فارسی ماه برای عنوان صفحه
+    month_index = int(month)
+    month_name = f"{MONTH_NAMES_FA[month_index - 1]} {year}"
 
-    paginator = Paginator(posts, 10)
+    paginator = Paginator(posts, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'blog/archive.html', {'list': page_obj, 'month_name': month_name})
+    return render(request, 'blog/archive.html', {
+        'list': page_obj,
+        'month_name': month_name
+    })
 
 
 # --- Category Post List View ---
