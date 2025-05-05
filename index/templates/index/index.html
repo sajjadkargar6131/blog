@@ -2,19 +2,22 @@
 {% load jalali_tags %}
 {% load jalali_extras %}
 {% block content %}
-  {% if top_post %}
-    <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis {% if not top_post.cover %} bg-body-secondary  {% endif %}"
-         {% if top_post.cover %} style="background-image: url('{{ top_post.cover.url }}'); background-size: cover; background-position: center;"{% endif %}>
-      <div class="col-lg-12 px-0">
-        <h3 class="fst-italic"> {{top_post.title}} </h3>
-        <p class="lead my-3  {% if top_post.cover %} text-white {% endif %}">
-          {{top_post.text|safe|truncatewords:50|striptags }}
-        </p>
-        <p class="lead mb-0"><a href="{% url "post_detail" top_post.slug  %}" class=" fw-bold text-decoration-none"> نمایش کامل </a></p>
-      </div>
+{% if top_post %}
+  <div class="top-post-wrapper" style="{% if top_post.cover %}background-image: url('{{ top_post.cover.url }}');{% endif %}">
+    <div class="top-post-content">
+      <h3 class="fst-italic">{{ top_post.title }}</h3>
+      <p class="lead my-3">
+        {{ top_post.text|safe|truncatewords:50|striptags }}
+      </p>
+      <p class="lead mb-0">
+        <a href="{% url 'post_detail' top_post.slug %}" class="fw-bold text-white text-decoration-none">نمایش کامل</a>
+      </p>
     </div>
-  {% endif %}
-  <div class="row g-5">
+  </div>
+{% endif %}
+
+
+  <div class="row g-5 mt-1">
     <div class="col-md-8">
         {% if random_posts %}
             {% for post in random_posts %}
@@ -83,9 +86,9 @@
             <h4 class="fst-italic">آرشیو ماهانه</h4>
             <ol class="list-unstyled mb-0">
               {% for date in monthly_archive  %}
-                <li>
+                <li class="mb-1">
                     <a href="{% url 'archive_month' date.shamsi_month|slice:":4" date.shamsi_month|slice:"5:" %}" class="text-decoration-none">
-                        {{ date.shamsi_month|slice:"5:"|shamsi_month_name }} <span class="badge bg-secondary">{{ date.post_count }}</span>
+                        {{ date.shamsi_month|slice:"5:"|shamsi_month_name }}  {{ date.shamsi_month|slice:":4" }} <span class="badge bg-secondary">{{ date.post_count }}</span>
                     </a>
                 </li>
               {% endfor %}
