@@ -2,12 +2,11 @@ import os
 import re
 import shutil
 from datetime import date
-
+import jdatetime
 from django.db import models
 from django.shortcuts import reverse
 from taggit.managers import TaggableManager
 from django_ckeditor_5.fields import CKEditor5Field
-
 from config import settings
 
 
@@ -42,6 +41,7 @@ class Post(models.Model):
         null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    shamsi_date = models.CharField(max_length=10, null=True, blank=True)
 
     class Meta:
         verbose_name = 'پست'
@@ -82,7 +82,8 @@ class Post(models.Model):
 
             except Post.DoesNotExist:
                 pass
-
+        if not self.shamsi_date:
+            self.shamsi_date = jdatetime.date.today().strftime('%Y-%m-%d')
         super().save(*args, **kwargs)
 
     @property
