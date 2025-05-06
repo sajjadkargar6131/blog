@@ -189,8 +189,19 @@ customColorPalette = [
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': {
-            'items': ['heading', '|', 'bold', 'italic', 'link',
-                      'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+            'items': [ 'undo', 'redo',
+        '|',
+        'heading',
+        '|',
+        'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+        '|',
+        'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+        '|',
+        'link', 'uploadImage', 'blockQuote', 'codeBlock',
+        '|',
+        'alignment',
+        '|',
+        'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'],
                     }
 
     },
@@ -203,11 +214,14 @@ CKEDITOR_5_CONFIGS = {
             'blockQuote',
         ],
         'toolbar': {
-            'items': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
-                      'code','subscript', 'superscript', 'highlight', '|', 'codeBlock', 'sourceEditing', 'insertImage',
-                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
-                    'insertTable',
+            'items': [    'heading', '|',
+    'bold', 'italic', 'underline', 'strikethrough', 'highlight', '|',
+    'alignment', '|',
+    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+    'bulletedList', 'numberedList', 'blockQuote', '|',
+    'code', 'codeBlock', 'imageUpload', 'mediaEmbed', '|',
+    'insertTable', 'horizontalLine', 'link', '|',
+    'undo', 'redo', 'removeFormat'
                     ],
             'shouldNotGroupWhenFull': True
         },
