@@ -6,9 +6,10 @@
   <div class="top-post-wrapper" style="{% if top_post.cover %}background-image: url('{{ top_post.cover.url }}');{% endif %}">
     <div class="top-post-content">
       <h3 class="fst-italic">{{ top_post.title }}</h3>
-      <p class="lead my-3">
+      <p class="lead my-3 card-text ck-content">
         {{ top_post.text|safe|truncatewords:50|striptags }}
       </p>
+
       <p class="lead mb-0">
         <a href="{% url 'post_detail' top_post.slug %}" class="fw-bold text-white text-decoration-none">نمایش کامل</a>
       </p>
@@ -24,7 +25,9 @@
                 <article class="blog-post">
                     <h4 class="link-body-emphasis "> {{ post.title }} </h4>
                     <p class="blog-post-meta">{{ post.created_at|to_jalali:'%Y/%m/%d _ %H:%M'}} توسط <a href="#"> {{ post.author }} </a></p>
-                    <p>{{ post.text|safe }}</p>
+                    <div class="card-text ck-content">
+                        <p>{{post.text|safe|linebreaksbr}}</p>
+                    </div>
                     <hr>
                 </article>
             {% endfor %}
@@ -76,7 +79,7 @@
             <h4 class="fst-italic">دسته بندی ها</h4>
             {% for category in categories  %}
                 <a class="text-decoration-none" href="{% url "category_post" category.name %}">
-                    <span class="badge bg-success mb-2"> {{ category.name }} <span class="badge bg-secondary"> {{ category.post_count }} </span></span>
+                    <span class="badge bg-info mb-2 p-1"> {{ category.name }} ({{ category.post_count }}) </span>
                 </a>
             {% endfor %}
           </div>
