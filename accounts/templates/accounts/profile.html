@@ -6,36 +6,75 @@
 
 {% block header %}
     <style>
+      @media (max-width: 768px) {
+        .mobile-friendly-form .form-control {
+            font-size: 0.9rem;
+            padding: 0.5rem;
+        }
+
+        .mobile-friendly-form label {
+            font-size: 0.85rem;
+        }
+
         .profile-img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 50%;
+            width: 80px;
+            height: 80px;
         }
 
-        .activity-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
+        .col-md-4 {
+            margin-bottom: 1.5rem;
+            padding: 1rem !important;
         }
 
-        .profile-picture-container {
-            position: relative;
-            display: inline-block;
-            width: 120px;
-            height: 120px;
+        .nav-tabs .nav-item {
+            flex: 1;
+            text-align: center;
         }
 
-        .profile-picture-container .profile-img {
+        .nav-link {
+            font-size: 0.8rem;
+            padding: 0.5rem;
+        }
+
+        .nav-link i {
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        #saved .list-group-item {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .btn {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
+            margin-bottom: 0.5rem;
         }
+    }
+
+    .profile-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .activity-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+
+    .profile-picture-container .profile-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
     </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock header %}
 
 {% block content %}
-    <div class="container py-5">
         <div class="row">
             <!-- ستون پروفایل -->
             <div class="col-md-4 text-center bg-white p-4 rounded shadow-sm">
@@ -45,7 +84,7 @@
                     <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=a0a0a0&color=fff"
                          alt="پروفایل" class="profile-img border mb-3">
                 {% endif %}
-                <form class="mt-2" method="POST" enctype="multipart/form-data">
+                <form class="mt-2 mobile-friendly-form" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.profile_picture }}
                     <input type="hidden" name="form_type" value="update_picture">
@@ -54,7 +93,7 @@
                     </label>
                 </form>
                 {% if user.profile_picture %}
-                    <form id="delete-picture-form" action="{% url 'delete_profile_picture' %}">
+                    <form id="delete-picture-form" class="mobile-friendly-form" action="{% url 'delete_profile_picture' %}">
                         {% csrf_token %}
                         <button type="button" onclick="confirmDelete()" class="btn btn-outline-secondary btn-sm mb-3">
                             <i class="fa fa-times text-danger"></i> حذف
@@ -62,11 +101,11 @@
                     </form>
                 {% endif %}
 
-                <h4 class="mb-0">نام کاربری</h4>
+                <h5 class="mb-1">نام کاربری</h5>
                 <p class="text-muted">{{ user.username }}</p>
                 <p><i class="fa fa-calendar-alt"></i> عضویت: {{ user.date_joined|to_jalali:'%Y/%m/%d' }}</p>
                 <p><i class="fa fa-clock"></i> آخرین ورود: {{ user.last_login|to_jalali:'%Y/%m/%d' }}</p>
-                <button class="btn btn-primary btn-sm"><i class="fa fa-user-edit"></i> ویرایش پروفایل</button>
+
             </div>
 
             <!-- تب‌ها -->
@@ -106,7 +145,7 @@
                 <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
                     <!-- تب اطلاعات -->
                     <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">
-                        <form method="post">
+                        <form method="post" class="mobile-friendly-form">
                             {% csrf_token %}
                             <input type="hidden" name="form_type" value="update_name">
                             {{ form2|crispy }}
@@ -121,7 +160,7 @@
 
                     <!-- تب رمز -->
                     <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">
-                        <form method="post" action="{% url 'account_change' %}">
+                        <form method="post" action="{% url 'account_change' %}" class="mobile-friendly-form">
                             {% csrf_token %}
                             {{ change_password_form|crispy }}
                             <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>
@@ -130,7 +169,7 @@
 
                     <!-- تب تنظیمات -->
                     <div class="tab-pane fade" id="settings">
-                        <form>
+                        <form class="mobile-friendly-form">
                             <div class="form-check form-switch mb-2">
                                 <input class="form-check-input" type="checkbox" checked>
                                 <label class="form-check-label">دریافت ایمیل اطلاع‌رسانی</label>
@@ -200,7 +239,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <script>
         const fileInput = document.getElementById('id_profile_picture');

@@ -223,3 +223,60 @@ fieldset .form-check {
   font-size: 1.2rem; /* اندازه فونت متن */
 }
 
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        /*min-height: 600px;*/
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .form-container {
+        width: 100% !important;
+        position: relative !important;
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        z-index: auto !important;
+    }
+
+    .overlay-container {
+        display: none;
+    }
+
+
+    .social-container {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    input {
+        font-size: 16px;
+    }
+
+    button {
+        padding: 10px 30px;
+        font-size: 14px;
+    }
+}
+.social-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap; /* برای اینکه در موبایل خط بعدی بره اگه جا نشد */
+}
+
+.social-container a {
+    border: 1px solid #dddddd;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.social-container a:hover {
+    background-color: rgba(0,0,0,0.1);
+}

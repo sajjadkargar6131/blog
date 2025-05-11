@@ -296,3 +296,7 @@ class PostListByTagView(generic.ListView):
         context['page_numbers'] = context['paginator'].page_range
         return context
 
+
+
+def test(request):
+    return render(request,'blog/test.html')

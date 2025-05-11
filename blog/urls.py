@@ -22,4 +22,6 @@ urlpatterns = [
     path('category/<str:name>/', views.CategoryPostListView.as_view(), name='category_post'),
     
     re_path(r'^tag/(?P<tag_slug>[-\w\u0600-\u06FF]+)/$', views.PostListByTagView.as_view(), name='posts_by_tag'),
+
+    path('test/test/', views.test,),
 ]
