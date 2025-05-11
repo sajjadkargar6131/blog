@@ -6,263 +6,279 @@
 
 {% block header %}
     <style>
-      @media (max-width: 768px) {
-        .mobile-friendly-form .form-control {
-            font-size: 0.9rem;
-            padding: 0.5rem;
-        }
+        @media (max-width: 768px) {
+            .mobile-friendly-form .form-control {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
 
-        .mobile-friendly-form label {
-            font-size: 0.85rem;
+            .mobile-friendly-form label {
+                font-size: 0.85rem;
+            }
+
+            .profile-img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .col-md-4 {
+                margin-bottom: 1.5rem;
+                padding: 1rem !important;
+            }
+
+            .nav-tabs .nav-item {
+                flex: 1;
+                text-align: center;
+            }
+
+            .nav-link {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+
+            .nav-link i {
+                display: block;
+                margin-bottom: 0.2rem;
+            }
+
+            #saved .list-group-item {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
         }
 
         .profile-img {
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
-        .col-md-4 {
-            margin-bottom: 1.5rem;
-            padding: 1rem !important;
+        .activity-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
         }
 
-        .nav-tabs .nav-item {
-            flex: 1;
-            text-align: center;
-        }
-
-        .nav-link {
-            font-size: 0.8rem;
-            padding: 0.5rem;
-        }
-
-        .nav-link i {
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-
-        #saved .list-group-item {
-            padding: 0.75rem 0.5rem;
-        }
-
-        .btn {
+        .profile-picture-container .profile-img {
             width: 100%;
-            margin-bottom: 0.5rem;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
-    }
-
-    .profile-img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-
-    .activity-item {
-        padding: 8px 0;
-        border-bottom: 1px solid #eee;
-    }
-
-
-    .profile-picture-container .profile-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-    }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock header %}
 
 {% block content %}
-        <div class="row">
-            <!-- ستون پروفایل -->
-            <div class="col-md-4 text-center bg-white p-4 rounded shadow-sm">
-                {% if user.profile_picture %}
-                    <img src="{{ user.profile_picture.url }}" alt="پروفایل" class="profile-img border mb-3">
-                {% else %}
-                    <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=a0a0a0&color=fff"
-                         alt="پروفایل" class="profile-img border mb-3">
-                {% endif %}
-                <form class="mt-2 mobile-friendly-form" method="POST" enctype="multipart/form-data">
+    <div class="row">
+        <!-- ستون پروفایل -->
+        <div class="col-md-4 text-center bg-white p-4 rounded shadow-sm">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="پروفایل" class="profile-img border mb-3">
+            {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=a0a0a0&color=fff"
+                     alt="پروفایل" class="profile-img border mb-3">
+            {% endif %}
+            <form class="mt-2 mobile-friendly-form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.profile_picture }}
+                <input type="hidden" name="form_type" value="update_picture">
+                <label for="id_profile_picture" class="btn btn-outline-secondary btn-sm mb-3">
+                    <i class="fa fa-camera"></i> تغییر
+                </label>
+            </form>
+            {% if user.profile_picture %}
+                <form id="delete-picture-form" class="mobile-friendly-form" action="{% url 'delete_profile_picture' %}">
                     {% csrf_token %}
-                    {{ form.profile_picture }}
-                    <input type="hidden" name="form_type" value="update_picture">
-                    <label for="id_profile_picture" class="btn btn-outline-secondary btn-sm mb-3">
-                        <i class="fa fa-camera"></i> تغییر
-                    </label>
+                    <button type="button" onclick="confirmDelete()" class="btn btn-outline-secondary btn-sm mb-3">
+                        <i class="fa fa-times text-danger"></i> حذف
+                    </button>
                 </form>
-                {% if user.profile_picture %}
-                    <form id="delete-picture-form" class="mobile-friendly-form" action="{% url 'delete_profile_picture' %}">
+            {% endif %}
+
+            <h5 class="mb-1">نام کاربری</h5>
+            <p class="text-muted">{{ user.username }}</p>
+            <p><i class="fa fa-calendar-alt"></i> عضویت: {{ user.date_joined|to_jalali:'%Y/%m/%d' }}</p>
+            <p><i class="fa fa-clock"></i> آخرین ورود: {{ user.last_login|to_jalali:'%Y/%m/%d' }}</p>
+
+        </div>
+
+        <!-- تب‌ها -->
+        <div class="col-md-8 mt-4 mt-md-0">
+            <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link {% if active_tab == 'info' %}active{% endif %}" data-bs-toggle="tab"
+                            data-bs-target="#info" type="button">
+                        <i class="fa fa-user"></i> اطلاعات
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link {% if active_tab == 'password' %}active{% endif %}" data-bs-toggle="tab"
+                            data-bs-target="#password" type="button">
+                        <i class="fa fa-lock"></i> تغییر رمز
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#settings" type="button">
+                        <i class="fa fa-cog"></i> تنظیمات
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link {% if active_tab == 'activity' %}active{% endif %}" data-bs-toggle="tab"
+                            data-bs-target="#activity" type="button">
+                        <i class="fa fa-history"></i> فعالیت‌ها
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link {% if active_tab == 'saved' %}active{% endif %}" data-bs-toggle="tab"
+                            data-bs-target="#saved" type="button">
+                        <i class="fa fa-bookmark"></i> ذخیره شده ها
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link {% if active_tab == 'comments' %}active{% endif %}" data-bs-toggle="tab"
+                            data-bs-target="#comments" type="button">
+                        <i class="fa fa-comment"></i>کامنت ها
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
+                <!-- تب اطلاعات -->
+                <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">
+                    <form method="post" class="mobile-friendly-form">
                         {% csrf_token %}
-                        <button type="button" onclick="confirmDelete()" class="btn btn-outline-secondary btn-sm mb-3">
-                            <i class="fa fa-times text-danger"></i> حذف
-                        </button>
+                        <input type="hidden" name="form_type" value="update_name">
+                        {{ form2|crispy }}
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-success">ذخیره تغییرات</button>
+                        </div>
                     </form>
-                {% endif %}
+                </div>
 
-                <h5 class="mb-1">نام کاربری</h5>
-                <p class="text-muted">{{ user.username }}</p>
-                <p><i class="fa fa-calendar-alt"></i> عضویت: {{ user.date_joined|to_jalali:'%Y/%m/%d' }}</p>
-                <p><i class="fa fa-clock"></i> آخرین ورود: {{ user.last_login|to_jalali:'%Y/%m/%d' }}</p>
+                <!-- تب تغییر رمز عبور -->
+                <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ change_password_form|crispy }}
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-warning">تغییر رمز</button>
+                        </div>
+                    </form>
+                </div>
 
-            </div>
-
-            <!-- تب‌ها -->
-            <div class="col-md-8 mt-4 mt-md-0">
-                <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-                    <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'info' %}active{% endif %}" data-bs-toggle="tab"
-                                data-bs-target="#info" type="button">
-                            <i class="fa fa-user"></i> اطلاعات
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'password' %}active{% endif %}" data-bs-toggle="tab"
-                                data-bs-target="#password" type="button">
-                            <i class="fa fa-lock"></i> تغییر رمز
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#settings" type="button">
-                            <i class="fa fa-cog"></i> تنظیمات
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'activity' %}active{% endif %}" data-bs-toggle="tab"
-                                data-bs-target="#activity" type="button">
-                            <i class="fa fa-history"></i> فعالیت‌ها
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'saved' %}active{% endif %}" data-bs-toggle="tab"
-                                data-bs-target="#saved" type="button">
-                            <i class="fa fa-bookmark"></i> ذخیره شده ها
-                        </button>
-                    </li>
-                </ul>
-
-                <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
-                    <!-- تب اطلاعات -->
-                    <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">
-                        <form method="post" class="mobile-friendly-form">
-                            {% csrf_token %}
-                            <input type="hidden" name="form_type" value="update_name">
-                            {{ form2|crispy }}
-                            <div class="mb-3">
-                                <label class="form-label">ایمیل</label>
-                                <input type="email" class="form-control" value="{{ user.email }}" readonly>
-                            </div>
-                            <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> ذخیره تغییرات
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- تب رمز -->
-                    <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">
-                        <form method="post" action="{% url 'account_change' %}" class="mobile-friendly-form">
-                            {% csrf_token %}
-                            {{ change_password_form|crispy }}
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-lock"></i> تغییر رمز</button>
-                        </form>
-                    </div>
-
-                    <!-- تب تنظیمات -->
-                    <div class="tab-pane fade" id="settings">
-                        <form class="mobile-friendly-form">
-                            <div class="form-check form-switch mb-2">
-                                <input class="form-check-input" type="checkbox" checked>
-                                <label class="form-check-label">دریافت ایمیل اطلاع‌رسانی</label>
-                            </div>
-                            <div class="form-check form-switch mb-2">
-                                <input class="form-check-input" type="checkbox">
-                                <label class="form-check-label">پروفایل عمومی باشد</label>
-                            </div>
-                            <button type="submit" class="btn btn-secondary"><i class="fa fa-cog"></i> ذخیره تنظیمات
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- تب فعالیت‌ها -->
-                    <div class="tab-pane fade {% if active_tab == 'activity' %}show active{% endif %}" id="activity">
-                        {% for activity in activities %}
-                            <div class="activity-item">
-                                <i class="fa {{ activity.get_icon }}"></i> {{ activity.get_action_display }}
-                                - <small>{{ activity.timestamp|to_jalali:'%Y/%m/%d _ %H:%M:%S' }}</small>
-                            </div>
-                        {% empty %}
-                            <div>هیچ فعالیتی وجود ندارد.</div>
-                        {% endfor %}
-                        <div class="pagination">
+                <!-- تب فعالیت‌ها -->
+                <div class="tab-pane fade {% if active_tab == 'activity' %}show active{% endif %}" id="activity">
+                    {% for activity in activities %}
+                        <div class="activity-item">
+                            <i class="fa {{ activity.get_icon }}"></i> {{ activity.get_action_display }}
+                            - <small>{{ activity.timestamp|to_jalali:'%Y/%m/%d _ %H:%M:%S' }}</small>
+                        </div>
+                    {% empty %}
+                        <div>هیچ فعالیتی وجود ندارد.</div>
+                    {% endfor %}
+                    <div class="pagination">
                         <span class="step-links">
                             {% if activities.has_previous %}
-                                <a href="?page=1&tab=activity">&laquo; اول</a>
-                                <a href="?page={{ activities.previous_page_number }}&tab=activity">قبل</a>
+                                <a href="?page_activities=1&tab=activity">&laquo; اول</a>
+                                <a href="?page_activities={{ activities.previous_page_number }}&tab=activity">قبلی</a>
                             {% endif %}
                             <span class="current">
                                 صفحه {{ activities.number }} از {{ activities.paginator.num_pages }}.
                             </span>
                             {% if activities.has_next %}
-                                <a href="?page={{ activities.next_page_number }}&tab=activity">بعد</a>
-                                <a href="?page={{ activities.paginator.num_pages }}&tab=activity">آخر &raquo;</a>
+                                <a href="?page_activities={{ activities.next_page_number }}&tab=activity">بعدی</a>
+                                <a href="?page_activities={{ activities.paginator.num_pages }}&tab=activity">آخرین &raquo;</a>
                             {% endif %}
                         </span>
-                        </div>
                     </div>
+                </div>
 
-                    <!-- تب ذخیره شده ها -->
-                    <div class="tab-pane fade {% if active_tab == 'saved' %}show active{% endif %}" id="saved">
-                        {% if bookmarks %}
-                            <ul class="list-group list-group-flush">
-                                {% for post in bookmarks %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            {% if post.status == 'pub' %}
-                                                <a href="{{ post.get_absolute_url }}" class="fw-bold text-decoration-none">
-                                                    {{ post.title }}
-                                                </a>
-                                            {% else %}
-                                                <span class="fw-bold text-muted">
-                                                    {{ post.title }} <small class="text-danger">(غیرفعال شده توسط نویسنده)</small>
-                                                </span>
-                                            {% endif %}
-                                            <small class="text-muted d-block">نویسنده: {{ post.author.get_full_name|default:post.author.username }}</small>
-                                        </div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                <!-- تب ذخیره‌شده‌ها -->
+                <div class="tab-pane fade {% if active_tab == 'saved' %}show active{% endif %}" id="saved">
+                    {% if bookmarks %}
+                        <ul class="list-group list-group-flush">
+                            {% for post in bookmarks %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        {% if post.status == 'pub' %}
+                                            <a href="{{ post.get_absolute_url }}" class="fw-bold text-decoration-none">
+                                                {{ post.title }}
+                                            </a>
+                                        {% else %}
+                                            <span class="fw-bold text-muted">
+                                                {{ post.title }} <small class="text-danger">(غیرفعال شده توسط نویسنده)</small>
+                                            </span>
+                                        {% endif %}
+                                        <small class="text-muted d-block">نویسنده: {{ post.author.get_full_name|default:post.author.username }}</small>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">شما هیچ پستی را ذخیره نکرده‌اید و یا پست ذخیره شده توسط نویسنده آن حذف شده است.</p>
+                    {% endif %}
+                     <div class="pagination">
+                        <span class="step-links">
+                            {% if bookmarks.has_previous %}
+                                <a href="?page_bookmarks=1&tab=saved">&laquo; اول</a>
+                                <a href="?page_bookmarks={{ bookmarks.previous_page_number }}&tab=saved">قبلی</a>
+                            {% endif %}
+                            <span class="current">
+                                صفحه {{ bookmarks.number }} از {{ bookmarks.paginator.num_pages }}.
+                            </span>
+                            {% if bookmarks.has_next %}
+                                <a href="?page_bookmarks={{ bookmarks.next_page_number }}&tab=saved">بعدی</a>
+                                <a href="?page_bookmarks={{ bookmarks.paginator.num_pages }}&tab=saved">آخرین &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
 
-                        {% else %}
-                            <p class="text-muted">شما هیچ پستی را ذخیره نکرده‌اید و یا پست ذخیره شده توسط نویسنده آن حذف شده است.</p>
-                        {% endif %}
+                <!-- تب کامنت‌ها -->
+                <div class="tab-pane fade {% if active_tab == 'comments' %}show active{% endif %}" id="comments">
+                    <ul class="list-group list-group-flush">
+                        {% for comment in comments %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if comment.publish %}
+                                        <a href="{{ comment.post.get_absolute_url }}"
+                                           class="fw-bold text-decoration-none">
+                                            {{ comment.text|truncatechars:30 }}
+                                        </a>
+                                    {% else %}
+                                        <span class="fw-bold text-muted">
+                                            {{ comment.text|truncatechars:30 }} <small class="text-danger">(تایید نشده)</small>
+                                        </span>
+                                    {% endif %}
+                                    <small class="text-muted d-block">تاریخ : {{ comment.datetime_created|to_jalali:'%Y/%m/%d' }}</small>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <p>هیچ کامنتی وجود ندارد.</p>
+                        {% endfor %}
+                    </ul>
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if comments.has_previous %}
+                                <a href="?page_comments=1&tab=comments">&laquo; اول</a>
+                                <a href="?page_comments={{ comments.previous_page_number }}&tab=comments">قبلی</a>
+                            {% endif %}
+                            <span class="current">
+                                صفحه {{ comments.number }} از {{ comments.paginator.num_pages }}.
+                            </span>
+                            {% if comments.has_next %}
+                                <a href="?page_comments={{ comments.next_page_number }}&tab=comments">بعدی</a>
+                                <a href="?page_comments={{ comments.paginator.num_pages }}&tab=comments">آخرین &raquo;</a>
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
-
-    <script>
-        const fileInput = document.getElementById('id_profile_picture');
-        if (fileInput) {
-            fileInput.addEventListener('change', function () {
-                this.form.submit();
-            });
-        }
-
-        function confirmDelete() {
-            Swal.fire({
-                title: 'حذف عکس پروفایل؟',
-                text: "آیا مطمئنی که می‌خوای این عکس رو پاک کنی؟",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'بله، حذفش کن!',
-                cancelButtonText: 'بی‌خیال'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-picture-form').submit();
-                }
-            })
-        }
-    </script>
-{% endblock content %}
+    </div>
+{% endblock %}

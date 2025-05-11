@@ -12,23 +12,33 @@ from django.utils.timezone import now
 from .forms import ProfilePictureForm, ProfileNameForm
 from .models import Activity
 
-from blog.models import Post
+from blog.models import Post, Comment
 
 
 @login_required
 def profile(request):
     user = request.user
     active_tab = request.GET.get("tab", "info")
-    activities = Activity.objects.filter(user=user).order_by('-timestamp')
     change_password_form = ChangePasswordForm(request.user)
     change_name_family_form = ProfileNameForm(instance=user)
 
-    # صفحه‌بندی فعالیت‌ها
-    paginator = Paginator(activities, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    # دریافت فعالیت‌ها (activities)
+    activities = Activity.objects.filter(user=user).order_by('-timestamp')
+    activities_paginator = Paginator(activities, 10)  # صفحه‌بندی برای فعالیت‌ها
+    activities_page_number = request.GET.get('page_activities')
+    activities_page_obj = activities_paginator.get_page(activities_page_number)
 
+    # دریافت ذخیره‌شده‌ها (bookmarks)
     bookmarks = Post.objects.filter(bookmarks__user=request.user).distinct()
+    bookmarks_paginator = Paginator(bookmarks, 10)  # صفحه‌بندی برای ذخیره‌شده‌ها
+    bookmarks_page_number = request.GET.get('page_bookmarks')
+    bookmarks_page_obj = bookmarks_paginator.get_page(bookmarks_page_number)
+
+    # دریافت کامنت‌ها (comments)
+    comments = Comment.objects.filter(user=request.user)
+    comments_paginator = Paginator(comments, 10)  # صفحه‌بندی برای کامنت‌ها
+    comments_page_number = request.GET.get('page_comments')
+    comments_page_obj = comments_paginator.get_page(comments_page_number)
 
     # ساخت فرم ها در صورت ارسال درخواست GET
     form = ProfilePictureForm(instance=user)
@@ -70,8 +80,9 @@ def profile(request):
         'form2': change_name_family_form,
         'change_password_form': change_password_form,
         'active_tab': active_tab,
-        'activities': page_obj,
-        'bookmarks': bookmarks,
+        'activities': activities_page_obj,
+        'bookmarks': bookmarks_page_obj,
+        'comments': comments_page_obj,
     })
 
 
