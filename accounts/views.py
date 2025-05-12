@@ -74,7 +74,7 @@ def profile(request):
                     description='ویرایش   پروفایل'
                 )
                 messages.success(request, 'پروفایل با موفقیت به روز شد.')
-
+                return redirect('profile')
     return render(request, 'accounts/profile.html', {
         'form': form,
         'form2': change_name_family_form,
