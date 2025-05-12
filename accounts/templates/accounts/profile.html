@@ -76,7 +76,7 @@
 {% block content %}
     <div class="row">
         <!-- ستون پروفایل -->
-        <div class="col-md-4 text-center bg-white p-4 rounded shadow-sm">
+        <div class="col-md-4 text-center  p-4 rounded shadow-sm">
             {% if user.profile_picture %}
                 <img src="{{ user.profile_picture.url }}" alt="پروفایل" class="profile-img border mb-3">
             {% else %}
@@ -147,7 +147,7 @@
                 </li>
             </ul>
 
-            <div class="tab-content bg-white border border-top-0 p-4 shadow-sm" id="profileTabsContent">
+            <div class="tab-content border border-top-0 p-4 shadow-sm" id="profileTabsContent">
                 <!-- تب اطلاعات -->
                 <div class="tab-pane fade {% if active_tab == 'info' %}show active{% endif %}" id="info">
                     <form method="post" class="mobile-friendly-form">
