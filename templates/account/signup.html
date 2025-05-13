@@ -1,5 +1,5 @@
 {% extends '_base.html' %}
-
+{% load socialaccount %}
 {% block header %}
     <style>
         .auth-card {
@@ -155,12 +155,12 @@
                     <div class="text-center mb-3">
                         <p>ثبت‌نام با حساب‌های دیگر</p>
 
-                        <a href=""
+                        <a href="{% provider_login_url 'google' %}"
                            class="btn btn-outline-danger w-100 mb-2">
                             <i class="fa fa-google me-2"></i> ادامه با گوگل
                         </a>
 
-                        <a href="" class="btn btn-outline-dark w-100">
+                        <a href="{% provider_login_url 'github' %}" class="btn btn-outline-warning w-100">
                             <i class="fa fa-github me-2"></i> ادامه با گیت‌هاب
                         </a>
                     </div>
