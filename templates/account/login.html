@@ -1,178 +1,119 @@
 {% extends '_base.html' %}
+
 {% block header %}
-  <style>
-    .auth-card {
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-    }
+    <style>
+        .auth-card {
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
 
-    .nav-tabs .nav-link.active {
-        background-color: transparent;
-        border: none;
-        border-bottom: 3px solid #ff4b2b;
-        color: #ff4b2b;
-        font-weight: bold;
-    }
+        .form-group {
+            position: relative;
+        }
 
-    .nav-tabs .nav-link {
-        border: none;
-        color: darkorchid;
-        font-size: 16px;
-    }
+        .form-group:not(.input-group) input {
+            padding-left: 40px;
+        }
 
-    .form-icon {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #aaa;
-    }
+        input[type="email"]::placeholder,
+        input[type="email"],
+        input[type="password"]::placeholder,
+        input[type="password"] {
+            text-align: right;
+            direction: rtl;
+        }
 
-    .form-group {
-        position: relative;
-    }
+        a {
+            text-decoration: none;
+            color: #ff4b2b;
+        }
 
-
-    .form-group:not(.input-group) input {
-        padding-left: 40px;
-    }
-
-    input[type="email"]::placeholder,
-    input[type="email"],
-    input[type="password"]::placeholder,
-    input[type="password"] {
-        text-align: right;
-        direction: rtl;
-    }
-
-    a {
-        text-decoration: none;
-        color: #ff4b2b;
-    }
-
-</style>
-
+        .title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+    </style>
 {% endblock header %}
 
+{% block title %}
+    ورود
+{% endblock %}
+
 {% block content %}
-    <div class="mt-3 ">
+    <div class="mt-3">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 <div class="auth-card p-4">
+                    <!-- عنوان ورود -->
+                    <h2 class="title">ورود</h2>
 
-                    <!-- Tabs -->
-                    <ul class="nav nav-tabs justify-content-center mb-4" id="authTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="login-tab" data-bs-toggle="tab"
-                                    data-bs-target="#loginTab" type="button" role="tab">ورود
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="register-tab" data-bs-toggle="tab"
-                                    data-bs-target="#registerTab" type="button" role="tab">ثبت‌نام
-                            </button>
-                        </li>
-                    </ul>
+                    <form method="post" action="{% url 'account_login' %}">
+                        {% csrf_token %}
+                        {{ redirect_field }}
 
-                    <!-- Tab Contents -->
-                    <div class="tab-content" id="authTabsContent">
-                        <!-- Login -->
-                        <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
-                            <form method="post" action="{% url 'account_login' %}">
-                                {% csrf_token %}
-                                {{ redirect_field }}
-
-                                <!-- ایمیل / نام کاربری -->
-                                <div class="form-group mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-                                        <input type="email" name="login"
-                                               class="form-control {% if form.login.errors %}is-invalid{% endif %}"
-                                               placeholder="ایمیل"
-                                               value="{{ form.login.value|default:'' }}">
-                                    </div>
-                                    {% if form.login.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.login.errors.0 }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <!-- رمز عبور -->
-                                <div class="form-group mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                                        <input type="password" name="password" id="passwordInput"
-                                               class="form-control {% if form.password.errors %}is-invalid{% endif %}"
-                                               placeholder="رمز عبور">
-                                        <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
-                                            <i class="fa fa-eye" id="eyeIcon"></i>
-                                         </span>
-                                    </div>
-                                    {% if form.password.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.password.errors.0 }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <!-- دکمه ورود -->
-                                <button type="submit" class="btn btn-success w-100 py-2">ورود</button>
-
-                                <!-- خطاهای کلی مثل رمز اشتباه -->
-                                {% if form.non_field_errors %}
-                                    <div class="alert alert-danger mt-3" role="alert">
-                                        {% for error in form.non_field_errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-
-                                <!-- لینک فراموشی رمز -->
-                                <div class="text-center mt-3">
-                                    <a href="{% url 'account_reset_password' %}">فراموشی رمز عبور</a>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Register -->
-                        <div class="tab-pane fade" id="registerTab" role="tabpanel">
-                            <form>
-                                <div class="form-group mb-3">
-                                    <i class="bi bi-person form-icon"></i>
-                                    <input type="text" class="form-control" placeholder="نام کامل">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <i class="bi bi-phone form-icon"></i>
-                                    <input type="tel" class="form-control" placeholder="شماره موبایل">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <i class="bi bi-lock form-icon"></i>
-                                    <input type="password" class="form-control" placeholder="رمز عبور">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <i class="bi bi-lock-fill form-icon"></i>
-                                    <input type="password" class="form-control" placeholder="تکرار رمز عبور">
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 py-2">ثبت‌نام</button>
-                            </form>
-
-                            <hr class="my-4">
-
-                            <div class="text-center">
-                                <p class="mb-3">یا ثبت‌نام با:</p>
-                                <a href="" class="btn btn-outline-danger w-100 mb-2">
-                                    <i class="fa fa-google" aria-hidden="true"></i> گوگل
-                                </a>
-                                <a href="" class="btn btn-outline-danger  w-100">
-                                    <i class="fa fa-github" aria-hidden="true"></i> گیت‌هاب
-                                </a>
+                        <!-- ایمیل / نام کاربری -->
+                        <div class="form-group mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                <input type="email" name="login"
+                                       class="form-control {% if form.login.errors %}is-invalid{% endif %}"
+                                       placeholder="ایمیل"
+                                       value="{{ form.login.value|default:'' }}">
                             </div>
+                            {% if form.login.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.login.errors.0 }}
+                                </div>
+                            {% endif %}
                         </div>
+
+                        <!-- رمز عبور -->
+                        <div class="form-group mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                <input type="password" name="password" id="passwordInput"
+                                       class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                                       placeholder="رمز عبور">
+                                <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
+                                    <i class="fa fa-eye" id="eyeIcon"></i>
+                                </span>
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.password.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- دکمه ورود -->
+                        <button type="submit" class="btn btn-success w-100 py-2">ورود</button>
+
+                        <!-- خطاهای کلی مثل رمز اشتباه -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mt-3" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <!-- لینک فراموشی رمز -->
+                        <div class="text-center mt-3">
+                            <a href="{% url 'account_reset_password' %}">فراموشی رمز عبور</a>
+                        </div>
+                    </form>
+
+                    <!-- لینک به صفحه ثبت‌نام -->
+                    <div class="text-center mt-3">
+                        <p>حساب کاربری ندارید؟ <a href="{% url 'account_signup' %}">ثبت‌نام کنید</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const passwordInput = document.getElementById('passwordInput');
@@ -188,4 +129,3 @@
         });
     </script>
 {% endblock content %}
-
