@@ -1,6 +1,31 @@
 {% extends "_base.html" %}
 {% load jalali_tags %}
 {% load jalali_extras %}
+{% block seo %}
+    <meta name="robots" content="index, follow">
+
+    <meta name="description" content="{{ site_description|default:'جدیدترین مقالات، آموزش‌ها و مطالب وبلاگ ما را در این صفحه ببینید.' }}">
+    <meta property="og:description" content="{{ site_description|default:'جدیدترین مقالات، آموزش‌ها و مطالب وبلاگ ما را در این صفحه ببینید.' }}">
+    <meta name="twitter:description" content="{{ site_description|default:'جدیدترین مقالات، آموزش‌ها و مطالب وبلاگ ما را در این صفحه ببینید.' }}">
+
+    <meta name="keywords" content="{% for tag in tags %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+
+    <meta property="og:title" content="{{ site_title|default:'صفحه اصلی | وبلاگ ما' }}">
+    <meta name="twitter:title" content="{{ site_title|default:'صفحه اصلی | وبلاگ ما' }}">
+
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    {% if top_post.cover %}
+        <meta property="og:image" content="{{ top_post.cover.url }}">
+        <meta name="twitter:image" content="{{ top_post.cover.url }}">
+    {% endif %}
+
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
 {% block content %}
 {% if top_post %}
   <div class="top-post-wrapper" style="{% if top_post.cover %}background-image: url('{{ top_post.cover.url }}');{% endif %}">

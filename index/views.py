@@ -45,5 +45,8 @@ def index(request):
                    'recent_posts': recent_posts,
                    'categories': categories,
                    'random_posts': random_posts,
+                   'site_title': 'صفحه اصلی | وبلاگ آموزشی ما',
+                   'site_description': 'مقالات آموزشی، اخبار، تحلیل‌ها و مطالب جذاب در حوزه برنامه‌نویسی و تکنولوژی.',
+                   'title': 'صفحه اصلی',
                    }
                   )
