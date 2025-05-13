@@ -36,12 +36,10 @@
         }
 
         .password-strength-guide {
-            background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
             margin-top: 10px;
             font-size: 0.9rem;
-            color: #555;
         }
 
         .password-strength-guide ul {
@@ -130,10 +128,18 @@
                                 </div>
                             {% endif %}
                         </div>
-
+                        <!-- راهنمای انتخاب رمز عبور -->
+                        <div class="password-strength-guide">
+                            <h6>رمز عبور باید شامل موارد زیر باشد:</h6>
+                            <ul>
+                                <li>حداقل 8 کاراکتر</li>
+                                <li>شامل حروف بزرگ و کوچک</li>
+                                <li>شامل اعداد</li>
+                                <li>شامل نمادهای خاص</li>
+                            </ul>
+                        </div>
                         <!-- دکمه ثبت‌نام -->
                         <button type="submit" class="btn btn-success w-100 py-2">ثبت‌نام</button>
-
                         <!-- خطاهای کلی مثل نام کاربری تکراری -->
                         {% if form.non_field_errors %}
                             <div class="alert alert-danger mt-3" role="alert">
@@ -143,18 +149,20 @@
                             </div>
                         {% endif %}
                     </form>
+                    <hr>
+                    <!-- یا -->
+                    <div class="text-center mb-3">
+                        <p>ثبت‌نام با حساب‌های دیگر</p>
 
-                    <!-- راهنمای انتخاب رمز عبور -->
-                    <div class="password-strength-guide">
-                        <h6>رمز عبور باید شامل موارد زیر باشد:</h6>
-                        <ul>
-                            <li>حداقل 8 کاراکتر</li>
-                            <li>شامل حروف بزرگ و کوچک</li>
-                            <li>شامل اعداد</li>
-                            <li>شامل نمادهای خاص</li>
-                        </ul>
+                        <a href=""
+                           class="btn btn-outline-danger w-100 mb-2">
+                            <i class="fa fa-google me-2"></i> ادامه با گوگل
+                        </a>
+
+                        <a href="" class="btn btn-outline-dark w-100">
+                            <i class="fa fa-github me-2"></i> ادامه با گیت‌هاب
+                        </a>
                     </div>
-
                     <!-- لینک به صفحه ورود -->
                     <div class="text-center mt-3">
                         <p>حساب کاربری دارید؟ <a href="{% url 'account_login' %}">ورود کنید</a></p>
