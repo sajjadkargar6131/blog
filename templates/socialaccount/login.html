@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block head_title %}
+    ورود با حساب شبکه اجتماعی
+{% endblock head_title %}
+
+{% block content %}
+    <h4 class="mb-3">
+        {% if process == "connect" %}
+            اتصال به {{ provider.name }}
+        {% else %}
+            ورود با {{ provider.name }}
+        {% endif %}
+    </h4>
+
+    <p class="mb-4">
+        {% if process == "connect" %}
+            شما در حال اتصال یک حساب جدید از {{ provider.name }} هستید.
+        {% else %}
+            شما در حال ورود با حساب کاربری {{ provider.name }} هستید.
+        {% endif %}
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">ادامه</button>
+    </form>
+{% endblock content %}
