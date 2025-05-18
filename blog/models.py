@@ -1,3 +1,4 @@
+import math
 import os
 import re
 import shutil
@@ -8,6 +9,7 @@ from django.shortcuts import reverse
 from taggit.managers import TaggableManager
 from django_ckeditor_5.fields import CKEditor5Field
 from config import settings
+from django.utils.html import strip_tags
 
 
 class Category(models.Model):
@@ -101,6 +103,21 @@ class Post(models.Model):
     @property
     def unique_views(self):
         return self.views.count()
+
+    @property
+    def read_time(self):
+        text = strip_tags(self.text)
+        word_count = len(text.split())
+        total_seconds = word_count / 200 * 60  # سرعت خواندن = 200 کلمه در دقیقه
+
+        min_time = 10
+        total_seconds = max(total_seconds, min_time)
+
+        if total_seconds < 60:
+            return f"{round(total_seconds)} ثانیه"
+        else:
+            minutes = math.ceil(total_seconds / 60)
+            return f"{minutes} دقیقه"
 
 
 class Comment(models.Model):
