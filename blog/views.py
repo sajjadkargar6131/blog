@@ -7,8 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.http import JsonResponse
-from jalali_date import datetime2jalali
-from datetime import datetime
 from django.utils.timezone import now
 from django.core.paginator import Paginator
 
@@ -297,6 +295,5 @@ class PostListByTagView(generic.ListView):
         return context
 
 
-
 def test(request):
-    return render(request,'blog/test.html')
+    return render(request, 'blog/test.html')
