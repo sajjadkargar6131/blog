@@ -13,7 +13,7 @@
 
     {% if detail.meta_description %}
 
-        <meta name="description" content="{{ detail.meta_description|safe|linebreaksbr|truncatechars:150}}">
+        <meta name="description" content="{{ detail.meta_description|safe|linebreaksbr|truncatechars:150 }}">
         <meta property="og:description" content="{{ detail.meta_description }}">
         <meta name="twitter:description" content="{{ detail.meta_description }}">
     {% else %}
@@ -42,9 +42,17 @@
                 {% endif %}
                 <div class="card-body">
                     <h4 class="card-title">{{ detail.title }}</h4>
-                    <p class="card-text text-muted">نویسنده: <span>{{ detail.author }}</span></p>
-                    <p class="card-text text-muted">تاریخ:
-                        <span> {{ detail.created_at|to_jalali:'%Y/%m/%d _ %H:%M:%S' }} </span></p>
+                    <p class="card-text text-muted d-flex align-items-center flex-wrap gap-3">
+                    <span class="d-flex align-items-center">
+        <i class="fa fa-user me-1"></i><span>{{ detail.author }}</span>
+    </span>
+                        <span class="d-flex align-items-center">
+        <i class="fa fa-calendar me-1"></i><span>{{ detail.created_at|to_jalali:'%Y/%m/%d' }}</span>
+    </span>
+                        <span class="d-flex align-items-center">
+        <i class="fa fa-clock-o me-1"></i> <span>{{ detail.read_time }}</span>
+    </span>
+                    </p>
                     {% if detail.tags.exists %}
                         <p class="card-text text-muted">تگ ها:
                             {% for tag in detail.tags.all %}
