@@ -211,7 +211,8 @@
                                             </a>
                                         {% else %}
                                             <span class="fw-bold text-muted">
-                                                {{ post.title }} <small class="text-danger">(غیرفعال شده توسط نویسنده)</small>
+                                                {{ post.title }} <small
+                                                    class="text-danger">(غیرفعال شده توسط نویسنده)</small>
                                             </span>
                                         {% endif %}
                                         <small class="text-muted d-block">نویسنده: {{ post.author.get_full_name|default:post.author.username }}</small>
@@ -220,9 +221,10 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p class="text-muted">شما هیچ پستی را ذخیره نکرده‌اید و یا پست ذخیره شده توسط نویسنده آن حذف شده است.</p>
+                        <p class="text-muted">شما هیچ پستی را ذخیره نکرده‌اید و یا پست ذخیره شده توسط نویسنده آن حذف شده
+                            است.</p>
                     {% endif %}
-                     <div class="pagination">
+                    <div class="pagination">
                         <span class="step-links">
                             {% if bookmarks.has_previous %}
                                 <a href="?page_bookmarks=1&tab=saved">&laquo; اول</a>
@@ -252,10 +254,12 @@
                                         </a>
                                     {% else %}
                                         <span class="fw-bold text-muted">
-                                            {{ comment.text|truncatechars:30 }} <small class="text-danger">(تایید نشده)</small>
+                                            {{ comment.text|truncatechars:30 }} <small
+                                                class="text-danger">(تایید نشده)</small>
                                         </span>
                                     {% endif %}
-                                    <small class="text-muted d-block">تاریخ : {{ comment.datetime_created|to_jalali:'%Y/%m/%d' }}</small>
+                                    <small class="text-muted d-block">تاریخ
+                                        : {{ comment.datetime_created|to_jalali:'%Y/%m/%d' }}</small>
                                 </div>
                             </li>
                         {% empty %}
@@ -281,4 +285,30 @@
             </div>
         </div>
     </div>
+    <script>
+        const fileInput = document.getElementById('id_profile_picture');
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                this.form.submit();
+            });
+        }
+
+        function confirmDelete() {
+            Swal.fire({
+                title: 'حذف عکس پروفایل؟',
+                text: "آیا مطمئنی که می‌خوای این عکس رو پاک کنی؟",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'بله، حذفش کن!',
+                cancelButtonText: 'بی‌خیال'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-picture-form').submit();
+                }
+            })
+        }
+    </script>
+
 {% endblock %}
