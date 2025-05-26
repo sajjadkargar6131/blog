@@ -280,3 +280,128 @@ fieldset .form-check {
 .social-container a:hover {
     background-color: rgba(0,0,0,0.1);
 }
+
+
+/* متغیرهای پایه برای حالت دارک */
+:root[data-bs-theme="dark"] {
+    --ck-bg: #2a2a2a;
+    --ck-fg: #f0f0f0;
+    --ck-border: #555;
+    --ck-hover-bg: #444;
+    --ck-hover-fg: #fff;
+    --ck-active-bg: #333;
+    --ck-editor-bg: #1e1e1e;
+    --ck-editor-fg: #ffffff;
+}
+
+/* بدنه‌ی ادیتور */
+[data-bs-theme="dark"] .ck.ck-editor__main > .ck-editor__editable {
+    background-color: var(--ck-editor-bg);
+    color: var(--ck-editor-fg);
+}
+
+/* تولبار ادیتور */
+[data-bs-theme="dark"] .ck.ck-toolbar {
+    background-color: var(--ck-bg) !important;
+    border-color: var(--ck-border) !important;
+}
+
+/* پنل‌ها، ورودی‌ها و لیست‌ها */
+[data-bs-theme="dark"] .ck.ck-dropdown__panel,
+[data-bs-theme="dark"] .ck.ck-list__dropdown,
+[data-bs-theme="dark"] .ck.ck-balloon-panel,
+[data-bs-theme="dark"] .ck.ck-list,
+[data-bs-theme="dark"] .ck.ck-input,
+[data-bs-theme="dark"] .ck.ck-labeled-field-view .ck.ck-label,
+[data-bs-theme="dark"] .ck.ck-button.ck-splitbutton__arrow {
+    background-color: var(--ck-bg) !important;
+    color: var(--ck-fg) !important;
+    border-color: var(--ck-border) !important;
+}
+
+/* دکمه‌های تولبار */
+[data-bs-theme="dark"] .ck.ck-toolbar .ck.ck-button {
+    color: #ddd !important;
+}
+
+[data-bs-theme="dark"] .ck.ck-toolbar .ck.ck-button.ck-on {
+    background-color: var(--ck-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .ck.ck-toolbar .ck.ck-button:hover:not(.ck-color-grid__tile),
+[data-bs-theme="dark"] .ck.ck-button.ck-splitbutton__arrow:hover {
+    background-color: var(--ck-active-bg) !important;
+    color: var(--ck-hover-fg) !important;
+}
+
+/* آیکون‌ها در دکمه‌ها */
+[data-bs-theme="dark"] .ck.ck-button.ck-splitbutton__arrow .ck-icon,
+[data-bs-theme="dark"] .ck.ck-toolbar .ck.ck-button .ck-icon {
+    fill: var(--ck-fg) !important;
+}
+
+[data-bs-theme="dark"] .ck.ck-button.ck-splitbutton__arrow:hover .ck-icon {
+    fill: var(--ck-hover-fg) !important;
+}
+
+/* آیتم‌های لیست */
+[data-bs-theme="dark"] .ck.ck-list .ck.ck-list__item {
+    color: #eee !important;
+}
+
+[data-bs-theme="dark"] .ck.ck-list .ck.ck-list__item:hover {
+    background-color: #3a3a3a !important;
+}
+
+/* جدول انتخاب رنگ */
+[data-bs-theme="dark"] .ck.ck-color-table {
+    background-color: var(--ck-bg) !important;
+    border-color: var(--ck-border) !important;
+}
+
+/* دکمه‌های رنگی (دایره‌ها) */
+[data-bs-theme="dark"] .ck.ck-color-table .ck-button {
+    border: 1px solid var(--ck-border) !important;
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.4) !important;
+    border-radius: 4px !important;
+    padding: 2px !important;
+}
+
+/* حالت hover دایره رنگی */
+[data-bs-theme="dark"] .ck.ck-color-table .ck-button:hover {
+    border-color: #aaa !important;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* دایره رنگی داخل دکمه */
+[data-bs-theme="dark"] .ck.ck-color-table .ck-button .ck-color-grid__tile {
+    box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.3);
+    border-radius: 50% !important;
+}
+
+/* حالت انتخاب شده رنگ */
+[data-bs-theme="dark"] .ck.ck-color-table .ck-button.ck-on {
+    outline: 2px solid #00bfff !important;
+    outline-offset: 2px;
+}
+
+/* دکمه‌های لیستی (مثل فونت و هدینگ) */
+[data-bs-theme="dark"] .ck.ck-button.ck-list-item-button,
+[data-bs-theme="dark"] .ck.ck-button.ck-list-item-button.ck-on {
+    background: var(--ck-hover-bg) !important;
+    color: var(--ck-fg) !important;
+}
+
+/* حالت split-button غیرفعال و hover */
+[data-bs-theme="dark"] .ck.ck-splitbutton > .ck.ck-button.ck-off {
+    background-color: transparent !important;
+    color: #ddd !important;
+}
+
+[data-bs-theme="dark"] .ck.ck-splitbutton > .ck.ck-button.ck-off:hover {
+    background-color: var(--ck-active-bg) !important;
+}
+
+
+
+
