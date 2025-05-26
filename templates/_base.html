@@ -1,4 +1,5 @@
 {% load static %}
+
 <!doctype html>
 <html lang="en" dir="rtl">
 <head>
@@ -63,10 +64,10 @@
     <header class="border-bottom lh-1 py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
             <div class="col-4 pt-1">
-                <a class="link-secondary" href="#"> اشتراک خبرنامه </a>
+                <a class="link-secondary text-decoration-none" href="{% url 'news_rss' %}"> <i class="fa fa-rss"></i> rss</a>
             </div>
             <div class="col-4 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none">وبلاگ من</a>
+                <a class="blog-header-logo text-body-emphasis text-decoration-none">  {{ site_settings.site_name }}</a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
                 <a class="link-secondary" href="#" aria-label="جستجو">
@@ -149,12 +150,26 @@
         <i class="bi bi-moon-stars-fill me-2 opacity-50"></i>
     {% endblock content %}
 </main>
+
 <footer class="py-3 mt-3 text-center text-body-secondary bg-body-tertiary">
-    <p>طراحی شده با ❤️ و کمی چای ایرانی !</p>
+    {% if site_settings.footer_text %}
+        <p>{{ site_settings.footer_text }}</p>
+    {% endif %}
+
     <p class="mb-0">
-        کپی لفت - سجاد کارگر
+        {% if current_year == 1404 %}
+            {{ site_settings.site_name }} - &copy;1404
+        {% else %}
+            &copy; 1404-{{ current_year }} {{ site_settings.site_name }}
+        {% endif %}
     </p>
 </footer>
+
+
+{#        <p>طراحی شده با ❤️ و کمی چای ایرانی !</p>#}
+{#        <p class="mb-0">#}
+{#            کپی لفت - سجاد کارگر#}
+{#        </p>#}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

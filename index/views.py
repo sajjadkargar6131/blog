@@ -6,9 +6,11 @@ from django.db.models.functions import Substr
 
 from blog.models import Post, Category
 from taggit.models import Tag
+from site_settings.models import SiteSetting, SocialLink
 
 
 def index(request):
+
     top_post = Post.objects.annotate(view_count=Count('views')).filter(status='pub').order_by('-view_count').first()
 
     monthly_archive = (
@@ -35,8 +37,11 @@ def index(request):
     ).filter(post_count__gt=0)
 
     ids = Post.objects.values_list('id', flat=True)
-    random_ids = random.sample(list(ids), min(len(ids), 3))  # حداکثر ۳ پست
+    random_ids = random.sample(list(ids), min(len(ids), 3))
     random_posts = Post.objects.filter(id__in=random_ids, status='pub')
+
+    settings = SiteSetting.load()
+    social_links = SocialLink.objects.all()
 
     return render(request, 'index/index.html',
                   {'top_post': top_post,
@@ -45,8 +50,7 @@ def index(request):
                    'recent_posts': recent_posts,
                    'categories': categories,
                    'random_posts': random_posts,
-                   'site_title': 'صفحه اصلی | وبلاگ آموزشی ما',
-                   'site_description': 'مقالات آموزشی، اخبار، تحلیل‌ها و مطالب جذاب در حوزه برنامه‌نویسی و تکنولوژی.',
-                   'title': 'صفحه اصلی',
+                   'settings': settings,
+                   'social_links': social_links
                    }
                   )
