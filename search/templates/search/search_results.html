@@ -21,7 +21,16 @@
         </ul>
     {% endif %}
 
-    {% if not post_results and not news_results %}
+    {% if category_results %}
+        <h4>دسته بندی‌ها</h4>
+        <ul>
+            {% for category in category_results %}
+                <li><a href="{% url 'category_post' category.name %}">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if not post_results and not news_results and not category_results %}
         <p>نتیجه‌ای یافت نشد.</p>
     {% endif %}
 {% endblock %}
