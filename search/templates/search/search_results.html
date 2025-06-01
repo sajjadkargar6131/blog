@@ -1,0 +1,27 @@
+{% extends '_base.html' %}
+
+{% block content %}
+    <h3>نتایج جستجو برای: "{{ query }}"</h3>
+
+    {% if post_results %}
+        <h4>مقالات</h4>
+        <ul>
+            {% for post in post_results %}
+                <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if news_results %}
+        <h4>اخبار</h4>
+        <ul>
+            {% for news in news_results %}
+                <li><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if not post_results and not news_results %}
+        <p>نتیجه‌ای یافت نشد.</p>
+    {% endif %}
+{% endblock %}

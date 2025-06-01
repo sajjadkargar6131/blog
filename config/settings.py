@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'accounts',
     'news',
     'site_settings',
+    'search',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +98,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 # Password validation
