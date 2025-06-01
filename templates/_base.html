@@ -61,80 +61,107 @@
     </ul>
 </div>
 <div class="container">
-    <header class="border-bottom lh-1 py-3">
-        <div class="row flex-nowrap justify-content-between align-items-center">
-            <div class="col-4 pt-1">
-                <a class="link-secondary text-decoration-none" href="{% url 'news_rss' %}"> <i class="fa fa-rss"></i>
-                    rss</a>
-            </div>
-            <div class="col-4 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none">  {{ site_settings.site_name }}</a>
-            </div>
-            <div class="col-4 d-flex justify-content-end align-items-center">
-                {#                <a class="link-secondary" href="#" aria-label="جستجو">#}
-                {#                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"#}
-                {#                         stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img"#}
-                {#                         viewBox="0 0 24 24"><title>جستجو</title>#}
-                {#                        <circle cx="10.5" cy="10.5" r="7.5"></circle>#}
-                {#                        <path d="M21 21l-5.2-5.2"></path>#}
-                {#                    </svg>#}
-                {#                </a>#}
-                <form method="get" action="{% url 'search' %}">
-                    <input type="text" name="q" placeholder="جستجو..." value="{{ request.GET.q }}">
-                    <button type="submit">جستجو</button>
-                </form>
-                {% if user.is_authenticated %}
-                    <span class="text-muted">
-                welcome <a href="{% url 'profile' %}">{{ user.username }}</a>
-                | <a class="" href="#" onclick="document.getElementById('logout-form').submit();return false;">خروج</a>
+  <!-- هدر مستقل برای عنوان وبلاگ -->
+  <header class="border-bottom lh-1 py-3 text-center">
+    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="{% url 'index' %}">{{ site_settings.site_name }}</a>
+  </header>
 
+  <!-- نوار نویگیشن -->
+  <nav class="navbar navbar-expand-lg navbar border-bottom mb-3">
+    <div class="container">
+      <!-- دکمه Toggler برای منوی پاسخ‌گو -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <!-- منوی نویگیشن -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'index' %}">صفحه اصلی</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'blog_index' %}active{% endif %}" href="{% url 'blog_index' %}">پست‌ها</a>
+          </li>
+          {% if perms.blog.add_post %}
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'post_create' %}active{% endif %}" href="{% url 'post_create' %}">اضافه کردن پست</a>
+            </li>
+          {% endif %}
+          {% if perms.news.add_news %}
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'news_create' %}active{% endif %}" href="{% url 'news_create' %}">اضافه کردن خبر</a>
+            </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'news_list' %}active{% endif %}" href="{% url 'news_list' %}">اخبار</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="#">درباره من</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == '/contact/' %}active{% endif %}" href="#">تماس با من</a>
+          </li>
+        </ul>
+
+        <!-- بخش راست: جستجو، RSS، و ورود/خروج -->
+        <div class="d-flex align-items-center">
+          <!-- لینک RSS -->
+          <a class="nav-link me-3" href="{% url 'news_rss' %}">
+            <i class="fa fa-rss text-warning"></i> rss
+          </a>
+
+          <!-- فرم جستجو با آیکون -->
+          <form class="d-flex me-3 position-relative" method="get" action="{% url 'search' %}">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-transparent border-end-0" onclick="this.closest('form').submit();" style="cursor: pointer;">
+                <i class="fa fa-search"></i>
               </span>
-                {% else %}
-                    <a class="btn btn-sm btn-outline-secondary m-1" href="{% url "account_login" %}">ورود</a>
-                    <a class="btn btn-sm btn-outline-secondary m-1" href="{% url "account_signup" %}">عضویت</a>
-                {% endif %}
+              <input class="form-control border-start-0" type="text" name="q" placeholder="جستجو..." value="{{ request.GET.q }}" aria-label="Search">
             </div>
-        </div>
-    </header>
-</div>
-<div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light  mb-3 border-bottom">
-        <div class="container-fluid p-0">
-            <a class="nav-link" href="{% url 'index' %}">صفحه اصلی</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-                    aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+          </form>
 
-            <div class="collapse navbar-collapse" id="navbarMenu">
-                <ul class="navbar-nav d-flex flex-wrap flex-grow-1 m-0 p-0">
-                    <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" href="{% url 'blog_index' %}">پست ها</a>
-                    </li>
-                    {% if perms.blog.add_post %}
-                        <li class="nav-item flex-fill text-center">
-                            <a class="nav-link" href="{% url 'post_create' %}">اضافه کردن پست</a>
-                        </li>
-                    {% endif %}
-                    {% if perms.news.add_news %}
-                        <li class="nav-item flex-fill text-center">
-                            <a class="nav-link" href="{% url 'news_create' %}">اضافه کردن خبر</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" href="{% url 'news_list' %}">اخبار</a>
-                    </li>
-                    <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" href="#">درباره من</a>
-                    </li>
-                    <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" href="#">تماس با من</a>
-                    </li>
-                </ul>
+          <!-- ورود/خروج -->
+          {% if user.is_authenticated %}
+            <div class="dropdown me-3">
+              <button class="btn btn-outline-success btn-xs dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-user me-1"></i>{{ user.username }}
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">پروفایل</a></li>
+                <li><a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();return false;">
+                  <i class="fa fa-sign-out-alt me-1"></i>خروج
+                </a></li>
+              </ul>
             </div>
+          {% else %}
+            <a class="btn btn-xs btn-outline-success me-1" href="{% url 'account_login' %}">
+              <i class="fa fa-sign-in-alt me-1"></i>ورود
+            </a>
+            <a class="btn btn-xs btn-outline-primary" href="{% url 'account_signup' %}">
+              <i class="fa fa-user-plus me-1"></i>عضویت
+            </a>
+          {% endif %}
         </div>
-    </nav>
+      </div>
+    </div>
+  </nav>
 </div>
+
+<!-- استایل سفارشی برای دکمه‌های کوچک‌تر -->
+<style>
+  .btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+  }
+  .input-group-sm > .form-control,
+  .input-group-sm > .input-group-text {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+</style>
 <main class="container">
     <script>
         {% if messages %}
