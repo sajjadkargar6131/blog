@@ -107,20 +107,29 @@
 
                     <!-- لینک به صفحه ثبت‌نام -->
                     <div class="text-center mt-3">
-                        <p>حساب کاربری ندارید؟ <a href="{% url 'account_signup' %}">ثبت‌نام کنید</a></p>
+                        <p>
+                            حساب کاربری ندارید؟ <a href="{% url 'account_signup' %}">ثبت‌نام کنید</a>
+                        </p>
                     </div>
-                    <hr>
                     <div class="text-center mb-3">
-                        <p>ورود با حساب‌های دیگر</p>
-
-                        <a href="{% provider_login_url 'google' %}"
-                           class="btn btn-outline-danger w-100 mb-2">
-                            <i class="fa fa-google me-2"></i>  گوگل
-                        </a>
-
-                        <a href="{% provider_login_url 'github' %}" class="btn btn-outline-warning w-100">
-                            <i class="fa fa-github me-2"></i>  گیت‌هاب
-                        </a>
+                        {% load socialaccount %}
+                        {% get_providers as socialaccount_providers %}
+                        {% if socialaccount_providers %}
+                            <hr>
+                            <div class="text-center mb-3">
+                                <p>ورود با حساب‌های دیگر</p>
+                                {% for provider in socialaccount_providers %}
+                                    <a href="{% provider_login_url provider.id process='login' %}"
+                                       class="btn btn-outline-{% if provider.id == 'google' %}danger{% elif provider.id == 'github' %}warning{% else %}primary{% endif %} w-100 mb-2">
+                                        <i class="fa fa-{{ provider.id }} me-2"></i> {{ provider.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center mb-3">
+                                <p>هیچ ارائه‌دهنده شبکه اجتماعی فعالی یافت نشد.</p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
