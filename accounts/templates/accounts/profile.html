@@ -162,13 +162,26 @@
 
                 <!-- تب تغییر رمز عبور -->
                 <div class="tab-pane fade {% if active_tab == 'password' %}show active{% endif %}" id="password">
-                    <form method="post">
+                    <form method="post" action="{% url 'password_change' %}">
                         {% csrf_token %}
                         {{ change_password_form|crispy }}
                         <div class="mb-3">
                             <button type="submit" class="btn btn-warning">تغییر رمز</button>
                         </div>
                     </form>
+                </div>
+                <!-- تب تنظیمات -->
+                <div class="tab-pane fade {% if active_tab == 'settings' %}show active{% endif %}" id="settings">
+                    {% if site_form and social_form %}
+                        <h3>تنظیمات سایت</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ site_form|crispy }}
+                            {{ social_form|crispy}}
+                            <input type="hidden" name="form_type" value="update_settings"/>
+                            <button class="btn btn-primary" type="submit">ذخیره تنظیمات</button>
+                        </form>
+                    {% endif %}
                 </div>
 
                 <!-- تب فعالیت‌ها -->
