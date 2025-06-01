@@ -5,44 +5,102 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from allauth.account.forms import ChangePasswordForm
 from django.urls import reverse
 from django.utils.timezone import now
 
-from .forms import ProfilePictureForm, ProfileNameForm
+from .forms import ProfilePictureForm, ProfileNameForm, SiteSettingForm, SocialLinkForm
 from .models import Activity
 
+from site_settings.models import SiteSetting, SocialLink
+
 from blog.models import Post, Comment
+
+
+def build_profile_context(user, active_tab="info", request=None):
+    # فرم‌ها
+    profile_picture_form = ProfilePictureForm(instance=user)
+    profile_name_form = ProfileNameForm(instance=user)
+    change_password_form = ChangePasswordForm(user)
+
+    # فعالیت‌ها
+    activities = Activity.objects.filter(user=user).order_by('-timestamp')
+    activities_paginator = Paginator(activities, 10)
+    activities_page_number = request.GET.get('page_activities') if request else None
+    activities_page_obj = activities_paginator.get_page(activities_page_number)
+
+    # بوکمارک‌ها
+    bookmarks = Post.objects.filter(bookmarks__user=user).distinct()
+    bookmarks_paginator = Paginator(bookmarks, 10)
+    bookmarks_page_number = request.GET.get('page_bookmarks') if request else None
+    bookmarks_page_obj = bookmarks_paginator.get_page(bookmarks_page_number)
+
+    # کامنت‌ها
+    comments = Comment.objects.filter(user=user)
+    comments_paginator = Paginator(comments, 10)
+    comments_page_number = request.GET.get('page_comments') if request else None
+    comments_page_obj = comments_paginator.get_page(comments_page_number)
+
+    return {
+        "form": profile_picture_form,
+        "form2": profile_name_form,
+        "change_password_form": change_password_form,
+        "activities": activities_page_obj,
+        "bookmarks": bookmarks_page_obj,
+        "comments": comments_page_obj,
+        "active_tab": active_tab
+    }
 
 
 @login_required
 def profile(request):
     user = request.user
     active_tab = request.GET.get("tab", "info")
+
     change_password_form = ChangePasswordForm(request.user)
     change_name_family_form = ProfileNameForm(instance=user)
 
-    # دریافت فعالیت‌ها (activities)
+    # دریافت فعالیت‌ها
     activities = Activity.objects.filter(user=user).order_by('-timestamp')
-    activities_paginator = Paginator(activities, 10)  # صفحه‌بندی برای فعالیت‌ها
+    activities_paginator = Paginator(activities, 10)
     activities_page_number = request.GET.get('page_activities')
     activities_page_obj = activities_paginator.get_page(activities_page_number)
 
-    # دریافت ذخیره‌شده‌ها (bookmarks)
-    bookmarks = Post.objects.filter(bookmarks__user=request.user).distinct()
-    bookmarks_paginator = Paginator(bookmarks, 10)  # صفحه‌بندی برای ذخیره‌شده‌ها
+    # دریافت ذخیره‌شده‌ها
+    bookmarks = Post.objects.filter(bookmarks__user=user).distinct()
+    bookmarks_paginator = Paginator(bookmarks, 10)
     bookmarks_page_number = request.GET.get('page_bookmarks')
     bookmarks_page_obj = bookmarks_paginator.get_page(bookmarks_page_number)
 
-    # دریافت کامنت‌ها (comments)
-    comments = Comment.objects.filter(user=request.user)
-    comments_paginator = Paginator(comments, 10)  # صفحه‌بندی برای کامنت‌ها
+    # دریافت کامنت‌ها
+    comments = Comment.objects.filter(user=user)
+    comments_paginator = Paginator(comments, 10)
     comments_page_number = request.GET.get('page_comments')
     comments_page_obj = comments_paginator.get_page(comments_page_number)
 
-    # ساخت فرم ها در صورت ارسال درخواست GET
+    # فرم‌های پروفایل عادی
     form = ProfilePictureForm(instance=user)
     form2 = ProfileNameForm(instance=user)
+
+    # فرم‌های تنظیمات فقط اگر سوپر یوزر باشه
+    site_form = None
+    social_form = None
+    if user.is_superuser:
+        site_setting = SiteSetting.objects.first()
+        social_link = SocialLink.objects.first()
+
+        if request.method == 'POST' and request.POST.get('form_type') == 'update_settings':
+            site_form = SiteSettingForm(request.POST, instance=site_setting)
+            social_form = SocialLinkForm(request.POST, instance=social_link)
+            if site_form.is_valid() and social_form.is_valid():
+                site_form.save()
+                social_form.save()
+                messages.success(request, "تنظیمات سایت با موفقیت ذخیره شد.")
+                return redirect('profile')
+        else:
+            site_form = SiteSettingForm(instance=site_setting)
+            social_form = SocialLinkForm(instance=social_link)
 
     if request.method == 'POST':
         form_type = request.POST.get('form_type')
@@ -51,7 +109,6 @@ def profile(request):
             form = ProfilePictureForm(request.POST, request.FILES, instance=user)
             if form.is_valid():
                 if 'profile_picture' in request.FILES:
-                    # حذف عکس قبلی
                     if old_picture_path and os.path.exists(old_picture_path):
                         os.remove(old_picture_path)
                 form.save()
@@ -59,10 +116,11 @@ def profile(request):
                     user=user,
                     action='profile_edit',
                     timestamp=now(),
-                    description='ویرایش عکس  پروفایل'
+                    description='ویرایش عکس پروفایل'
                 )
                 messages.success(request, 'عکس پروفایل با موفقیت به روز شد.')
                 return redirect('profile')
+
         elif form_type == 'update_name':
             name_form = ProfileNameForm(request.POST, instance=user)
             if name_form.is_valid():
@@ -71,10 +129,11 @@ def profile(request):
                     user=user,
                     action='profile_edit',
                     timestamp=now(),
-                    description='ویرایش   پروفایل'
+                    description='ویرایش پروفایل'
                 )
                 messages.success(request, 'پروفایل با موفقیت به روز شد.')
                 return redirect('profile')
+
     return render(request, 'accounts/profile.html', {
         'form': form,
         'form2': change_name_family_form,
@@ -83,6 +142,8 @@ def profile(request):
         'activities': activities_page_obj,
         'bookmarks': bookmarks_page_obj,
         'comments': comments_page_obj,
+        'site_form': site_form,
+        'social_form': social_form,
     })
 
 
@@ -104,8 +165,8 @@ def delete_profile_picture(request):
     return redirect('profile')
 
 
-class CustomPasswordChangeView(PasswordChangeView):
-    template_name = "accounts/profile.html"  # هم موفق، هم ناموفق همین قالب رو نشون بده
+class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    template_name = "accounts/profile.html"
 
     def get_default_success_url(self):
         return reverse("profile") + "?tab=password"
@@ -119,11 +180,16 @@ class CustomPasswordChangeView(PasswordChangeView):
             messages.error(self.request, 'رمز عبور فعلی اشتباه است.')
         else:
             messages.error(self.request, 'لطفاً خطاهای فرم را بررسی کنید.')
+
         context = self.get_context_data(form=form)
         context['active_tab'] = 'password'
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["change_password_form"] = context.get("form")  # این خط مهمه
+        profile_context = build_profile_context(self.request.user, active_tab="password", request=self.request)
+
+        context.update(profile_context)
+        context['change_password_form'] = self.get_form()
+
         return context
