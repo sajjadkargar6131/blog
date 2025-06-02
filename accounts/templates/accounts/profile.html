@@ -171,18 +171,69 @@
                     </form>
                 </div>
                 <!-- تب تنظیمات -->
-                <div class="tab-pane fade {% if active_tab == 'settings' %}show active{% endif %}" id="settings">
-                    {% if site_form and social_form %}
-                        <h3>تنظیمات سایت</h3>
+
+                {% if site_form and social_formset %}
+                    <div class="tab-pane fade {% if active_tab == 'settings' %}show active{% endif %}" id="settings">
+                        <h3 class="mb-4">تنظیمات سایت</h3>
                         <form method="post">
                             {% csrf_token %}
-                            {{ site_form|crispy }}
-                            {{ social_form|crispy}}
+                            <div class="mb-4">
+                                {{ site_form|crispy }}
+                            </div>
+
+                            <h4 class="mt-5 mb-3">لینک‌های شبکه‌های اجتماعی</h4>
+                            {{ social_formset.management_form }}
+
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle border rounded shadow-sm">
+                                    <thead class="table-dark text-center">
+                                    <tr>
+                                        <th style="width: 85%">مشخصات لینک</th>
+                                        <th style="width: 15%">حذف</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for form in social_formset %}
+                                        <tr>
+                                            <td>
+                                                <div class="row g-2">
+                                                    {% for field in form.visible_fields %}
+                                                        {% if field.name != 'DELETE' %}
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">{{ field.label }}</label>
+                                                                {{ field }}
+                                                                {% if field.errors %}
+                                                                    <div class="text-danger small">{{ field.errors }}</div>
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for hidden in form.hidden_fields %}
+                                                        {{ hidden }}
+                                                    {% endfor %}
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if form.instance.pk %}
+                                                    <div class="form-check d-flex justify-content-center">
+                                                        <label class="form-check-label me-2" title="حذف این لینک">
+                                                            <i class="fa fa-trash"></i>
+                                                        </label>
+                                                        {{ form.DELETE}}
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <input type="hidden" name="form_type" value="update_settings"/>
-                            <button class="btn btn-primary" type="submit">ذخیره تنظیمات</button>
+                            <button class="btn btn-success shadow-sm mt-3" type="submit"><i class="fa fa-save"></i> ذخیره تنظیمات</button>
                         </form>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
 
                 <!-- تب فعالیت‌ها -->
                 <div class="tab-pane fade {% if active_tab == 'activity' %}show active{% endif %}" id="activity">
