@@ -189,7 +189,19 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
         context = super().get_context_data(**kwargs)
         profile_context = build_profile_context(self.request.user, active_tab="password", request=self.request)
 
+        # اضافه کردن فرم‌های تنظیمات سایت اگر کاربر سوپر یوزر باشد
+        user = self.request.user
+        site_form = None
+        social_form = None
+        if user.is_superuser:
+            site_setting = SiteSetting.objects.first()
+            social_link = SocialLink.objects.first()
+            site_form = SiteSettingForm(instance=site_setting)
+            social_form = SocialLinkForm(instance=social_link)
+
         context.update(profile_context)
         context['change_password_form'] = self.get_form()
+        context['site_form'] = site_form
+        context['social_form'] = social_form
 
         return context
