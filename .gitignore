@@ -1,31 +1,31 @@
 # General Python ignores
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 
 # Virtual environment
 venv/
-.env/
+ENV/
+env/
+.venv/
+
+# Environment variables
+.env
 
 # Django specific
 *.sqlite3
 /media/
-/staticfiles/
 /static/
+/staticfiles/
 
 # Logs
 logs/
 *.log
 
-# IDE/editor files
+# Editor/IDE
 .vscode/
 .idea/
 *.swp
 *~
 
-# Git ignore itself
-.gitignore
-
-# Env
-.env
+# MacOS system files
+.DS_Store
