@@ -1,0 +1,63 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% block seo %}
+
+        <meta name="description"
+              content="تماس با ما - با ما در ارتباط باشید و نظرات، پیشنهادات و سوالات خود را ارسال کنید.{{ site_settings.site_name }}">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+{% endblock %}
+
+{% block title %}
+
+    {% if site_settings.site_name %}
+        تماس با ما - {{ site_settings.site_name }}
+    {% else %}
+        تماس با ما
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg rounded-4 border-0">
+                    <div class="card-body p-5">
+                        <h2 class="mb-4 text-center">تماس با ما</h2>
+
+                        {% if user_email %}
+                            <div class="alert alert-info text-center">
+                                شما با ایمیل <strong>{{ user_email }}</strong> در حال ارسال پیام هستید.
+                            </div>
+                        {% endif %}
+
+                        <p class="text-center text-muted mb-4">
+                            خوشحال می‌شویم نظر، پیشنهاد یا سوال شما را دریافت کنیم.<br>
+                            لطفاً فرم زیر را پر کنید تا در اسرع وقت با شما تماس بگیریم.
+                        </p>
+
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <div class="text-end mt-3">
+                                <button class="btn btn-primary px-4 py-2" type="submit">ارسال</button>
+                            </div>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <p class="text-muted small text-center">
+                            توجه: لطفاً اطلاعات درست و معتبر وارد کنید تا بتوانیم پاسخگو باشیم.<br>
+                            ما به حریم خصوصی شما احترام می‌گذاریم و اطلاعات شما را با هیچ‌کس به اشتراک نمی‌گذاریم.
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

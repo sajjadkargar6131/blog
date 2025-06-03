@@ -38,6 +38,7 @@ urlpatterns = [
                   path('search/', include('search.urls')),
                   path('', include('shortener.urls')),
                   path('page/', include('pages.urls')),
+                  path('contact/', include('contact.urls')),
 
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

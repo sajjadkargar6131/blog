@@ -103,12 +103,18 @@
                         <a class="nav-link {% if request.resolver_match.url_name == 'news_list' %}active{% endif %}"
                            href="{% url 'news_list' %}">اخبار</a>
                     </li>
+
                     {% for page in menu_pages %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.path == page.get_absolute_url %}active{% endif %}"
                                href="{{ page.get_absolute_url }}">{{ page.title }}</a>
                         </li>
                     {% endfor %}
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+                           href="{% url 'contact' %}">تماس با ما</a>
+                    </li>
                 </ul>
 
                 <!-- بخش راست: جستجو، RSS، و ورود/خروج -->

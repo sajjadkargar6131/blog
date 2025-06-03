@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: tahoma, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+        .email-box {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            direction: rtl;
+            text-align: right;
+        }
+        h2 {
+            color: #007BFF;
+        }
+        p {
+            line-height: 1.7;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-box">
+        <h2>سلام {{ user_name|default:"دوست عزیز" }} 👋</h2>
+        <p>
+            پیام شما با موضوع <strong>{{ subject }}</strong> با موفقیت دریافت شد.
+        </p>
+        <p>
+            ما در اسرع وقت پیام شما را بررسی خواهیم کرد و در صورت نیاز با شما تماس می‌گیریم.
+        </p>
+        <p>
+            با تشکر از اعتماد شما 🙏
+        </p>
+        <div class="footer">
+            این ایمیل به صورت خودکار ارسال شده است. لطفاً به آن پاسخ ندهید.
+        </div>
+    </div>
+</body>
+</html>
