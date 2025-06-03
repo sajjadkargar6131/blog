@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'news',
     'site_settings',
     'search',
+    'shortener',
+    'pages',
 ]
 
 MIDDLEWARE = [
