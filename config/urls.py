@@ -37,6 +37,7 @@ urlpatterns = [
                   path('sitemap.xml', sitemap, {'sitemaps': sitemap_patterns}, name='sitemap'),
                   path('search/', include('search.urls')),
                   path('', include('shortener.urls')),
+                  path('page/', include('pages.urls')),
 
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

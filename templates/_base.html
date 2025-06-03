@@ -61,106 +61,118 @@
     </ul>
 </div>
 <div class="container">
-  <!-- هدر مستقل برای عنوان وبلاگ -->
-  <header class="border-bottom lh-1 py-3 text-center">
-    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="{% url 'index' %}">{{ site_settings.site_name }}</a>
-  </header>
+    <!-- هدر مستقل برای عنوان وبلاگ -->
+    <header class="border-bottom lh-1 py-3 text-center">
+        <a class="blog-header-logo text-body-emphasis text-decoration-none"
+           href="{% url 'index' %}">{{ site_settings.site_name }}</a>
+    </header>
 
-  <!-- نوار نویگیشن -->
-  <nav class="navbar navbar-expand-lg navbar border-bottom mb-3">
-    <div class="container">
-      <!-- دکمه Toggler برای منوی پاسخ‌گو -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <!-- نوار نویگیشن -->
+    <nav class="navbar navbar-expand-lg navbar border-bottom mb-3">
+        <div class="container">
+            <!-- دکمه Toggler برای منوی پاسخ‌گو -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <!-- منوی نویگیشن -->
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'index' %}">صفحه اصلی</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'blog_index' %}active{% endif %}" href="{% url 'blog_index' %}">پست‌ها</a>
-          </li>
-          {% if perms.blog.add_post %}
-            <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.url_name == 'post_create' %}active{% endif %}" href="{% url 'post_create' %}">اضافه کردن پست</a>
-            </li>
-          {% endif %}
-          {% if perms.news.add_news %}
-            <li class="nav-item">
-              <a class="nav-link {% if request.resolver_match.url_name == 'news_create' %}active{% endif %}" href="{% url 'news_create' %}">اضافه کردن خبر</a>
-            </li>
-          {% endif %}
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'news_list' %}active{% endif %}" href="{% url 'news_list' %}">اخبار</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="#">درباره من</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/contact/' %}active{% endif %}" href="#">تماس با من</a>
-          </li>
-        </ul>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- منوی نویگیشن -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+                           aria-current="page" href="{% url 'index' %}">صفحه اصلی</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'blog_index' %}active{% endif %}"
+                           href="{% url 'blog_index' %}">پست‌ها</a>
+                    </li>
+                    {% if perms.blog.add_post %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'post_create' %}active{% endif %}"
+                               href="{% url 'post_create' %}">اضافه کردن پست</a>
+                        </li>
+                    {% endif %}
+                    {% if perms.news.add_news %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'news_create' %}active{% endif %}"
+                               href="{% url 'news_create' %}">اضافه کردن خبر</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'news_list' %}active{% endif %}"
+                           href="{% url 'news_list' %}">اخبار</a>
+                    </li>
+                    {% for page in menu_pages %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == page.get_absolute_url %}active{% endif %}"
+                               href="{{ page.get_absolute_url }}">{{ page.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
 
-        <!-- بخش راست: جستجو، RSS، و ورود/خروج -->
-        <div class="d-flex align-items-center">
-          <!-- لینک RSS -->
-          <a class="nav-link me-3" href="{% url 'news_rss' %}">
-            <i class="fa fa-rss text-warning"></i> rss
-          </a>
+                <!-- بخش راست: جستجو، RSS، و ورود/خروج -->
+                <div class="d-flex align-items-center">
+                    <!-- لینک RSS -->
+                    <a class="nav-link me-3" href="{% url 'news_rss' %}">
+                        <i class="fa fa-rss text-warning"></i> rss
+                    </a>
 
-          <!-- فرم جستجو با آیکون -->
-          <form class="d-flex me-3 position-relative" method="get" action="{% url 'search' %}">
-            <div class="input-group input-group-sm">
-              <span class="input-group-text bg-transparent border-end-0" onclick="this.closest('form').submit();" style="cursor: pointer;">
+                    <!-- فرم جستجو با آیکون -->
+                    <form class="d-flex me-3 position-relative" method="get" action="{% url 'search' %}">
+                        <div class="input-group input-group-sm">
+              <span class="input-group-text bg-transparent border-end-0" onclick="this.closest('form').submit();"
+                    style="cursor: pointer;">
                 <i class="fa fa-search"></i>
               </span>
-              <input class="form-control border-start-0" type="text" name="q" placeholder="جستجو..." value="{{ request.GET.q }}" aria-label="Search">
-            </div>
-          </form>
+                            <input class="form-control border-start-0" type="text" name="q" placeholder="جستجو..."
+                                   value="{{ request.GET.q }}" aria-label="Search">
+                        </div>
+                    </form>
 
-          <!-- ورود/خروج -->
-          {% if user.is_authenticated %}
-            <div class="dropdown me-3">
-              <button class="btn btn-outline-success btn-xs dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-user me-1"></i>{{ user.username }}
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                <li><a class="dropdown-item" href="{% url 'profile' %}">پروفایل</a></li>
-                <li><a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit();return false;">
-                  <i class="fa fa-sign-out-alt me-1"></i>خروج
-                </a></li>
-              </ul>
+                    <!-- ورود/خروج -->
+                    {% if user.is_authenticated %}
+                        <div class="dropdown me-3">
+                            <button class="btn btn-outline-success btn-xs dropdown-toggle" type="button" id="userMenu"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-user me-1"></i>{{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">پروفایل</a></li>
+                                <li><a class="dropdown-item" href="#"
+                                       onclick="document.getElementById('logout-form').submit();return false;">
+                                    <i class="fa fa-sign-out-alt me-1"></i>خروج
+                                </a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a class="btn btn-xs btn-outline-success me-1" href="{% url 'account_login' %}">
+                            <i class="fa fa-sign-in-alt me-1"></i>ورود
+                        </a>
+                        <a class="btn btn-xs btn-outline-primary" href="{% url 'account_signup' %}">
+                            <i class="fa fa-user-plus me-1"></i>عضویت
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-          {% else %}
-            <a class="btn btn-xs btn-outline-success me-1" href="{% url 'account_login' %}">
-              <i class="fa fa-sign-in-alt me-1"></i>ورود
-            </a>
-            <a class="btn btn-xs btn-outline-primary" href="{% url 'account_signup' %}">
-              <i class="fa fa-user-plus me-1"></i>عضویت
-            </a>
-          {% endif %}
         </div>
-      </div>
-    </div>
-  </nav>
+    </nav>
 </div>
 
 <!-- استایل سفارشی برای دکمه‌های کوچک‌تر -->
 <style>
-  .btn-xs {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    line-height: 1.5;
-    border-radius: 0.2rem;
-  }
-  .input-group-sm > .form-control,
-  .input-group-sm > .input-group-text {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-  }
+    .btn-xs {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+
+    .input-group-sm > .form-control,
+    .input-group-sm > .input-group-text {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
 </style>
 <main class="container">
     <script>
