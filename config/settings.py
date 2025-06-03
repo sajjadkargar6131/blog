@@ -284,9 +284,15 @@ AUTHENTICATION_BACKENDS = [
     ]
 
 SITE_ID = 1
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 AUTH_USER_MODEL = 'accounts.CustomUser'
-
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sajjad71kargar@gmail.com'
+EMAIL_HOST_PASSWORD = 'ajrf brxr smaa fwro'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # allauth settings
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']

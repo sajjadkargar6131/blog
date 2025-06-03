@@ -1,0 +1,39 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block title %}حساب غیرفعال{% endblock %}
+
+{% block header %}
+<style>
+    .auth-card {
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .rtl-text {
+        direction: rtl;
+        text-align: right;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="auth-card p-4">
+                <h5 class="title">حساب غیرفعال</h5>
+                <p class="alert alert-warning rtl-text text-center mb-0">
+                    این حساب کاربری غیرفعال است.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

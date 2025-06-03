@@ -1,0 +1,97 @@
+{% extends "_base.html" %}
+{% load static i18n %}
+
+{% block title %}مدیریت ایمیل{% endblock %}
+
+{% block header %}
+<style>
+    .auth-card {
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    input::placeholder,
+    input {
+        text-align: right;
+        direction: rtl;
+    }
+
+    .badge {
+        margin-right: 5px;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mt-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="auth-card p-4">
+                <h2 class="title">مدیریت ایمیل</h2>
+
+                {% if emailaddresses %}
+                    <p class="text-center mb-3">ایمیل‌های مرتبط با حساب شما:</p>
+                    <form method="post" action="{% url 'account_email' %}">
+                        {% csrf_token %}
+                        <div class="list-group mb-3">
+                            {% for radio in emailaddress_radios %}
+                                {% with email=radio.emailaddress %}
+                                    <label class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <input type="radio" name="email" value="{{ email.email }}" id="{{ radio.id }}" {% if radio.checked %}checked{% endif %}>
+                                            <label for="{{ radio.id }}">{{ email.email }}</label>
+                                        </div>
+                                        <div>
+                                            {% if email.verified %}
+                                                <span class="badge bg-success">تأیید شده</span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark">تأیید نشده</span>
+                                            {% endif %}
+                                            {% if email.primary %}
+                                                <span class="badge bg-primary">اصلی</span>
+                                            {% endif %}
+                                        </div>
+                                    </label>
+                                {% endwith %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" name="action_primary" class="btn btn-outline-primary">تعیین به عنوان اصلی</button>
+                            <button type="submit" name="action_send" class="btn btn-outline-secondary">ارسال مجدد لینک تأیید</button>
+                            <button type="submit" name="action_remove" class="btn btn-outline-danger">حذف ایمیل</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="alert alert-warning text-center">
+                        هیچ ایمیلی برای این حساب ثبت نشده است.
+                    </div>
+                {% endif %}
+
+                {% if can_add_email %}
+                    <hr>
+                    <h4 class="text-center">افزودن ایمیل جدید</h4>
+                    <form method="post" action="{% url 'account_email' %}">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            {{ form.email.label_tag }}
+                            <input type="email" name="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" placeholder="ایمیل جدید" value="{{ form.email.value|default:'' }}">
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" name="action_add" class="btn btn-success w-100">افزودن ایمیل</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

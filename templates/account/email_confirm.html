@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block title %}تأیید ایمیل{% endblock %}
+
+{% block content %}
+<div class="auth-card p-4" style="max-width: 600px; margin: auto; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.2);">
+    <h2 class="title" style="text-align:center; margin-bottom: 20px;">تأیید ایمیل</h2>
+    {% if confirmation %}
+        <p style="text-align:center;">
+            لطفا تأیید کنید ایمیل <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a> متعلق به حساب شما است.
+        </p>
+        <form method="post" action="{% url 'account_confirm_email' confirmation.key %}" style="text-align:center;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">تأیید</button>
+        </form>
+    {% else %}
+        <div class="alert alert-warning" style="text-align:center;">
+            لینک تأیید منقضی شده یا نامعتبر است. لطفا درخواست تأیید ایمیل جدید بدهید.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
