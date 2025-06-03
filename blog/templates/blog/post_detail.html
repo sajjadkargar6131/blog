@@ -32,6 +32,42 @@
 
 {% block title %}{{ detail.title|truncatewords:20 }}{% endblock title %}
 {% block style %}
+    .share-popup {
+    position: absolute;
+    bottom: 100%; /* دقیقا بالا نمایش داده می‌شود */
+    left: 0;
+    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    min-width: 130px;
+    transition: all 0.2s ease;
+    }
+
+    .share-popup a {
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    }
+
+    .share-popup a:hover {
+    color: #007bff;
+    }
+
+    .d-none {
+    display: none !important;
+    }
+
+
 {% endblock %}
 {% block content %}
     <div class="row">
@@ -44,14 +80,14 @@
                     <h4 class="card-title">{{ detail.title }}</h4>
                     <p class="card-text text-muted d-flex align-items-center flex-wrap gap-3">
                     <span class="d-flex align-items-center">
-        <i class="fa fa-user me-1"></i><span>{{ detail.author }}</span>
-    </span>
+                        <i class="fa fa-user me-1"></i><span>{{ detail.author }}</span>
+                    </span>
                         <span class="d-flex align-items-center">
-        <i class="fa fa-calendar me-1"></i><span>{{ detail.created_at|to_jalali:'%Y/%m/%d' }}</span>
-    </span>
+                        <i class="fa fa-calendar me-1"></i><span>{{ detail.created_at|to_jalali:'%Y/%m/%d' }}</span>
+                    </span>
                         <span class="d-flex align-items-center">
-        <i class="fa fa-clock-o me-1"></i> <span>{{ detail.read_time }}</span>
-    </span>
+                        <i class="fa fa-clock-o me-1"></i> <span>{{ detail.read_time }}</span>
+                     </span>
                     </p>
                     {% if detail.tags.exists %}
                         <p class="card-text text-muted">تگ ها:
@@ -111,6 +147,50 @@
                             <span class="text-primary" id="bookmarks-count">{{ bookmark_count|format_number }}</span>
                         </span>
                         {% endif %}
+                        <span class="share-btn-wrapper" style="position: relative;">
+    <i id="share-icon" class="fa fa-share-alt" style="cursor:pointer; color:#007bff;" title="اشتراک گذاری"></i>
+
+                            <!-- پاپ‌آپ اشتراک شبکه‌های اجتماعی -->
+    <div id="share-popup" style="
+        display:none;
+        position: absolute;
+        bottom: 30px; /* به سمت بالا */
+        left: 0;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        padding: 5px;
+        border-radius: 5px;
+        z-index: 1000;
+        width: 40px;
+        text-align: center;
+        ">
+        <a href="https://t.me/share/url?url={{ short_url }}" target="_blank" title="اشتراک در تلگرام"
+           style="display:block; margin:5px 0; color:#0088cc;">
+            <i class="fa fa-telegram fa-lg"></i>
+        </a>
+        <a href="https://api.whatsapp.com/send?text={{ short_url }}" target="_blank" title="اشتراک در واتساپ"
+           style="display:block; margin:5px 0; color:#25D366;">
+            <i class="fa fa-whatsapp fa-lg"></i>
+        </a>
+        <a href="https://twitter.com/intent/tweet?url={{ short_url }}" target="_blank" title="اشتراک در توییتر"
+           style="display:block; margin:5px 0; color:#1DA1F2;">
+            <i class="fa fa-twitter fa-lg"></i>
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ short_url }}" target="_blank" title="اشتراک در فیسبوک"
+           style="display:block; margin:5px 0; color:#3b5998;">
+            <i class="fa fa-facebook fa-lg"></i>
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ short_url }}" target="_blank"
+           title="اشتراک در لینکدین" style="display:block; margin:5px 0; color:#0077b5;">
+            <i class="fa fa-linkedin fa-lg"></i>
+        </a>
+        <a href="mailto:?subject=لینک جالب&body={{ short_url }}" target="_blank" title="اشتراک از طریق ایمیل"
+           style="display:block; margin:5px 0; color:#555;">
+            <i class="fa fa-envelope fa-lg"></i>
+        </a>
+    </div>
+</span>
                     </div>
                 </div>
             </div>
@@ -228,6 +308,73 @@
             element.replaceWith(iframe);
         });
     </script>
+
+    <!-- دکمه اشتراک گذاری -->
+    <span class="share-btn-wrapper" style="position: relative;">
+    <i id="share-icon" class="fa fa-share-alt" style="cursor:pointer; color:#007bff;" title="اشتراک گذاری"></i>
+
+        <!-- پاپ‌آپ اشتراک شبکه‌های اجتماعی -->
+    <div id="share-popup" style="
+        display:none;
+        position: absolute;
+        bottom: 30px; /* به سمت بالا */
+        left: 0;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        padding: 5px;
+        border-radius: 5px;
+        z-index: 1000;
+        width: 40px;
+        text-align: center;
+        ">
+        <a href="https://t.me/share/url?url={{ short_url }}" target="_blank" title="اشتراک در تلگرام"
+           style="display:block; margin:5px 0; color:#0088cc;">
+            <i class="fa fa-telegram fa-lg"></i>
+        </a>
+        <a href="https://api.whatsapp.com/send?text={{ short_url }}" target="_blank" title="اشتراک در واتساپ"
+           style="display:block; margin:5px 0; color:#25D366;">
+            <i class="fa fa-whatsapp fa-lg"></i>
+        </a>
+        <a href="https://twitter.com/intent/tweet?url={{ short_url }}" target="_blank" title="اشتراک در توییتر"
+           style="display:block; margin:5px 0; color:#1DA1F2;">
+            <i class="fa fa-twitter fa-lg"></i>
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ short_url }}" target="_blank" title="اشتراک در فیسبوک"
+           style="display:block; margin:5px 0; color:#3b5998;">
+            <i class="fa fa-facebook fa-lg"></i>
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ short_url }}" target="_blank"
+           title="اشتراک در لینکدین" style="display:block; margin:5px 0; color:#0077b5;">
+            <i class="fa fa-linkedin fa-lg"></i>
+        </a>
+        <a href="mailto:?subject=لینک جالب&body={{ short_url }}" target="_blank" title="اشتراک از طریق ایمیل"
+           style="display:block; margin:5px 0; color:#555;">
+            <i class="fa fa-envelope fa-lg"></i>
+        </a>
+    </div>
+</span>
+
+    <script>
+        const shareIcon = document.getElementById('share-icon');
+        const sharePopup = document.getElementById('share-popup');
+
+        shareIcon.addEventListener('click', function (event) {
+            event.stopPropagation();
+            if (sharePopup.style.display === 'block') {
+                sharePopup.style.display = 'none';
+            } else {
+                sharePopup.style.display = 'block';
+            }
+        });
+
+        // بستن پاپ‌آپ با کلیک بیرون
+        document.addEventListener('click', function () {
+            sharePopup.style.display = 'none';
+        });
+    </script>
+
+
 
 {% endblock scripts %}
 

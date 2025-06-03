@@ -14,13 +14,14 @@ from accounts.models import Activity
 from .utils import get_clinet_ip, generate_unique_slug
 from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
+from shortener.models import ShortLink
 from taggit.models import Tag
 
 
 class IndexListView(generic.ListView):
     template_name = 'blog/post_list.html'
     context_object_name = 'list'
-    paginate_by = 10
+    paginate_by = 9
 
     def get_queryset(self):
         return Post.objects.filter(status='pub').order_by('-created_at').select_related('author')
@@ -60,6 +61,11 @@ class PostDetailView(generic.DetailView, FormMixin):
         if user.is_authenticated:
             context['liked'] = self.object.likes.filter(user=user).exists()  # True
             context['bookmarked'] = self.object.bookmarks.filter(user=user).exists()
+        # ساخت لینک کوتاه
+        full_url = self.request.build_absolute_uri(self.object.get_absolute_url())
+        short_link_obj, created = ShortLink.objects.get_or_create(original_url=full_url)
+        short_url = self.request.build_absolute_uri('/s/' + short_link_obj.short_code + '/')
+        context['short_url'] = short_url
         return context
 
     def post(self, request, *args, **kwargs):
@@ -97,6 +103,7 @@ class PostDetailView(generic.DetailView, FormMixin):
 
     def get_success_url(self):
         return self.object.get_absolute_url()
+
 
 
 # --- Post Create View ---
