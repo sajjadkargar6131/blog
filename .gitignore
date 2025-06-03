@@ -26,3 +26,6 @@ logs/
 
 # Git ignore itself
 .gitignore
+
+# Env
+.env
