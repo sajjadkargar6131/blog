@@ -158,6 +158,12 @@
                             <button type="submit" class="btn btn-success">ذخیره تغییرات</button>
                         </div>
                     </form>
+                    <hr>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'account_email' %}" class="btn btn-outline-primary">
+                            مدیریت ایمیل‌ها
+                        </a>
+                    </div>
                 </div>
 
                 <!-- تب تغییر رمز عبور -->
@@ -172,8 +178,8 @@
                 </div>
                 <!-- تب تنظیمات -->
 
-                {% if site_form and social_formset %}
-                    <div class="tab-pane fade {% if active_tab == 'settings' %}show active{% endif %}" id="settings">
+                <div class="tab-pane fade {% if active_tab == 'settings' %}show active{% endif %}" id="settings">
+                    {% if site_form and social_formset %}
                         <h3 class="mb-4">تنظیمات سایت</h3>
                         <form method="post">
                             {% csrf_token %}
@@ -219,7 +225,7 @@
                                                         <label class="form-check-label me-2" title="حذف این لینک">
                                                             <i class="fa fa-trash"></i>
                                                         </label>
-                                                        {{ form.DELETE}}
+                                                        {{ form.DELETE }}
                                                     </div>
                                                 {% endif %}
                                             </td>
@@ -230,10 +236,15 @@
                             </div>
 
                             <input type="hidden" name="form_type" value="update_settings"/>
-                            <button class="btn btn-success shadow-sm mt-3" type="submit"><i class="fa fa-save"></i> ذخیره تنظیمات</button>
+                            <button class="btn btn-success shadow-sm mt-3" type="submit"><i class="fa fa-save"></i>
+                                ذخیره تنظیمات
+                            </button>
                         </form>
-                    </div>
-                {% endif %}
+                    {% else %}
+                        <p>شما دسترسی لازم به این بخش را ندارید.</p>
+                    {% endif %}
+                </div>
+
 
                 <!-- تب فعالیت‌ها -->
                 <div class="tab-pane fade {% if active_tab == 'activity' %}show active{% endif %}" id="activity">
