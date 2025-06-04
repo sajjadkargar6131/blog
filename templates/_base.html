@@ -196,6 +196,32 @@
             {% endfor %}
         {% endif %}
     </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    {% if form_errors_json %}
+      try {
+        let errors = JSON.parse('{{ form_errors_json|escapejs }}');
+        let errorMessages = '';
+        for (const field in errors) {
+          errors[field].forEach(err => {
+            errorMessages += `• ${err.message}\n`;
+          });
+        }
+        if (errorMessages) {
+          Swal.fire({
+            icon: 'error',
+            title: 'خطا در فرم',
+            text: errorMessages,
+            confirmButtonText: 'باشه'
+          });
+        }
+      } catch (e) {
+        console.error("خطا در تبدیل JSON:", e);
+      }
+    {% endif %}
+  });
+</script>
+
     {% block content %}
         <i class="bi bi-moon-stars-fill me-2 opacity-50"></i>
     {% endblock content %}

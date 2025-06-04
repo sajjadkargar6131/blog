@@ -1,9 +1,16 @@
+import sys
+
+from PIL import Image
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 from django import forms
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.exceptions import ValidationError
+from io import BytesIO
+
 from .models import CustomUser
 from site_settings.models import SiteSetting, SocialLink
-from django.forms import inlineformset_factory
+from .utils import fix_image_orientation
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -28,6 +35,51 @@ class ProfilePictureForm(forms.ModelForm):
                 'style': 'display: none;',
             })
         }
+
+    def clean_profile_picture(self):
+        picture = self.cleaned_data.get('profile_picture')
+
+        if not picture:
+            return picture  # تصویر خالی
+
+        max_size = 5 * 1024 * 1024  # 5MB
+        if picture.size > max_size:
+            raise ValidationError("حجم فایل نباید بیشتر از 5 مگابایت باشد.")
+
+        # بررسی صحت و فرمت قبل از اصلاح جهت تصویر
+        try:
+            img = Image.open(picture)
+            img.verify()
+        except Exception:
+            raise ValidationError("فایل تصویر معتبر نیست یا خراب است.")
+
+        picture.seek(0)
+        img = Image.open(picture)
+
+        # بررسی فرمت قبل از اصلاح جهت
+        if img.format not in ['JPEG', 'PNG']:
+            raise ValidationError("فرمت تصویر فقط باید JPEG یا PNG باشد.")
+
+        # اصلاح جهت تصویر
+        img = fix_image_orientation(img)
+
+        # تبدیل به RGB برای WebP
+        img = img.convert('RGB')
+
+        output = BytesIO()
+        img.save(output, format='WEBP', quality=80)
+        output.seek(0)
+
+        webp_image = InMemoryUploadedFile(
+            file=output,
+            field_name='ImageField',
+            name='converted_image.webp',
+            content_type='image/webp',
+            size=sys.getsizeof(output),
+            charset=None
+        )
+
+        return webp_image
 
 
 class ProfileNameForm(forms.ModelForm):
@@ -59,5 +111,3 @@ class SocialLinkForm(forms.ModelForm):
         widgets = {
             'icon_class': forms.TextInput(attrs={'placeholder': 'مثال: fa fa-instagram'}),
         }
-
-

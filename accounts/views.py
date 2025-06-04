@@ -2,6 +2,7 @@ import os
 
 from allauth.account.views import PasswordChangeView
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -12,12 +13,11 @@ from django.utils.timezone import now
 from django.forms import modelformset_factory
 
 from .forms import ProfilePictureForm, ProfileNameForm, SiteSettingForm, SocialLinkForm
-from .models import Activity
+from .models import Activity, CustomUser
 
 from site_settings.models import SiteSetting, SocialLink
 
 from blog.models import Post, Comment
-
 
 
 def build_profile_context(user, active_tab="info", request=None):
@@ -67,8 +67,8 @@ def profile(request):
 
     # Pagination
     activities = Activity.objects.filter(user=user).order_by('-timestamp')
-    bookmarks = Post.objects.filter(bookmarks__user=user).distinct()
-    comments = Comment.objects.filter(user=user)
+    bookmarks = Post.objects.filter(bookmarks__user=user).order_by('-bookmarks__datetime_saved', 'pk').distinct()
+    comments = Comment.objects.filter(user=user).order_by('-datetime_created')
 
     activities_page_obj = Paginator(activities, 10).get_page(request.GET.get('page_activities'))
     bookmarks_page_obj = Paginator(bookmarks, 10).get_page(request.GET.get('page_bookmarks'))
@@ -94,7 +94,6 @@ def profile(request):
                 messages.success(request, "تنظیمات سایت با موفقیت ذخیره شد.")
                 return redirect('profile')
         else:
-            # Initialize forms for GET or any POST that isn't update_settings
             site_form = SiteSettingForm(instance=site_setting)
             social_formset = SocialLinkFormSet(queryset=social_links)
 
@@ -103,16 +102,33 @@ def profile(request):
         form_type = request.POST.get('form_type')
 
         if form_type == 'update_picture':
-            old_picture_path = user.profile_picture.path if user.profile_picture else None
             form = ProfilePictureForm(request.POST, request.FILES, instance=user)
+
             if form.is_valid():
-                if 'profile_picture' in request.FILES and old_picture_path and os.path.exists(old_picture_path):
-                    os.remove(old_picture_path)
+                # دریافت مسیر عکس قبلی از دیتابیس
+                old_picture_path = None
+                user_from_db = CustomUser.objects.get(pk=user.pk)
+                if user_from_db.profile_picture:
+                    try:
+                        old_picture_path = user_from_db.profile_picture.path
+                    except NotImplementedError:
+                        old_picture_path = None
+
+                # ذخیره تصویر جدید
                 form.save()
-                Activity.objects.create(user=user, action='profile_edit', timestamp=now(),
-                                        description='ویرایش عکس پروفایل')
+
+                # حذف فایل قبلی (در صورتی که مسیر معتبر بود و فایل موجود بود)
+                if old_picture_path and os.path.exists(old_picture_path):
+                    os.remove(old_picture_path)
+
+                Activity.objects.create(
+                    user=user, action='profile_edit', timestamp=now(), description='ویرایش عکس پروفایل'
+                )
                 messages.success(request, 'عکس پروفایل با موفقیت به‌روز شد.')
                 return redirect('profile')
+
+
+
 
         elif form_type == 'update_name':
             change_name_family_form = ProfileNameForm(request.POST, instance=user)
@@ -126,9 +142,6 @@ def profile(request):
             change_password_form = ChangePasswordForm(user, request.POST)
             if change_password_form.is_valid():
                 change_password_form.save()
-                messages.success(request, 'رمز عبور با موفقیت تغییر یافت.')
-                return redirect('profile')
-
     return render(request, 'accounts/profile.html', {
         'form': form,
         'form2': change_name_family_form,
@@ -164,11 +177,13 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = "accounts/profile.html"
 
     def get_default_success_url(self):
-        return reverse("profile") + "?tab=password"
+        return reverse("profile")
 
     def form_valid(self, form):
-        messages.success(self.request, "رمز عبور شما با موفقیت تغییر یافت.")
-        return super().form_valid(form)
+        form.save()
+        logout(self.request)
+        messages.success(self.request, "رمز عبور شما با موفقیت تغییر یافت. لطفاً دوباره وارد شوید.")
+        return redirect(reverse('account_login'))
 
     def form_invalid(self, form):
         if 'oldpassword' in form.errors:
