@@ -20,6 +20,7 @@ class Activity(models.Model):
         ('news_create', 'ارسال خبر جدید'),
         ('news_edit', 'ویرایش خبر '),
         ('news_delete', 'حذف خبر '),
+        ('settings_edit', 'ویرایش تنظیمات'),
 
     ]
 
@@ -43,6 +44,7 @@ class Activity(models.Model):
             'news_create': 'fa-rss-square text-info',
             'news_edit': 'fa-edit text-primary',
             'news_delete': 'fa-trash text-danger',
+            'settings_edit' : 'fa-cog text-danger',
 
         }
         return icons.get(self.action, 'fa-info-circle')

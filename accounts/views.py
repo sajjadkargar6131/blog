@@ -19,6 +19,7 @@ from site_settings.models import SiteSetting, SocialLink
 from blog.models import Post, Comment
 
 
+
 def build_profile_context(user, active_tab="info", request=None):
     # فرم‌ها
     profile_picture_form = ProfilePictureForm(instance=user)
@@ -88,6 +89,8 @@ def profile(request):
             if site_form.is_valid() and social_formset.is_valid():
                 site_form.save()
                 social_formset.save()
+                Activity.objects.create(user=user, action='settings_edit', timestamp=now(),
+                                        description='ویرایش تنظیمات')
                 messages.success(request, "تنظیمات سایت با موفقیت ذخیره شد.")
                 return redirect('profile')
         else:
