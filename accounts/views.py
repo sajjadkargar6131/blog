@@ -126,7 +126,12 @@ def profile(request):
                 )
                 messages.success(request, 'عکس پروفایل با موفقیت به‌روز شد.')
                 return redirect('profile')
-
+            else:
+                errors_json = form.errors.as_json()
+                context = build_profile_context(user, active_tab=active_tab, request=request)
+                context['form'] = form
+                context['form_errors_json'] = errors_json
+                return render(request, 'accounts/profile.html', context)
 
 
 

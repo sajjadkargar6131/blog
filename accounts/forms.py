@@ -40,13 +40,12 @@ class ProfilePictureForm(forms.ModelForm):
         picture = self.cleaned_data.get('profile_picture')
 
         if not picture:
-            return picture  # تصویر خالی
+            return picture
 
-        max_size = 5 * 1024 * 1024  # 5MB
+        max_size = 5 * 1024 * 1024
         if picture.size > max_size:
             raise ValidationError("حجم فایل نباید بیشتر از 5 مگابایت باشد.")
 
-        # بررسی صحت و فرمت قبل از اصلاح جهت تصویر
         try:
             img = Image.open(picture)
             img.verify()
@@ -55,31 +54,41 @@ class ProfilePictureForm(forms.ModelForm):
 
         picture.seek(0)
         img = Image.open(picture)
-
-        # بررسی فرمت قبل از اصلاح جهت
         if img.format not in ['JPEG', 'PNG']:
             raise ValidationError("فرمت تصویر فقط باید JPEG یا PNG باشد.")
 
-        # اصلاح جهت تصویر
-        img = fix_image_orientation(img)
+        return picture
 
-        # تبدیل به RGB برای WebP
-        img = img.convert('RGB')
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        picture = self.cleaned_data.get('profile_picture')
 
-        output = BytesIO()
-        img.save(output, format='WEBP', quality=80)
-        output.seek(0)
+        if picture:
+            # تبدیل تصویر به WebP
+            img = Image.open(picture)
+            img = fix_image_orientation(img)
+            img = img.convert('RGB')
 
-        webp_image = InMemoryUploadedFile(
-            file=output,
-            field_name='ImageField',
-            name='converted_image.webp',
-            content_type='image/webp',
-            size=sys.getsizeof(output),
-            charset=None
-        )
+            output = BytesIO()
+            img.save(output, format='WEBP', quality=80)
+            output.seek(0)
 
-        return webp_image
+            webp_image = InMemoryUploadedFile(
+                output,
+                field_name='ImageField',
+                name='converted_image.webp',
+                content_type='image/webp',
+                size=output.getbuffer().nbytes,
+                charset=None
+            )
+
+            instance.profile_picture = webp_image
+
+        if commit:
+            instance.save()
+
+        return instance
+
 
 
 class ProfileNameForm(forms.ModelForm):
