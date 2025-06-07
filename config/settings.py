@@ -3,17 +3,33 @@ from pathlib import Path
 import locale
 import sys
 from decouple import config
+import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8wxdpt8qef*$o%6p+kewop@v48(if5n)_lv_gk9wmuxlp7hk$l'
+env_file = Path(".env")
+SECRET_KEY = config("SECRET_KEY", default=None)
+
+if not SECRET_KEY:
+    SECRET_KEY = secrets.token_urlsafe(50)
+
+    if env_file.exists():
+        content = env_file.read_text()
+
+        if "SECRET_KEY" not in content:
+            new_content = f"SECRET_KEY={SECRET_KEY}\n{content}"
+            env_file.write_text(new_content)
+    else:
+
+        env_file.write_text(f"SECRET_KEY={SECRET_KEY}\n")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+allowed_hosts_str = config("ALLOWED_HOSTS", default="")
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(",") if host.strip()]
 
 
 # Application definition
@@ -98,12 +114,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if config("DB_NAME", default=None):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config("DB_NAME"),
+            'USER': config("DB_USER"),
+            'PASSWORD': config("DB_PASSWORD"),
+            'HOST': config("DB_HOST", default="localhost"),
+            'PORT': config("DB_PORT", default="5432"),
+        }
     }
-}
+else:
+    # در غیر این صورت SQLite پیش‌فرض
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 
