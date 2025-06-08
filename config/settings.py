@@ -166,10 +166,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-if sys.platform.startswith('win32'):
-    locale.setlocale(locale.LC_ALL, "Persian_Iran.UTF-8")
-else:
-    locale.setlocale(locale.LC_ALL, "fa_IR.UTF-8")
+try:
+    if sys.platform.startswith('win32'):
+        locale.setlocale(locale.LC_ALL, "Persian_Iran.UTF-8")
+    else:
+        locale.setlocale(locale.LC_ALL, "fa_IR.UTF-8")
+except locale.Error:
+    locale.setlocale(locale.LC_ALL, "")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
