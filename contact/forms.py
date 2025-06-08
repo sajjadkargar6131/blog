@@ -4,16 +4,20 @@ from collections import OrderedDict
 
 class ContactForm(forms.Form):
     subject = forms.CharField(max_length=100, label='موضوع')
-    message = forms.CharField(widget=forms.Textarea, label='پیام')
+    message = forms.CharField(widget=forms.Textarea, label='پیام', max_length=2000)
 
-    def __init__(self, *args, user_email=None, **kwargs):
+    def __init__(self, *args, **kwargs):
+        user_email = kwargs.pop('user_email', None)
         super().__init__(*args, **kwargs)
-        if not user_email:
-            # ایمیل رو اجباری تعریف کن
-            email_field = forms.EmailField(label='ایمیل شما', required=True)
-            # ابتدا ایمیل رو اضافه کن
-            self.fields['email'] = email_field
 
-            # برای جابجایی ایمیل به اول، فیلدها رو مرتب کن
-            fields_order = ['email', 'subject', 'message']
-            self.fields = OrderedDict((k, self.fields[k]) for k in fields_order)
+        if not user_email:
+            self.fields['email'] = forms.EmailField(label='ایمیل شما', required=True)
+            # ترتیب فیلدها
+            ordered_fields = ['email', 'subject', 'message']
+            self.fields = OrderedDict((k, self.fields[k]) for k in ordered_fields)
+
+    def clean_message(self):
+        message = self.cleaned_data['message']
+        if '<script' in message.lower():
+            raise forms.ValidationError('استفاده از کدهای مخرب مجاز نیست.')
+        return message
