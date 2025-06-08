@@ -1,40 +1,29 @@
-{% extends '_base.html' %}
-{% load static %}
-{% block seo %}{% endblock seo %}
- {% block title %}403 Forbidden{% endblock title %}
+{% extends "_base.html" %}
+
 {% block style %}
-{#    body{#}
-{#        background-image: url("{% static 'images/403.png' %}");#}
-{#        background-size: contain; /* یا contain */#}
-{#        background-repeat: no-repeat;#}
-{#        background-position: center;#}
-{#    }#}
-    .container {
-      text-align: center;
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
     }
     .error-code {
-      font-size: 80px;
-      font-weight: bold;
-      color: #e74c3c;
+        font-size: 6rem;
+        font-weight: bold;
+        color: var(--bs-warning);
     }
-    .message {
-      font-size: 24px;
-      margin-bottom: 30px;
-    }
-    .btn-primary {
-      background-color: #3498db;
-      border-color: #3498db;
-    }
-{% endblock style %}
-{% block content %}
-    <div class="container">
-    <div class="error-code">
-      <span>403</span>
-    </div>
-    <div class="message">
-      <p>Forbidden: You don't have permission to access this page</p>
-    </div>
-    <a href="/" class="btn btn-primary">بازگشت به صفحه اصلی</a>
-  </div>
-{% endblock content %}
+</style>
+{% endblock %}
 
+{% block content %}
+<div class="error-box bg-body border shadow rounded-4 p-5 text-center">
+    <div class="error-code">403</div>
+    <h1 class="mb-4 text-body">دسترسی غیرمجاز</h1>
+    <p class="text-muted mb-4">
+        شما اجازه دسترسی به این صفحه را ندارید. اگر فکر می‌کنید این یک خطاست، لطفاً با پشتیبانی تماس بگیرید.
+    </p>
+    <a href="/" class="btn btn-outline-primary">بازگشت به صفحه اصلی</a>
+</div>
+{% endblock %}

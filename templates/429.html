@@ -1,40 +1,29 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خطای 429 - درخواست بیش از حد</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .error-box {
-            text-align: center;
-            padding: 3rem;
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        .error-code {
-            font-size: 6rem;
-            font-weight: bold;
-            color: #dc3545;
-        }
-    </style>
-</head>
-<body>
-    <div class="error-box">
-        <div class="error-code">429</div>
-        <h1 class="mb-4">درخواست بیش از حد مجاز</h1>
-        <p class="text-muted mb-4">
-            شما تعداد زیادی درخواست در مدت زمان کوتاه ارسال کرده‌اید. لطفاً کمی صبر کرده و دوباره تلاش کنید.
-        </p>
-        <a href="/" class="btn btn-outline-primary">بازگشت به صفحه اصلی</a>
-    </div>
-</body>
-</html>
+{% extends "_base.html" %}
+
+{% block style %}
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .error-code {
+        font-size: 6rem;
+        font-weight: bold;
+        color: var(--bs-danger);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-box bg-body border shadow rounded-4 p-5 text-center">
+    <div class="error-code">429</div>
+    <h1 class="mb-4 text-body">درخواست بیش از حد مجاز</h1>
+    <p class="text-muted mb-4">
+        شما تعداد زیادی درخواست در مدت زمان کوتاه ارسال کرده‌اید. لطفاً کمی صبر کرده و دوباره تلاش کنید.
+    </p>
+    <a href="/" class="btn btn-outline-primary">بازگشت به صفحه اصلی</a>
+</div>
+{% endblock %}
