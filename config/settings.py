@@ -342,6 +342,9 @@ ACCOUNT_RATE_LIMITS = {
     "signup": "10/m/ip",
     "reset_password": "5/m/key",
     "login_failed": "10/m/ip",
+    "confirm_email": "1/3m/key",
+    "manage_email": "10/m/user",
+    "change_password": "5/m/user",
 }
 
 CACHES = {
