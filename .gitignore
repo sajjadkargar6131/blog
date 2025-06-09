@@ -1,6 +1,6 @@
 # General Python ignores
 __pycache__/
-*.py[cod]
+
 
 # Virtual environment
 venv/
@@ -14,7 +14,6 @@ env/
 # Django specific
 *.sqlite3
 /media/
-/static/
 /staticfiles/
 
 # Logs
