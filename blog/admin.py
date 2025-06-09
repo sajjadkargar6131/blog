@@ -2,6 +2,7 @@ from django.contrib import admin
 from taggit.managers import TaggableManager
 from django.utils.text import slugify
 from . import models
+from .forms import PostCreateForm
 import re
 
 
@@ -25,6 +26,7 @@ class AdminPost(admin.ModelAdmin):
         TaggableManager: {'help_text': 'برچسب ها را با فاصله از هم جدا کنید.'}
     }
     prepopulated_fields = {"slug": ("title",)}
+    form = PostCreateForm
 
     def save_model(self, request, obj, form, change):
         if not obj.slug or 'title' in form.changed_data:
