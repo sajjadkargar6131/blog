@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
@@ -33,6 +32,11 @@ class News(models.Model):
     def comments_count(self):
         return self.comments.filter(publish=True).count()
 
+    @property
+    def unique_views(self):
+        return self.views.count()
+
+
 class NewsComment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()
@@ -47,3 +51,9 @@ class NewsComment(models.Model):
     def __str__(self):
         return f'{self.user} : {self.text}'
 
+
+class NewsUniqueView(models.Model):
+    news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='views')
+    ip_address = models.GenericIPAddressField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    datetime_viewed = models.DateTimeField(auto_now_add=True)

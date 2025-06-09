@@ -8,7 +8,8 @@ from django.utils.timezone import now
 
 from accounts.models import Activity
 from .forms import NewsCreateForm, NewsCommentForm
-from .models import News
+from .models import News, NewsUniqueView
+from blog.utils import get_clinet_ip
 
 
 class NewsCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
@@ -63,13 +64,24 @@ class NewsDetailView(FormMixin, generic.DetailView):
     def get_queryset(self):
         return News.objects.filter(status='pub').select_related('author')
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        ip = get_clinet_ip(request)
+        user = request.user if request.user.is_authenticated else None
+
+        if not NewsUniqueView.objects.filter(news=self.object, ip_address=ip, user=user).exists():
+            NewsUniqueView.objects.create(news=self.object, ip_address=ip, user=user)
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         comments_qs = self.object.comments.filter(publish=True)
         context['comments'] = comments_qs.order_by('-datetime_created')
         context.update({
             'comments_count': self.object.comments_count,
-            'form': self.get_form()
+            'form': self.get_form(),
+            'unique_views': self.object.unique_views,
         })
         return context
 
