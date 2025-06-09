@@ -80,7 +80,14 @@
                     <h4 class="card-title">{{ detail.title }}</h4>
                     <p class="card-text text-muted d-flex align-items-center flex-wrap gap-3">
                     <span class="d-flex align-items-center">
-                        <i class="fa fa-user me-1"></i><span>{{ detail.author }}</span>
+                        <i class="fa fa-user me-1"></i>
+                        <span>
+                            {% if detail.author.first_name %}
+                                {{ detail.author.first_name }}  {{ detail.author.last_name }}
+                            {% else %}
+                                {{ detail.author }}
+                            {% endif %}
+                        </span>
                     </span>
                         <span class="d-flex align-items-center">
                         <i class="fa fa-calendar me-1"></i><span>{{ detail.created_at|to_jalali:'%Y/%m/%d' }}</span>

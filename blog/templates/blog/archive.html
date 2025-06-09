@@ -14,9 +14,9 @@
                         <div class="card-img-top bg-secondary" style="height: 200px;"></div>
                     {% endif %}
                     <div class="card-body">
-                        <strong class="d-inline-block mb-2 text-primary-emphasis">{{ item.author }}</strong>
+
                         <a href="{% url 'post_detail' slug=item.slug %}" class="text-decoration-none">
-                            <h6 class="card-title">{{ item.title|truncatewords:15 }}</h6>
+                            <h4 class="card-title">{{ item.title|truncatewords:15 }}</h4>
                         </a>
                         <p class="card-text text-muted">
                             <small>
@@ -24,6 +24,17 @@
                                 {{ item.created_at|naturaltime }}
                             </small>
                         </p>
+                         <p class="card-text text-muted">
+                                <small>
+                                    <span class="text-muted"> توسط:</span>
+
+                                    {% if item.author.first_name %}
+                                        {{ item.author.first_name }} {{ item.author.last_name }}
+                                    {% else %}
+                                        {{ item.author }}
+                                    {% endif %}
+                                </small>
+                            </p>
                         <div class="mb-2">
                             <small><span class="text-muted">دسته بندی ها:</span></small>
                             {% if item.categories.all.exists %}
