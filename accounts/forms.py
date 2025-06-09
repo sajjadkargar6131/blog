@@ -1,4 +1,3 @@
-import sys
 
 from PIL import Image
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
