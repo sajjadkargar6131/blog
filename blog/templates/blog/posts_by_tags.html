@@ -1,0 +1,79 @@
+{% extends '_base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="container my-5">
+    <h5 class="text-muted text-center mb-4">
+        تگ   <span class="text-primary">{{ tag.name }}</span>
+    </h5>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for item in list %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 rounded">
+                    {% if item.cover %}
+                        <img src="{{ item.cover.url }}" class="card-img-top" alt="{{ item.title }}">
+                    {% else %}
+                        <div class="card-img-top bg-secondary" style="height: 200px;"></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <a href="{% url 'post_detail' slug=item.slug %}" class="text-decoration-none">
+                            <h4 class="card-title">{{ item.title|truncatewords:20 }}</h4>
+                        </a>
+                        <p class="card-text text-muted">
+                            <small>
+                                <span class="text-muted">زمان ایجاد:</span>
+                                {{ item.created_at|naturaltime }}
+                            </small>
+                        </p>
+                        <p class="card-text text-muted">
+                                <small>
+                                    <span class="text-muted"> توسط:</span>
+
+                                    {% if item.author.first_name %}
+                                        {{ item.author.first_name }} {{ item.author.last_name }}
+                                    {% else %}
+                                        {{ item.author }}
+                                    {% endif %}
+                                </small>
+                            </p>
+                        <div class="mb-2">
+                            <small><span class="text-muted">دسته بندی ها:</span></small>
+                            {% if item.categories.all.exists %}
+                                {% for category in item.categories.all %}
+                                    <a href="{% url 'category_post' category.name %}">
+                                        <span class="badge bg-success mb-2">{{ category.name }}</span>
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <span class="badge bg-secondary">فاقد دسته بندی</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a href="{% url 'post_detail' slug=item.slug %}" class="btn btn-outline-primary w-100">مشاهده بیشتر</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if list %}
+        <nav aria-label="Page navigation example" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if list.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ list.previous_page_number }}">قبلی</a></li>
+                {% endif %}
+                {% for page in list.paginator.page_range %}
+                    <li class="page-item {% if page == list.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+                {% if list.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ list.next_page_number }}">بعدی</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+
+{% endblock %}
