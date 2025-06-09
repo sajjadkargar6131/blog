@@ -143,7 +143,7 @@
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-user me-1"></i>
                                 {% if user.first_name %}
-                                    {{ user.first_name }} {{ user.last_name }}
+                                    {{ user.get_full_name }}
                                 {% else %}
                                     {{ user.username }}
                                 {% endif %}

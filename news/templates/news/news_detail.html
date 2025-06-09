@@ -10,7 +10,13 @@
             {% endif %}
             <div class="card-body">
                 <h3 class="card-title">{{detail.title}}</h3>
-                <p class="card-text text-muted">نویسنده: <span>{{detail.author}}</span></p>
+                <p class="card-text text-muted">نویسنده: <span>
+                    {% if detail.author.first_name %}
+                        {{ detail.author.get_full_name }}
+                    {% else %}
+                        {{ detail.author }}
+                    {% endif %}
+                </span></p>
                 <p class="card-text text-muted">تاریخ انتشار: <span> {{ detail.created_at|to_jalali:'%Y/%m/%d _ %H:%M:%S' }} </span></p>
 
                 {% if detail.author == user  %}
