@@ -141,7 +141,12 @@
                         <div class="dropdown me-3">
                             <button class="btn btn-outline-success btn-xs dropdown-toggle" type="button" id="userMenu"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-user me-1"></i>{{ user.username }}
+                                <i class="fa fa-user me-1"></i>
+                                {% if user.first_name %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                                 <li><a class="dropdown-item" href="{% url 'profile' %}">پروفایل</a></li>
