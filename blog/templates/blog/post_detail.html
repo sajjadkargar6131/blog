@@ -196,6 +196,10 @@
            style="display:block; margin:5px 0; color:#555;">
             <i class="fa fa-envelope fa-lg"></i>
         </a>
+        <a href="#" id="copy-link" title="کپی لینک"
+           style="display:block; margin:5px 0; color:#28a745; cursor:pointer;">
+            <i class="fa fa-clipboard fa-lg"></i>
+        </a>
     </div>
 </span>
                     </div>
@@ -242,81 +246,7 @@
             </div>
         </div>
     </div>
-
-{% endblock content %}
-
-{% block scripts %}
-
-    <script>
-        $(document).ready(function () {
-            $("#like-icon").click(function () {
-                var postId = $(this).data("post-id");
-                const url = window.location.href;
-                text = url.split('/')
-                new_url = text[0] + '//' + text[2] + '/' + text[3] + '/like/'
-                $.ajax({
-                    url: new_url + postId + '/',
-                    type: 'POST',
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function (response) {
-                        if (response.liked) {
-                            $("#like-icon").removeClass("fa fa-heart-o");
-                            $("#like-icon").addClass("fa fa-heart text-danger");
-                        } else {
-                            $("#like-icon").removeClass("fa fa-heart text-danger");
-                            $("#like-icon").addClass("fa fa-heart-o");
-                        }
-                        $("#likes-count").text(response.likes_count);
-                    }
-                });
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            $("#bookmarks-icon").click(function () {
-                var postId = $(this).data("post-id");
-                const url = window.location.href;
-                text = url.split('/')
-                new_url = text[0] + '//' + text[2] + '/' + text[3] + '/bookmark/'
-                $.ajax({
-                    url: new_url + postId + '/',
-                    type: 'POST',
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'
-                    },
-                    success: function (response) {
-                        if (response.bookmarked) {
-                            $("#bookmarks-icon").removeClass("fa fa-bookmark-o");
-                            $("#bookmarks-icon").addClass("fa fa-bookmark text-muted");
-                        } else {
-                            $("#bookmarks-icon").removeClass("fa fa-bookmark text-muted");
-                            $("#bookmarks-icon").addClass("fa fa-bookmark-o");
-                        }
-                        $("#bookmarks-count").text(response.bookmarks_count);
-                    }
-                });
-            });
-        });
-    </script>
-
-    <script>
-        document.querySelectorAll('oembed[url]').forEach(element => {
-            const videoUrl = element.getAttribute('url');
-            const iframe = document.createElement('iframe');
-            iframe.setAttribute('width', '100%');
-            iframe.setAttribute('height', '400');
-            iframe.setAttribute('src', videoUrl.replace("watch?v=", "embed/"));
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('allowfullscreen', '');
-            element.replaceWith(iframe);
-        });
-    </script>
-
-    <!-- دکمه اشتراک گذاری -->
+  <!-- دکمه اشتراک گذاری -->
     <span class="share-btn-wrapper" style="position: relative;">
     <i id="share-icon" class="fa fa-share-alt" style="cursor:pointer; color:#007bff;" title="اشتراک گذاری"></i>
 
@@ -359,9 +289,78 @@
            style="display:block; margin:5px 0; color:#555;">
             <i class="fa fa-envelope fa-lg"></i>
         </a>
+
     </div>
 </span>
+{% endblock content %}
 
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $("#like-icon").click(function () {
+                var postId = $(this).data("post-id");
+                const url = window.location.href;
+                text = url.split('/')
+                new_url = text[0] + '//' + text[2] + '/' + text[3] + '/like/'
+                $.ajax({
+                    url: new_url + postId + '/',
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.liked) {
+                            $("#like-icon").removeClass("fa fa-heart-o");
+                            $("#like-icon").addClass("fa fa-heart text-danger");
+                        } else {
+                            $("#like-icon").removeClass("fa fa-heart text-danger");
+                            $("#like-icon").addClass("fa fa-heart-o");
+                        }
+                        $("#likes-count").text(response.likes_count);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#bookmarks-icon").click(function () {
+                var postId = $(this).data("post-id");
+                const url = window.location.href;
+                text = url.split('/')
+                new_url = text[0] + '//' + text[2] + '/' + text[3] + '/bookmark/'
+                $.ajax({
+                    url: new_url + postId + '/',
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.bookmarked) {
+                            $("#bookmarks-icon").removeClass("fa fa-bookmark-o");
+                            $("#bookmarks-icon").addClass("fa fa-bookmark text-muted");
+                        } else {
+                            $("#bookmarks-icon").removeClass("fa fa-bookmark text-muted");
+                            $("#bookmarks-icon").addClass("fa fa-bookmark-o");
+                        }
+                        $("#bookmarks-count").text(response.bookmarks_count);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        document.querySelectorAll('oembed[url]').forEach(element => {
+            const videoUrl = element.getAttribute('url');
+            const iframe = document.createElement('iframe');
+            iframe.setAttribute('width', '100%');
+            iframe.setAttribute('height', '400');
+            iframe.setAttribute('src', videoUrl.replace("watch?v=", "embed/"));
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allowfullscreen', '');
+            element.replaceWith(iframe);
+        });
+    </script>
     <script>
         const shareIcon = document.getElementById('share-icon');
         const sharePopup = document.getElementById('share-popup');
@@ -379,9 +378,17 @@
         document.addEventListener('click', function () {
             sharePopup.style.display = 'none';
         });
+
+        document.getElementById('copy-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    const shortUrl = "{{ short_url }}";  // لینک کوتاه واقعی اینجا باید قرار بگیره
+    navigator.clipboard.writeText(shortUrl).then(function() {
+        alert('لینک کپی شد!');
+    }, function(err) {
+        alert('خطا در کپی کردن لینک');
+        console.error(err);
+    });
+});
     </script>
-
-
-
 {% endblock scripts %}
 
