@@ -28,7 +28,7 @@ sitemap_patterns = {
 }
 
 urlpatterns = [
-                  path('admin/', admin.site.urls),
+                  path('control-panel-x9j3/', admin.site.urls),
                   path('', include('index.urls')),
                   path('blog/', include('blog.urls')),
                   path('accounts/', include('allauth.urls')),
