@@ -326,12 +326,12 @@ SITE_ID = 1
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 EMAIL_HOST = config('EMAIL_HOST',default='smtp.example.com')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
-CONTACT_RECEIVER_EMAIL = config('CONTACT_RECEIVER_EMAIL')
+EMAIL_PORT = config('EMAIL_PORT', cast=int ,default=587)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=True)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='person@person.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='password')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='person@person.com')
+CONTACT_RECEIVER_EMAIL = config('CONTACT_RECEIVER_EMAIL', default='person@person.com')
 
 # allauth settings
 ACCOUNT_LOGIN_METHODS = {'email'}
