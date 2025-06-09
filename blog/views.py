@@ -308,7 +308,7 @@ class CategoryPostListView(generic.ListView):
     model = Post
     template_name = 'blog/posts_by_category.html'
     context_object_name = 'list'
-    paginate_by = 10
+    paginate_by = 12
 
     def get_queryset(self):
         category_name = self.kwargs['name']
@@ -325,7 +325,7 @@ class CategoryPostListView(generic.ListView):
 class PostListByTagView(generic.ListView):
     model = Post
     context_object_name = 'list'
-    template_name = 'blog/posts_by_tag.html'
+    template_name = 'blog/posts_by_tags.html'
     paginate_by = 10
 
     def get_queryset(self):
