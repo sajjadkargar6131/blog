@@ -1,4 +1,11 @@
+from io import BytesIO
+
+from PIL import Image
 from django import forms
+from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from accounts.utils import fix_image_orientation
 from .models import Post, Category, Comment
 from taggit.forms import TagField
 from django_ckeditor_5.widgets import CKEditor5Widget
@@ -46,24 +53,66 @@ class PostCreateForm(forms.ModelForm):
         if not is_create:
             self.fields.pop('new_category')
 
-    def save(self, commit=True):
+    def clean_cover(self):
+        cover = self.cleaned_data.get('cover')
+        if not cover:
+            return cover
 
-        # ذخیره پست بدون تغییرات در categories
+        max_size = 5 * 1024 * 1024
+        if cover.size > max_size:
+            raise ValidationError("حجم تصویر نباید بیشتر از ۵ مگابایت باشد.")
+
+        try:
+            img = Image.open(cover)
+            img.verify()
+        except Exception:
+            raise ValidationError("فایل تصویر معتبر نیست یا خراب است.")
+
+        cover.seek(0)
+        img = Image.open(cover)
+        if img.format not in ['JPEG', 'PNG']:
+            raise ValidationError("فرمت تصویر باید JPEG یا PNG باشد.")
+
+        return cover
+
+    def save(self, commit=True):
         post_instance = super().save(commit=False)
 
-        # ذخیره پست قبل از هر چیز
-        post_instance.save()
+        # پردازش عکس
+        cover = self.cleaned_data.get('cover')
+        if cover:
+            img = Image.open(cover)
+            img = fix_image_orientation(img)
+            img = img.convert('RGB')
 
-        # افزودن دسته بندی جدید در صورتی که مشخص شده باشد
-        new_category_name = self.cleaned_data.get('new_category')
-        if new_category_name:
-            category, created = Category.objects.get_or_create(name=new_category_name)
-            post_instance.categories.add(category)  # افزودن دسته بندی جدید
+            output = BytesIO()
+            img.save(output, format='WEBP', quality=80)
+            output.seek(0)
 
-        # افزودن دسته بندی های انتخابی
-        categories = self.cleaned_data.get('categories')
-        if categories:
-            post_instance.categories.set(categories)  # تنظیم دسته بندی ها (حذف گزینه های قبلی و افزودن جدید)
+            webp_image = InMemoryUploadedFile(
+                output,
+                field_name='ImageField',
+                name='converted_cover.webp',
+                content_type='image/webp',
+                size=output.getbuffer().nbytes,
+                charset=None
+            )
+            post_instance.cover = webp_image
+
+        if commit:
+            post_instance.save()
+
+            # بعد از ذخیره، حالا m2m ها رو ست کن
+            new_category_name = self.cleaned_data.get('new_category')
+            if new_category_name:
+                category, created = Category.objects.get_or_create(name=new_category_name)
+                post_instance.categories.add(category)
+
+            categories = self.cleaned_data.get('categories')
+            if categories:
+                post_instance.categories.set(categories)
+
+            self.save_m2m()  # مطمئن شو tags و categories ثبت شدن
 
         return post_instance
 

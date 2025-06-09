@@ -105,7 +105,6 @@ class PostDetailView(generic.DetailView, FormMixin):
         return self.object.get_absolute_url()
 
 
-
 # --- Post Create View ---
 class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.CreateView):
     form_class = PostCreateForm
@@ -113,19 +112,35 @@ class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, generic.Create
     permission_required = 'blog.add_post'
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
         instance = form.save(commit=False)
+
+        # تنظیم نویسنده و slug
+        instance.author = self.request.user
         instance.slug = generate_unique_slug(instance.title, instance=instance)
+
+        # ذخیره‌ی اولیه برای ایجاد id
         instance.save()
+
+        # بعد از اینکه instance ذخیره شد، حالا می‌تونیم m2m رو ست کنیم
+        form.instance = instance  # اطمینان حاصل کن که فرم هم از این instance استفاده کنه
         form.save_m2m()
+
+        # اگر new_category وارد شده بود
+        new_category = form.cleaned_data.get('new_category')
+        if new_category:
+            category, created = Category.objects.get_or_create(name=new_category)
+            instance.categories.add(category)
+
+        # فعالیت
         Activity.objects.create(
             user=self.request.user,
             action='post_create',
             timestamp=now(),
             description='ارسال یک پست جدید'
         )
+
         messages.success(self.request, 'پست با موفقیت ثبت شد.')
-        return super().form_valid(form)
+        return redirect(instance.get_absolute_url())
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -152,20 +167,43 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
         return obj.author == self.request.user
 
     def form_valid(self, form):
-        tags = form.cleaned_data['tags']
-        self.object.tags.set(tags)
+        self.object = form.save(commit=False)
 
-        instance = form.save(commit=False)
-        instance.slug = generate_unique_slug(instance.title, instance=instance)
-        instance.save()
-        messages.success(self.request, 'پست با موفقیت به روز رسانی شد.')
+        # تولید slug جدید
+        self.object.slug = generate_unique_slug(self.object.title, instance=self.object)
+
+        # ذخیره اولیه (تا object دارای id شود)
+        self.object.save()
+
+        # برچسب‌ها
+        tags = form.cleaned_data.get('tags')
+        if tags:
+            self.object.tags.set(tags)
+
+        # دسته‌بندی‌های انتخابی
+        categories = form.cleaned_data.get('categories')
+        if categories:
+            self.object.categories.set(categories)
+
+        # اگر کاربر دسته‌بندی جدیدی وارد کرده
+        new_category = form.cleaned_data.get('new_category')
+        if new_category:
+            category, created = Category.objects.get_or_create(name=new_category)
+            self.object.categories.add(category)
+
+        # پیام موفقیت
+        messages.success(self.request, 'پست با موفقیت به‌روزرسانی شد.')
+
+        # ثبت اکشن در جدول فعالیت‌ها
         Activity.objects.create(
             user=self.request.user,
             action='post_edit',
             timestamp=now(),
             description='ویرایش پست'
         )
-        return super().form_valid(form)
+
+        # جلوگیری از ذخیره مجدد فرم
+        return redirect(self.get_success_url())
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

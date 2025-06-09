@@ -1,6 +1,6 @@
 import os
 import re
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from django.conf import settings
 from .models import Post
@@ -33,3 +33,22 @@ def delete_ckeditor_images_on_post_delete(sender, instance, **kwargs):
                 os.rmdir(folder)
             except Exception as e:
                 print(f" خطا در حذف پوشه خالی: {e}")
+
+
+@receiver(pre_save, sender=Post)
+def delete_old_cover_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return  # پست جدیده، چیزی برای حذف وجود نداره
+
+    try:
+        old_instance = Post.objects.get(pk=instance.pk)
+    except Post.DoesNotExist:
+        return
+
+    old_cover = old_instance.cover
+    new_cover = instance.cover
+
+    if old_cover and old_cover != new_cover:
+        old_cover_path = os.path.join(settings.MEDIA_ROOT, old_cover.name)
+        if os.path.exists(old_cover_path):
+            os.remove(old_cover_path)
