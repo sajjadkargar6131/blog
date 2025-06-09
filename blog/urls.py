@@ -5,8 +5,7 @@ urlpatterns = [
     path('create/', views.PostCreateView.as_view(), name='post_create'),
     
     path('', views.IndexListView.as_view(), name='blog_index'),
-    
-    # path('<slug:slug>/', views.PostDetailView.as_view(), name='post_detail'),
+
     re_path(r'^(?P<slug>[-\w\u0600-\u06FF]+)/$', views.PostDetailView.as_view(), name='post_detail'),
     
     path('update/<str:slug>', views.PostUpdateView.as_view(), name='post_update'),
