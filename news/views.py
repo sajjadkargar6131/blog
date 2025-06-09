@@ -1,4 +1,3 @@
-import os
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
@@ -65,7 +64,6 @@ class NewsDetailView(FormMixin, generic.DetailView):
         return News.objects.filter(status='pub').select_related('author')
 
     def get_context_data(self, **kwargs):
-        user = self.request.user
         context = super().get_context_data(**kwargs)
         comments_qs = self.object.comments.filter(publish=True)
         context['comments'] = comments_qs.order_by('-datetime_created')
@@ -77,7 +75,7 @@ class NewsDetailView(FormMixin, generic.DetailView):
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return redirect('account_login')  # استفاده از redirect به جای HttpResponseRedirect
+            return redirect('account_login')
 
         self.object = self.get_object()
         form = self.get_form()
@@ -105,13 +103,6 @@ class NewsDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         return reverse('news_list')
 
     def form_valid(self, form):
-        # حذف عکس کاور اگر وجود داشته باشد
-        obj = self.get_object()
-        if obj.cover:
-            try:
-                obj.cover.delete()
-            except Exception as e:
-                print(f"Error deleting file: {e}")
         Activity.objects.create(
             user=self.request.user,
             action='news_delete',
