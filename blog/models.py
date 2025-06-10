@@ -126,9 +126,10 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     publish = models.BooleanField(default=False)
     datetime_created = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
 
     def __str__(self) -> str:
-        return f'{self.user} : {self.text}'
+        return f'{self.user} : {self.text[:20]}{"..." if len(self.text) > 20 else ""}'
 
     class Meta:
         verbose_name = 'کامنت'

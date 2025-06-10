@@ -118,9 +118,15 @@ class PostCreateForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+    parent = forms.IntegerField(widget=forms.HiddenInput(), required=False)  # فقط فیلد اضافی برای id والد
+    text = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control w-100',
+        'rows': 3,
+    }))
+
     class Meta:
         model = Comment
-        fields = ('text',)
+        fields = ('text',)  # فقط فیلد متن
         labels = {
             'text': 'نظر شما'
         }

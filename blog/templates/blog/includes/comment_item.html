@@ -1,0 +1,24 @@
+{% load humanize %}
+
+<div class="comment-item mb-3 {% if comment.parent %}ps-3 border-start border-2 border-secondary{% else %}ps-0{% endif %}">
+    <div class="comment-body p-3 rounded bg-body-secondary">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <strong class="text-dark">{{ comment.user.username }}</strong>
+            <small class="text-muted">{{ comment.datetime_created|naturaltime }}</small>
+        </div>
+
+        <p class="mb-2 text-dark">{{ comment.text }}</p>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" class="reply-link btn btn-sm btn-outline-primary py-0 px-2" data-parent="{{ comment.id }}" aria-label="پاسخ به {{ comment.user.username }}">
+                پاسخ
+            </button>
+        </div>
+    </div>
+
+    <div class="replies mt-2">
+        {% for reply in comment.replies.all %}
+            {% include 'blog/includes/comment_item.html' with comment=reply %}
+        {% endfor %}
+    </div>
+</div>

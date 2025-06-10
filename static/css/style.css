@@ -368,6 +368,30 @@ fieldset .form-check {
     background-color: var(--ck-active-bg) !important;
 }
 
+.text-dark {
+    --bs-text-opacity: 1;
+    color: white !important;
+}
 
 
+.comment-item {
+        transition: all 0.3s ease;
+    }
 
+    .comment-item:hover {
+        transform: translateX(3px);
+    }
+
+    .comment-body {
+        border-left: 3px solid #dee2e6;
+    }
+
+    .reply-link {
+        font-size: 0.8rem;
+        text-decoration: none;
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }

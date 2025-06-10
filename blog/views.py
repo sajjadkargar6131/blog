@@ -16,6 +16,7 @@ from .models import Post, Like, BookmarkPost, PostView, Category
 from .forms import PostCreateForm, CommentForm
 from shortener.models import ShortLink
 from taggit.models import Tag
+from .models import Comment
 
 
 class IndexListView(generic.ListView):
@@ -41,14 +42,13 @@ class PostDetailView(generic.DetailView, FormMixin):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Post.objects.filter(status='pub').select_related('author').prefetch_related('comments', 'likes',
-                                                                                           'bookmarks')
+        return Post.objects.filter(status='pub').select_related('author').prefetch_related('comments', 'likes', 'bookmarks')
 
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super().get_context_data(**kwargs)
-        comments_qs = self.object.comments.filter(publish=True)
-        context['comments'] = comments_qs.order_by('-datetime_created')
+        comments_qs = self.object.comments.filter(publish=True).select_related('user').prefetch_related('replies__user')
+        context['comments'] = comments_qs.filter(parent__isnull=True).order_by('-datetime_created')
         context.update({
             'comments_count': self.object.comments_count,
             'likes_count': self.object.likes_count,
@@ -59,18 +59,20 @@ class PostDetailView(generic.DetailView, FormMixin):
             'bookmarked': False,
         })
         if user.is_authenticated:
-            context['liked'] = self.object.likes.filter(user=user).exists()  # True
+            context['liked'] = self.object.likes.filter(user=user).exists()
             context['bookmarked'] = self.object.bookmarks.filter(user=user).exists()
+
         # ساخت لینک کوتاه
         full_url = self.request.build_absolute_uri(self.object.get_absolute_url())
         short_link_obj, created = ShortLink.objects.get_or_create(original_url=full_url)
         short_url = self.request.build_absolute_uri('/s/' + short_link_obj.short_code + '/')
         context['short_url'] = short_url
+
         return context
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return redirect('login')  # استفاده از redirect به جای HttpResponseRedirect
+            return redirect(f"{reverse_lazy('account_login')}?next={request.path}")
 
         self.object = self.get_object()
         form = self.get_form()
@@ -79,30 +81,43 @@ class PostDetailView(generic.DetailView, FormMixin):
             comment = form.save(commit=False)
             comment.post = self.object
             comment.user = request.user
+
+            parent_id = form.cleaned_data.get('parent')
+            if parent_id:
+                try:
+                    parent_comment = Comment.objects.get(id=parent_id)
+                    comment.parent = parent_comment
+                except Comment.DoesNotExist:
+                    comment.parent = None
+            else:
+                comment.parent = None
+
             comment.save()
             messages.success(request, 'نظر شما با موفقیت ثبت شد. در صورت تایید مدیر نمایش داده میشود')
             Activity.objects.create(
-                user=self.request.user,
+                user=request.user,
                 action='comment_create',
                 timestamp=now(),
                 description='ثبت یک کامنت جدید'
             )
-            return self.form_valid(form)
+            return redirect(self.object.get_absolute_url())  # <=== اضافه کردن این خط
+
+
         else:
-            return self.form_invalid(form)
+            context = self.get_context_data(object=self.object)
+            context['form'] = form
+            return self.render_to_response(context)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data(object=self.object)
+
         ip = get_clinet_ip(request)
         user = request.user if request.user.is_authenticated else None
-
         if not PostView.objects.filter(post=self.object, ip_address=ip, user=user).exists():
             PostView.objects.create(post=self.object, ip_address=ip, user=user)
-        return self.render_to_response(context)
 
-    def get_success_url(self):
-        return self.object.get_absolute_url()
+        return self.render_to_response(context)
 
 
 # --- Post Create View ---
