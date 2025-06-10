@@ -53,7 +53,7 @@ def contact_view(request):
                 )
 
                 # ارسال ایمیل به ادمین
-                send_mail(subject, message, email, [settings.CONTACT_RECEIVER_EMAIL])
+                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [settings.CONTACT_RECEIVER_EMAIL], fail_silently=False)
 
                 # ارسال ایمیل تاییدیه به کاربر
                 context = {
