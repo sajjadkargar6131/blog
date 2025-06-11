@@ -71,7 +71,7 @@
     <div class="col-md-10 mx-auto">
         <div class="card mb-4 shadow-sm">
             {% if detail.cover %}
-                <img src="{{ detail.cover.url }}" class="card-img-top-detail post-image" alt="...">
+                <img src="{{ detail.cover.url }}?v={{ detail.pk}}" class="card-img-top-detail post-image" alt="...">
             {% endif %}
             <div class="card-body">
                 <h4 class="card-title">{{ detail.title }}</h4>
@@ -196,42 +196,6 @@
                 </div>
             </div>
         </div>
-
-{#        <div class="card shadow-sm mb-3">#}
-{#            <div class="card-body">#}
-{#                {% if comments %}#}
-{#                    <h5 class="card-title">نظرات</h5>#}
-{#                    <hr>#}
-{#                    {% for comment in comments %}#}
-{#                        <div class="border-bottom mb-3">#}
-{#                            <strong class="mb-3 text-muted">{{ comment.user.username }} گفته:</strong>#}
-{#                            <p class="text-justify mt-1">{{ comment.text }}</p>#}
-{#                            <div class="d-flex justify-content-end">#}
-{#                                <span class="text-muted mb-2">{{ comment.datetime_created|naturaltime }}</span>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endfor %}#}
-{#                {% else %}#}
-{#                    <div class="alert alert-primary">هنوز هیچ نظری برای این پست ارسال نشده است.</div>#}
-{#                {% endif %}#}
-{##}
-{#                {% if user.is_authenticated %}#}
-{#                    <div class="mt-4">#}
-{#                        <h5>نظر خود را وارد کنید:</h5>#}
-{#                        <form method="post">#}
-{#                            {% csrf_token %}#}
-{#                            <div class="mb-3">{{ form|crispy }}</div>#}
-{#                            <button type="submit" class="btn btn-primary">ارسال</button>#}
-{#                        </form>#}
-{#                    </div>#}
-{#                {% else %}#}
-{#                    <div class="alert alert-primary">#}
-{#                        لطفا برای پسندیدن و افزودن نظر ابتدا وارد شوید |#}
-{#                        <a class="text-decoration-none" href="{% url 'account_login' %}?next={% url 'post_detail' detail.slug %}">ورود</a>#}
-{#                    </div>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        </div>#}
         <div class="card shadow-sm mb-3">
     <div class="card-body">
         {% if comments %}
