@@ -1,4 +1,6 @@
 from io import BytesIO
+from uuid import uuid4
+
 from PIL import Image
 from django import forms
 from django.core.exceptions import ValidationError
@@ -58,11 +60,11 @@ class NewsCreateForm(forms.ModelForm):
             output = BytesIO()
             img.save(output, format='WEBP', quality=80)
             output.seek(0)
-
+            filename = f"{uuid4().hex}converted_news_cover.webp"
             webp_image = InMemoryUploadedFile(
                 output,
                 field_name='ImageField',
-                name='converted_news_cover.webp',
+                name=filename,
                 content_type='image/webp',
                 size=output.getbuffer().nbytes,
                 charset=None
