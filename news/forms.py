@@ -60,7 +60,7 @@ class NewsCreateForm(forms.ModelForm):
             output = BytesIO()
             img.save(output, format='WEBP', quality=80)
             output.seek(0)
-            filename = f"{uuid4().hex}converted_news_cover.webp"
+            filename = f"{uuid4().hex}-converted_news_cover.webp"
             webp_image = InMemoryUploadedFile(
                 output,
                 field_name='ImageField',
