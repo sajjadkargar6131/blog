@@ -152,7 +152,7 @@ fieldset .form-check {
 .card-img-top-detail{
    width: 100%;
 
-    object-fit: cover;
+    object-fit: fill;
 }
 
 
