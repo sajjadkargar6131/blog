@@ -26,7 +26,7 @@ if not SECRET_KEY:
         env_file.write_text(f"SECRET_KEY={SECRET_KEY}\n")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)
 
 allowed_hosts_str = config("ALLOWED_HOSTS", default="")
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(",") if host.strip()]

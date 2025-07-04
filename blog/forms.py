@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 from uuid import uuid4
 
@@ -71,7 +72,7 @@ class PostCreateForm(forms.ModelForm):
 
         cover.seek(0)
         img = Image.open(cover)
-        if img.format not in ['JPEG', 'PNG']:
+        if img.format not in ['JPEG', 'PNG', 'WEBP']:
             raise ValidationError("فرمت تصویر باید JPEG یا PNG باشد.")
 
         return cover
@@ -79,7 +80,17 @@ class PostCreateForm(forms.ModelForm):
     def save(self, commit=True):
         post_instance = super().save(commit=False)
 
-        # پردازش عکس
+        # اگر پست در حال ویرایشه و عکس قبلی داره، پاکش کن
+        if post_instance.pk:
+            try:
+                old_instance = Post.objects.get(pk=post_instance.pk)
+                if old_instance.cover and self.cleaned_data.get('cover'):
+                    if os.path.isfile(old_instance.cover.path):
+                        old_instance.cover.delete(save=False)  # پاک کردن فایل فیزیکی
+            except Post.DoesNotExist:
+                pass
+
+        # پردازش عکس جدید
         cover = self.cleaned_data.get('cover')
         if cover:
             img = Image.open(cover)
@@ -103,20 +114,19 @@ class PostCreateForm(forms.ModelForm):
         if commit:
             post_instance.save()
 
-            # بعد از ذخیره، حالا m2m ها رو ست کن
+            # افزودن دسته‌بندی جدید
             new_category_name = self.cleaned_data.get('new_category')
             if new_category_name:
-                category, created = Category.objects.get_or_create(name=new_category_name)
+                category, _ = Category.objects.get_or_create(name=new_category_name)
                 post_instance.categories.add(category)
 
             categories = self.cleaned_data.get('categories')
             if categories:
                 post_instance.categories.set(categories)
 
-            self.save_m2m()  # مطمئن شو tags و categories ثبت شدن
+            self.save_m2m()
 
         return post_instance
-
 
 class CommentForm(forms.ModelForm):
     parent = forms.IntegerField(widget=forms.HiddenInput(), required=False)  # فقط فیلد اضافی برای id والد
