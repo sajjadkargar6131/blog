@@ -368,4 +368,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('oembed[url]').forEach(function (element) {
+                const url = element.getAttribute('url');
+
+                if (url.includes('youtube.com')) {
+                    const videoId = new URL(url).searchParams.get("v");
+
+                    // ساخت div برای واکنش‌گرایی
+                    const wrapper = document.createElement('div');
+                    wrapper.style.position = 'relative';
+                    wrapper.style.paddingBottom = '56.25%';  // نسبت 16:9
+                    wrapper.style.height = '0';
+                    wrapper.style.overflow = 'hidden';
+                    wrapper.style.maxWidth = '100%';
+
+                    // ساخت iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                    iframe.style.position = 'absolute';
+                    iframe.style.top = '0';
+                    iframe.style.left = '0';
+                    iframe.style.width = '100%';
+                    iframe.style.height = '50%';
+                    iframe.style.border = '0';
+                    iframe.allowFullscreen = true;
+
+                    wrapper.appendChild(iframe);
+                    element.parentNode.replaceChild(wrapper, element);
+                }
+            });
+        });
+
+    </script>
 {% endblock scripts %}
