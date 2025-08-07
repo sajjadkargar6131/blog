@@ -77,29 +77,20 @@ class PostCreateForm(forms.ModelForm):
 
         return cover
 
-    def save(self, commit=True):
-        post_instance = super().save(commit=False)
 
-        # اگر پست در حال ویرایشه و عکس قبلی داره، پاکش کن
-        if post_instance.pk:
-            try:
-                old_instance = Post.objects.get(pk=post_instance.pk)
-                if old_instance.cover and self.cleaned_data.get('cover'):
-                    if os.path.isfile(old_instance.cover.path):
-                        old_instance.cover.delete(save=False)  # پاک کردن فایل فیزیکی
-            except Post.DoesNotExist:
-                pass
+def save(self, commit=True):
+    post_instance = super().save(commit=False)
+    cover = self.cleaned_data.get('cover')
 
-        # پردازش عکس جدید
-        cover = self.cleaned_data.get('cover')
-        if cover:
-            img = Image.open(cover)
+    if cover:
+        with Image.open(cover) as img:
             img = fix_image_orientation(img)
             img = img.convert('RGB')
 
             output = BytesIO()
             img.save(output, format='WEBP', quality=80)
             output.seek(0)
+
             filename = f"{uuid4().hex}_cover.webp"
             webp_image = InMemoryUploadedFile(
                 output,
@@ -111,22 +102,30 @@ class PostCreateForm(forms.ModelForm):
             )
             post_instance.cover = webp_image
 
-        if commit:
-            post_instance.save()
+    # حذف تصویر قبلی فقط اگر تصویر جدید بارگذاری شده یا remove_cover فعال است
+    remove_cover = self.cleaned_data.get('remove_cover', False)
+    if post_instance.pk and (cover or remove_cover):
+        try:
+            old_instance = Post.objects.get(pk=post_instance.pk)
+            if old_instance.cover and (remove_cover or (cover and old_instance.cover.path != post_instance.cover.path)):
+                if os.path.isfile(old_instance.cover.path):
+                    old_instance.cover.delete(save=False)
+        except Post.DoesNotExist:
+            pass
+        except PermissionError:
+            # فایل قفل هست، حذف انجام نشد
+            pass
 
-            # افزودن دسته‌بندی جدید
-            new_category_name = self.cleaned_data.get('new_category')
-            if new_category_name:
-                category, _ = Category.objects.get_or_create(name=new_category_name)
-                post_instance.categories.add(category)
+    if remove_cover:
+        post_instance.cover = None
 
-            categories = self.cleaned_data.get('categories')
-            if categories:
-                post_instance.categories.set(categories)
+    if commit:
+        post_instance.save()
 
-            self.save_m2m()
+        # بقیه عملیات ذخیره
 
-        return post_instance
+    return post_instance
+
 
 class CommentForm(forms.ModelForm):
     parent = forms.IntegerField(widget=forms.HiddenInput(), required=False)  # فقط فیلد اضافی برای id والد
