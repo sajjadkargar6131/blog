@@ -86,6 +86,14 @@
                                 </div>
                             {% endif %}
                         </div>
+                        <!-- دکمه مرا به خاطر بسپار -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="remember" id="rememberMe"
+                                   {% if request.POST.remember %}checked{% endif %}>
+                            <label class="form-check-label" for="rememberMe">
+                                مرا به خاطر بسپار
+                            </label>
+                        </div>
 
                         <!-- دکمه ورود -->
                         <button type="submit" class="btn btn-success w-100 py-2">ورود</button>
