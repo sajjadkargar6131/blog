@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -42,12 +43,16 @@ class PostDetailView(generic.DetailView, FormMixin):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        return Post.objects.filter(status='pub').select_related('author').prefetch_related('comments', 'likes', 'bookmarks')
+        return Post.objects.filter(status='pub').select_related('author').prefetch_related('likes', 'bookmarks')
 
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super().get_context_data(**kwargs)
-        comments_qs = self.object.comments.filter(publish=True).select_related('user').prefetch_related('replies__user')
+        replies_prefetch = Prefetch('replies', queryset=Comment.objects.filter(publish=True).select_related('user'))
+
+        comments_qs = self.object.comments.filter(publish=True) \
+            .select_related('user') \
+            .prefetch_related(replies_prefetch)
         context['comments'] = comments_qs.filter(parent__isnull=True).order_by('-datetime_created')
         context.update({
             'comments_count': self.object.comments_count,
