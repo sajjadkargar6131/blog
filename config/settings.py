@@ -3,7 +3,10 @@ from pathlib import Path
 import locale
 import sys
 from decouple import config
+from django.core.cache import caches
+from django.core.cache.backends.base import InvalidCacheBackendError
 import secrets
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -340,42 +343,33 @@ ACCOUNT_RATE_LIMITS = {
 REDIS_HOST = config("REDIS_HOST", default=None)
 REDIS_PORT = config("REDIS_PORT", default=6379, cast=int)
 REDIS_PASSWORD = config("REDIS_PASSWORD", default="")
-if DEBUG or not REDIS_HOST:
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-            "LOCATION": "unique-snowflake",
-        }
+# پیش‌فرض LocMemCache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "default-locmem",
     }
-else:
-    # استفاده از Redis در حالت Production
-    CACHES = {
-        "default": {
+}
+
+if not DEBUG:
+    try:
+        CACHES["default"] = {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/1",
+            "LOCATION": f"redis://{os.getenv('REDIS_HOST', '127.0.0.1')}:{os.getenv('REDIS_PORT', '6379')}/1",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }
         }
-    }
-
-    # لاگ‌گیری
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'file': {
-                'level': 'ERROR',
-                'class': 'logging.FileHandler',
-                'filename': BASE_DIR / 'django_error.log',  # مسیر قابل نوشتن
-            },
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['file'],
-                'level': 'ERROR',
-                'propagate': True,
-            },
-        },
-    }
+        # تست اتصال Redis
+        cache = caches["default"]
+        cache.set("test_connection", "hello", timeout=5)
+        if cache.get("test_connection") != "hello":
+            raise ConnectionError("Redis test failed")
+    except (InvalidCacheBackendError, ConnectionError, Exception) as e:
+        print(f"⚠ Redis unavailable, falling back to LocMem. Reason: {e}")
+        CACHES["default"] = {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "default-locmem",
+        }
