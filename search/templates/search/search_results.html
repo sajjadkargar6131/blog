@@ -4,7 +4,7 @@
     <h3>نتایج جستجو برای: "{{ query }}"</h3>
 
     {% if post_results %}
-        <h4>مقالات</h4>
+        <h4>پست ها</h4>
         <ul>
             {% for post in post_results %}
                 <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
