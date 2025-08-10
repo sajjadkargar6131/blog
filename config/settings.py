@@ -363,7 +363,7 @@ else:
             'file': {
                 'level': 'ERROR',
                 'class': 'logging.FileHandler',
-                'filename': '/tmp/django_error.log',  # مسیر قابل نوشتن
+                'filename': BASE_DIR / 'django_error.log',  # مسیر قابل نوشتن
             },
         },
         'loggers': {
