@@ -31,7 +31,6 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 allowed_hosts_str = config("ALLOWED_HOSTS", default="")
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(",") if host.strip()]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,18 +50,16 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.instagram',
     'allauth.socialaccount.providers.github',
 
-
     'jalali_date',
-    
-    #pip
+
+    # pip
     'crispy_forms',
     'crispy_bootstrap5',
     'taggit',
     'django_ckeditor_5',
     'django_extensions',
 
-
-    #local
+    # local
     'index',
     'blog.apps.BlogConfig',
     'accounts',
@@ -92,8 +89,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-                str(BASE_DIR.joinpath('templates'))
-            ],
+            str(BASE_DIR.joinpath('templates'))
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,7 +106,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -134,8 +130,6 @@ else:
         }
     }
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -153,7 +147,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -179,7 +172,6 @@ except locale.Error:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # Auth Settings
 LOGIN_REDIRECT_URL = 'index'
 
@@ -196,56 +188,54 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
 # Media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
 
-
 customColorPalette = [
-        {
-            'color': 'hsl(4, 90%, 58%)',
-            'label': 'Red'
-        },
-        {
-            'color': 'hsl(340, 82%, 52%)',
-            'label': 'Pink'
-        },
-        {
-            'color': 'hsl(291, 64%, 42%)',
-            'label': 'Purple'
-        },
-        {
-            'color': 'hsl(262, 52%, 47%)',
-            'label': 'Deep Purple'
-        },
-        {
-            'color': 'hsl(231, 48%, 48%)',
-            'label': 'Indigo'
-        },
-        {
-            'color': 'hsl(207, 90%, 54%)',
-            'label': 'Blue'
-        },
-    ]
+    {
+        'color': 'hsl(4, 90%, 58%)',
+        'label': 'Red'
+    },
+    {
+        'color': 'hsl(340, 82%, 52%)',
+        'label': 'Pink'
+    },
+    {
+        'color': 'hsl(291, 64%, 42%)',
+        'label': 'Purple'
+    },
+    {
+        'color': 'hsl(262, 52%, 47%)',
+        'label': 'Deep Purple'
+    },
+    {
+        'color': 'hsl(231, 48%, 48%)',
+        'label': 'Indigo'
+    },
+    {
+        'color': 'hsl(207, 90%, 54%)',
+        'label': 'Blue'
+    },
+]
 
 CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': {
-            'items': [ 'undo', 'redo',
-        '|',
-        'heading',
-        '|',
-        'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
-        '|',
-        'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-        '|',
-        'link', 'uploadImage', 'blockQuote', 'codeBlock',
-        '|',
-        'alignment',
-        '|',
-        'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'],
-                    }
+            'items': ['undo', 'redo',
+                      '|',
+                      'heading',
+                      '|',
+                      'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+                      '|',
+                      'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+                      '|',
+                      'link', 'uploadImage', 'blockQuote', 'codeBlock',
+                      '|',
+                      'alignment',
+                      '|',
+                      'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'],
+        }
 
     },
     'extends': {
@@ -257,20 +247,20 @@ CKEDITOR_5_CONFIGS = {
             'blockQuote',
         ],
         'toolbar': {
-            'items': [    'heading', '|',
-    'bold', 'italic', 'underline', 'strikethrough', 'highlight', '|',
-    'alignment', '|',
-    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-    'bulletedList', 'numberedList', 'blockQuote', '|',
-    'code', 'codeBlock', 'imageUpload', 'mediaEmbed', '|',
-    'insertTable', 'horizontalLine', 'link', '|',
-    'undo', 'redo', 'removeFormat'
-                    ],
+            'items': ['heading', '|',
+                      'bold', 'italic', 'underline', 'strikethrough', 'highlight', '|',
+                      'alignment', '|',
+                      'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                      'bulletedList', 'numberedList', 'blockQuote', '|',
+                      'code', 'codeBlock', 'imageUpload', 'mediaEmbed', '|',
+                      'insertTable', 'horizontalLine', 'link', '|',
+                      'undo', 'redo', 'removeFormat'
+                      ],
             'shouldNotGroupWhenFull': True
         },
         'image': {
             'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
-                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side',  '|'],
+                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|'],
             'styles': [
                 'full',
                 'side',
@@ -281,8 +271,8 @@ CKEDITOR_5_CONFIGS = {
 
         },
         'table': {
-            'contentToolbar': [ 'tableColumn', 'tableRow', 'mergeTableCells',
-            'tableProperties', 'tableCellProperties' ],
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells',
+                               'tableProperties', 'tableCellProperties'],
             'tableProperties': {
                 'borderColors': customColorPalette,
                 'backgroundColors': customColorPalette
@@ -292,12 +282,12 @@ CKEDITOR_5_CONFIGS = {
                 'backgroundColors': customColorPalette
             }
         },
-        'heading' : {
+        'heading': {
             'options': [
-                { 'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph' },
-                { 'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1' },
-                { 'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2' },
-                { 'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3' }
+                {'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph'},
+                {'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1'},
+                {'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2'},
+                {'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3'}
             ]
         }
     },
@@ -315,11 +305,10 @@ CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"  # Possible values: "staff", "authen
 CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "custom_upload_function"
 CKEDITOR_RESTRICT_BY_USER = True
 
-
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
-    ]
+]
 
 SITE_ID = 1
 AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -364,4 +353,24 @@ else:
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }
         }
+    }
+
+    # لاگ‌گیری
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'ERROR',
+                'class': 'logging.FileHandler',
+                'filename': '/tmp/django_error.log',  # مسیر قابل نوشتن
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        },
     }
