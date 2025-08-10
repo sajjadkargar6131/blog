@@ -337,7 +337,11 @@ ACCOUNT_RATE_LIMITS = {
     "change_password": "5/m/user",
 }
 
-if DEBUG:
+REDIS_HOST = config("REDIS_HOST", default=None)
+REDIS_PORT = config("REDIS_PORT", default=6379, cast=int)
+REDIS_PASSWORD = config("REDIS_PASSWORD", default="")
+if DEBUG or not REDIS_HOST:
+
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -345,10 +349,11 @@ if DEBUG:
         }
     }
 else:
+    # استفاده از Redis در حالت Production
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"redis://:{config('REDIS_PASSWORD', default='')}@{config('REDIS_HOST')}:{config('REDIS_PORT', default=6379)}/1",
+            "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/1",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }
