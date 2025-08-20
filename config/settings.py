@@ -344,10 +344,8 @@ ACCOUNT_RATE_LIMITS = {
 
 
 # اطلاعات Redis از env
-REDIS_HOST = os.environ.get("REDIS_HOST")
-REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
-REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
-REDIS_DB = os.environ.get("REDIS_DB", "0")
+REDIS_URL = config('REDIS_URL', default='')
+
 
 # پیش‌فرض: لوکال
 CACHES = {
@@ -362,7 +360,7 @@ if not DEBUG:
     try:
         CACHES["default"] = {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "rediss://default:Ac6vAAIjcDEyMmNmMjAwNmEzZDY0MWRmYTFlOWE3NzlkYTU5NDEyMnAxMA@oriented-wolf-52911.upstash.io:6379/0",
+            "LOCATION": REDIS_URL,
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
                 # Upstash نیاز به SSL داره
