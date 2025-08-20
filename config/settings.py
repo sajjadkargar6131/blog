@@ -6,6 +6,8 @@ from decouple import config
 from django.core.cache import caches
 from django.core.cache.backends.base import InvalidCacheBackendError
 import secrets
+import  ssl
+from django.conf import settings
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +31,7 @@ if not SECRET_KEY:
         env_file.write_text(f"SECRET_KEY={SECRET_KEY}\n")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = True
 
 allowed_hosts_str = config("ALLOWED_HOSTS", default="")
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(",") if host.strip()]
@@ -331,7 +333,7 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_CONFIRMATION_HTML = True
 ACCOUNT_RATE_LIMITS = {
-    "login": "10/m/ip",
+    "login": "3/m/ip",
     "signup": "10/m/ip",
     "reset_password": "5/m/key",
     "login_failed": "10/m/ip",
@@ -343,30 +345,27 @@ ACCOUNT_RATE_LIMITS = {
 REDIS_HOST = config("REDIS_HOST", default=None)
 REDIS_PORT = config("REDIS_PORT", default=6379, cast=int)
 REDIS_PASSWORD = config("REDIS_PASSWORD", default="")
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG =False
 
-# پیش‌فرض LocMemCache
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "default-locmem",
-    }
-}
 
-if not DEBUG:
+if not settings.DEBUG:
     try:
         CACHES["default"] = {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"redis://{os.getenv('REDIS_HOST', '127.0.0.1')}:{os.getenv('REDIS_PORT', '6379')}/1",
+            "LOCATION": "rediss://default:Ac6vAAIjcDEyMmNmMjAwNmEzZDY0MWRmYTFlOWE3NzlkYTU5NDEyMnAxMA@oriented-wolf-52911.upstash.io:6379/0",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "SSL": True,
+                "SSL_CERT_REQS": ssl.CERT_OPTIONAL,
             }
         }
+
         # تست اتصال Redis
         cache = caches["default"]
         cache.set("test_connection", "hello", timeout=5)
         if cache.get("test_connection") != "hello":
             raise ConnectionError("Redis test failed")
+
     except (InvalidCacheBackendError, ConnectionError, Exception) as e:
         print(f"⚠ Redis unavailable, falling back to LocMem. Reason: {e}")
         CACHES["default"] = {
