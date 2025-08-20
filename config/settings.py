@@ -3,12 +3,11 @@ from pathlib import Path
 import locale
 import sys
 from decouple import config
+from django.conf.global_settings import CACHES
 from django.core.cache import caches
 from django.core.cache.backends.base import InvalidCacheBackendError
 import secrets
-import  ssl
-from django.conf import settings
-
+import ssl
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +30,7 @@ if not SECRET_KEY:
         env_file.write_text(f"SECRET_KEY={SECRET_KEY}\n")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 allowed_hosts_str = config("ALLOWED_HOSTS", default="")
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(",") if host.strip()]
@@ -342,22 +341,36 @@ ACCOUNT_RATE_LIMITS = {
     "change_password": "5/m/user",
 }
 
-REDIS_HOST = config("REDIS_HOST", default=None)
-REDIS_PORT = config("REDIS_PORT", default=6379, cast=int)
-REDIS_PASSWORD = config("REDIS_PASSWORD", default="")
-DEBUG =False
 
 
-if not settings.DEBUG:
+# اطلاعات Redis از env
+REDIS_HOST = os.environ.get("REDIS_HOST")
+REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
+REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
+REDIS_DB = os.environ.get("REDIS_DB", "0")
+
+# پیش‌فرض: لوکال
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "default-locmem",
+    }
+}
+
+# اگر Production هستیم و env Redis تنظیم شده
+if not DEBUG:
     try:
         CACHES["default"] = {
             "BACKEND": "django_redis.cache.RedisCache",
             "LOCATION": "rediss://default:Ac6vAAIjcDEyMmNmMjAwNmEzZDY0MWRmYTFlOWE3NzlkYTU5NDEyMnAxMA@oriented-wolf-52911.upstash.io:6379/0",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                # Upstash نیاز به SSL داره
                 "SSL": True,
+                # امن‌تر: CERT_REQUIRED (اگر خطا داد می‌تونی موقت بذاری CERT_NONE)
                 "SSL_CERT_REQS": ssl.CERT_OPTIONAL,
-            }
+            },
+            "TIMEOUT": None,  # کش دائمی
         }
 
         # تست اتصال Redis
