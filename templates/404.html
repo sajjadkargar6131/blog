@@ -1,0 +1,142 @@
+{% extends "_base.html" %}
+
+{% block style %}
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f8f9fa;
+        font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+    }
+    .error-box {
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        border-radius: 1rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        max-width: 800px;   /* بزرگتر شد */
+        width: 90%;         /* واکنش‌گرا */
+        margin: auto;       /* همیشه وسط */
+    }
+    .error-code {
+        font-size: 6rem;
+        font-weight: bold;
+        color: var(--bs-danger);
+        margin-bottom: 1rem;
+        animation: float 5s ease-in-out infinite;
+    }
+    .search-container {
+        margin: 2rem 0;
+    }
+    .search-form {
+        display: flex;
+        position: relative;
+    }
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 50px;
+        padding: 0.75rem 1.5rem;
+        width: 100%;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        padding-right: 3rem;
+    }
+    .search-input:focus {
+        outline: none;
+        border-color: var(--bs-danger);
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+    .search-button {
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--bs-danger);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .search-button:hover {
+        background: #b02a37;
+    }
+    .suggestions {
+        text-align: right;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    .suggestions a {
+        color: var(--bs-danger);
+        text-decoration: none;
+        margin: 0 0.3rem;
+    }
+    .suggestions a:hover {
+        text-decoration: underline;
+    }
+    .btn-home {
+        background: var(--bs-danger);
+        border: none;
+        color: #fff;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        transition: all 0.3s;
+        box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-home:hover {
+        background: #a71d2a;
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-box">
+    <div class="error-code">404</div>
+    <h1 class="mb-3 text-body">صفحه مورد نظر یافت نشد</h1>
+    <p class="text-muted mb-4">
+        ممکن است آدرس را اشتباه وارد کرده باشید یا صفحه منتقل شده باشد.
+    </p>
+
+    <div class="search-container">
+        <p class="mb-3">شاید جستجو بتواند کمک کند:</p>
+        <form class="search-form" method="get" action="{% url 'search' %}">
+            <input class="search-input" type="text" name="q" placeholder="چه چیزی را جستجو می‌کنید؟"
+                   value="{{ request.GET.q }}" aria-label="Search">
+            <button type="submit" class="search-button">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+        <div class="suggestions">
+            پیشنهادات:
+            <a href="/">صفحه اصلی</a>,
+            <a href="/blog/">وبلاگ</a>,
+            <a href="/contact/">تماس با ما</a>
+        </div>
+    </div>
+
+    <a href="/" class="btn-home">
+        <i class="fas fa-home me-2"></i> بازگشت به صفحه اصلی
+    </a>
+</div>
+{% endblock %}
