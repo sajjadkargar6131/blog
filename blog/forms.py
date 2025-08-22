@@ -140,3 +140,4 @@ class CommentForm(forms.ModelForm):
         labels = {
             'text': 'نظر شما'
         }
+

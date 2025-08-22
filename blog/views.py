@@ -362,3 +362,5 @@ class PostListByTagView(generic.ListView):
 
 def test(request):
     return render(request, 'blog/test.html')
+
+
