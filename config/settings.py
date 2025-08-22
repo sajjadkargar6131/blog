@@ -351,7 +351,11 @@ SOCIALACCOUNT_EMAIL_REQUIRED = True
 
 # اگر حساب جدید ساخته شد، به صورت خودکار ساخته شود
 SOCIALACCOUNT_AUTO_SIGNUP = True
-
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'EMAIL_AUTHENTICATION': True
+    }
+}
 
 
 # اطلاعات Redis از env
