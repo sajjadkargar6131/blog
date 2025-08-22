@@ -30,10 +30,6 @@ class PostCreateForm(forms.ModelForm):
         required=False,
         label='ایجاد دسته بندی جدید'
     )
-    remove_cover = forms.BooleanField(
-        required=False,
-        label='حذف تصویر فعلی'
-    )
 
     class Meta:
         model = Post
@@ -81,59 +77,58 @@ class PostCreateForm(forms.ModelForm):
 
         return cover
 
-    def save(self, commit=True):
-        post_instance = super().save(commit=False)
-        cover = self.cleaned_data.get('cover')
-        remove_cover = self.cleaned_data.get('remove_cover', False)
 
-        # آپلود و پردازش تصویر جدید
-        if cover:
-            with Image.open(cover) as img:
-                img = fix_image_orientation(img)
-                img = img.convert('RGB')
+def save(self, commit=True):
+    post_instance = super().save(commit=False)
+    cover = self.cleaned_data.get('cover')
 
-                output = BytesIO()
-                img.save(output, format='WEBP', quality=80)
-                output.seek(0)
+    if cover:
+        with Image.open(cover) as img:
+            img = fix_image_orientation(img)
+            img = img.convert('RGB')
 
-                filename = f"{uuid4().hex}_cover.webp"
-                webp_image = InMemoryUploadedFile(
-                    output,
-                    field_name='ImageField',
-                    name=filename,
-                    content_type='image/webp',
-                    size=output.getbuffer().nbytes,
-                    charset=None
-                )
-                post_instance.cover = webp_image
+            output = BytesIO()
+            img.save(output, format='WEBP', quality=80)
+            output.seek(0)
 
-        # حذف تصویر قبلی فقط اگر تصویر جدید بارگذاری شده یا remove_cover فعال است
-        if post_instance.pk and (cover or remove_cover):
-            try:
-                old_instance = Post.objects.get(pk=post_instance.pk)
-                if old_instance.cover and (remove_cover or (cover and old_instance.cover.name != post_instance.cover.name)):
-                    try:
-                        if os.path.isfile(old_instance.cover.path):
-                            old_instance.cover.delete(save=False)
-                    except (FileNotFoundError, ValueError):
-                        pass
-            except Post.DoesNotExist:
-                pass
-            except PermissionError:
-                pass
+            filename = f"{uuid4().hex}_cover.webp"
+            webp_image = InMemoryUploadedFile(
+                output,
+                field_name='ImageField',
+                name=filename,
+                content_type='image/webp',
+                size=output.getbuffer().nbytes,
+                charset=None
+            )
+            post_instance.cover = webp_image
 
-        if remove_cover:
-            post_instance.cover = None
+    # حذف تصویر قبلی فقط اگر تصویر جدید بارگذاری شده یا remove_cover فعال است
+    remove_cover = self.cleaned_data.get('remove_cover', False)
+    if post_instance.pk and (cover or remove_cover):
+        try:
+            old_instance = Post.objects.get(pk=post_instance.pk)
+            if old_instance.cover and (remove_cover or (cover and old_instance.cover.path != post_instance.cover.path)):
+                if os.path.isfile(old_instance.cover.path):
+                    old_instance.cover.delete(save=False)
+        except Post.DoesNotExist:
+            pass
+        except PermissionError:
+            # فایل قفل هست، حذف انجام نشد
+            pass
 
-        if commit:
-            post_instance.save()
-            self.save_m2m()
+    if remove_cover:
+        post_instance.cover = None
 
-        return post_instance
+    if commit:
+        post_instance.save()
+
+        # بقیه عملیات ذخیره
+
+    return post_instance
 
 
 class CommentForm(forms.ModelForm):
-    parent = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    parent = forms.IntegerField(widget=forms.HiddenInput(), required=False)  # فقط فیلد اضافی برای id والد
     text = forms.CharField(widget=forms.Textarea(attrs={
         'class': 'form-control w-100',
         'rows': 3,
@@ -141,7 +136,7 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        fields = ('text',)
+        fields = ('text',)  # فقط فیلد متن
         labels = {
             'text': 'نظر شما'
         }
