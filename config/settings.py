@@ -340,6 +340,17 @@ ACCOUNT_RATE_LIMITS = {
     "manage_email": "10/m/user",
     "change_password": "5/m/user",
 }
+# اجازه می‌دهیم ایمیل گوگل برای لاگین به حساب موجود استفاده شود
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+
+# اگر ایمیل تطبیق داده شد، حساب گوگل به حساب موجود متصل شود
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+
+# اجازه می‌دهیم ایمیل در هر صورت درخواست شود (می‌تواند True یا False باشد)
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+
+# اگر حساب جدید ساخته شد، به صورت خودکار ساخته شود
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 
 
