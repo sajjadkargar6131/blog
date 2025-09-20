@@ -35,7 +35,7 @@ class Post(models.Model):
     cover = models.ImageField(upload_to='blog/covers/', blank=True)
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)
     tags = TaggableManager(blank=True)
-    slug = models.SlugField(unique=True, max_length=200, allow_unicode=True)
+    slug = models.SlugField(unique=True, max_length=500, allow_unicode=True)
     meta_description = models.CharField(
         max_length=160,
         blank=True,
